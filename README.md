@@ -1,6 +1,6 @@
 # Common 🧰
 
-> The Athenna common helpers to use in any type of Athenna project and standalone.
+> The Athenna common helpers to use in any Node.js ESM project.
 
 [![GitHub followers](https://img.shields.io/github/followers/athennaio.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/athennaio?tab=followers)
 [![GitHub stars](https://img.shields.io/github/stars/AthennaIO/Common.svg?style=social&label=Star&maxAge=2592000)](https://github.com/AthennaIO/Common/stargazers/)
