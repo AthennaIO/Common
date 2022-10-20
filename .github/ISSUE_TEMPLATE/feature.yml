@@ -1,7 +1,7 @@
 name: Feature Proposal 🚀
 description: Submit a proposal for a new feature.
 title: '[Feature]: '
-labels: ['feature']
+labels: [ 'feature' ]
 body:
   - type: markdown
     attributes:
@@ -18,7 +18,7 @@ body:
     id: solution
     attributes:
       label: Motivation
-      description: Outline your motivation for the proposal. How will it make @athenna/template better?
+      description: Outline your motivation for the proposal. How will it make @athenna/common better?
     validations:
       required: true
   - type: textarea

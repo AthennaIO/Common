@@ -1,16 +1,7 @@
-/**
- * @athenna/database
- *
- * (c) João Lenon <lenon@athenna.io>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-import { pathToFileURL } from 'node:url'
-
+import { pathToFileURL } from 'url'
 import { assert } from '@japa/assert'
 import { specReporter } from '@japa/spec-reporter'
+import { runFailedTests } from '@japa/run-failed-tests'
 import { processCliArgs, configure, run } from '@japa/runner'
 
 /*
@@ -31,9 +22,10 @@ configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
     files: ['tests/**/*Test.js'],
-    plugins: [assert()],
+    plugins: [assert(), runFailedTests()],
     reporters: [specReporter()],
     importer: filePath => import(pathToFileURL(filePath).href),
+    timeout: 5000,
   },
 })
 
