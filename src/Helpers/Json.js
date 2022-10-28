@@ -138,10 +138,6 @@ export class Json {
       return object
     }
 
-    if (defaultValue) {
-      return lodash.get(object, key, defaultValue)
-    }
-
-    return lodash.get(object, key)
+    return lodash.get(object, key, defaultValue)
   }
 }
