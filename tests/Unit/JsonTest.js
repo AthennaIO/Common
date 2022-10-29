@@ -1,7 +1,7 @@
 /**
  * @athenna/common
  *
- * (c) João Lenon <lenonSec7@gmail.com>
+ * (c) João Lenon <lenon@athenna.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -110,11 +110,13 @@ test.group('Json Class', () => {
     const defaultValue = Json.get(object, 'hello.worlld.value.hello', 'Hi World!')
     const fullObject = Json.get(object, '')
     const defaultValueInObjectNull = Json.get(undefined, '', { hello: 'world' })
+    const falsyDefaultValue = Json.get(object, 'hello.not-found', false)
 
     assert.equal(value, 'Hello World!')
     assert.equal(defaultValue, 'Hi World!')
     assert.isUndefined(undefinedValue)
     assert.deepEqual(object, fullObject)
     assert.deepEqual(defaultValueInObjectNull, { hello: 'world' })
+    assert.deepEqual(falsyDefaultValue, false)
   })
 })
