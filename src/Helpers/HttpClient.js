@@ -1,59 +1,51 @@
-const http = require('http')
+import got from 'got'
 
 export class HttpClient {
-    constructor(options) {
-        this.defaultOptions = {
-            baseUrl: '',
-            headers: {},
-            agent: new http.Agent({ keepAlive: true })
-        }
+  constructor() {
+    this.globalSettings = {}
+  }
 
-        this.options = Object.assign({}, this.defaultOptions, options)
+  setGlobalSettings(settings) {
+    this.setGlobalSettings = settings
+  }
+
+  async makeRequest(method, url, options = {}) {
+    const mergedOptions = {
+      ...this.globalSettings,
+      ...options,
     }
 
-    get(path) {
-        return this.request('GET', path)
+    try {
+      const response = await got(url, { ...mergedOptions, method })
+      return {
+        statusCode: response.statusCode,
+        body: response.body,
+      }
+    } catch (error) {
+      return {
+        statusCode: error.response.statusCode,
+        body: error.response.body,
+      }
     }
+  }
 
-    post(path, data) {
-        return this.request('POST', path, data)
-    }
+  async get(url, options = {}) {
+    return this.makeRequest('GET', url, options)
+  }
 
-    put(path, data) {
-        return this.request('PUT', path, data)
-    }
+  async post(url, body, options = {}) {
+    return this.makeRequest('POST', url, { body, ...options })
+  }
 
-    delete(path) {
-        return this.request('DELETE', path)
-    }
+  async delete(url, options = {}) {
+    return this.makeRequest('DELETE', url, options)
+  }
 
-    request(method, path, data) {
-        const options = Object.assign({}, this.options, {
-            method,
-            path: this.options.baseUrl + path,
-            headers: Object.assign({}, this.options.headers)
-        })
+  async patch(url, body, options = {}) {
+    return this.makeRequest('PATCH', url, { body, ...options })
+  }
 
-        if(data) {
-            options.headers['Content-Lenght'] = Buffer.byteLength(data)
-        }
-
-        return new Promise((resolve, reject) => {
-            const req = http.request(options, res => {
-                res.setEncoding('utf8')
-                const chunks = []
-                res.on('data', chunk => chunks.push(chunk))
-                res.on('end', () => resolve(chunks.join('')))
-            })
-
-            req.on('error', err => reject(err))
-
-            if(data) {
-                req.write(data)
-            }
-
-            req.end()
-        })
-    }
-
+  async put(url, body, options = {}) {
+    return this.makeRequest('PUT', url, { body, ...options })
+  }
 }
