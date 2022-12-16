@@ -8,6 +8,7 @@
  */
 
 import { Collection as CollectJS } from 'collect.js'
+import got from 'got'
 
 export declare interface ExceptionJSON {
   code?: string
@@ -832,6 +833,275 @@ export declare class Folder {
    * @return {Folder[]}
    */
   getFoldersByPattern(pattern?: string, recursive?: boolean): Folder[]
+}
+
+export declare class HttpClientBuilder {
+  /**
+   * Set the request url.
+   *
+   * @param url {string}
+   * @return {HttpClientBuilder}
+   */
+  url(url: string): HttpClientBuilder
+
+  /**
+   * Set the request method.
+   *
+   * @param method {import('got').Method}
+   * @return {HttpClientBuilder}
+   */
+  method(method: import('got').Method): HttpClientBuilder
+
+  /**
+   * When specified, `prefixUrl` will be prepended to `url`.
+   * The prefix can be any valid URL, either relative or absolute.
+   * A trailing slash `/` is optional - one will be added automatically.
+   *
+   * __Note__: `prefixUrl` will be ignored if the `url` argument is a URL instance.
+   *
+   * __Note__: Leading slashes in `input` are disallowed when using this option to enforce consistency and avoid confusion.
+   * For example, when the prefix URL is `https://example.com/foo` and the input is `/bar`, there's ambiguity whether the resulting URL would become `https://example.com/foo/bar` or `https://example.com/bar`.
+   * The latter is used by browsers.
+   *
+   * __Tip__: Useful when used with `got.extend()` to create niche-specific Got instances.
+   *
+   * __Tip__: You can change `prefixUrl` using hooks as long as the URL still includes the `prefixUrl`.
+   * If the URL doesn't include it anymore, it will throw.
+   *
+   * @example
+   * ```
+   * await HttpClient.builder()
+   *    .prefixUrl('https://cats.com')
+   *    .get('unicorn')
+   *    .json()
+   * //=> 'https://cats.com/unicorn'
+   * ```
+   * @param prefixUrl {string}
+   * @return {HttpClientBuilder}
+   */
+  prefixUrl(prefixUrl: string): HttpClientBuilder
+
+  /**
+   * Set the request body.
+   *
+   * @param body {any}
+   * @return {HttpClientBuilder}
+   */
+  body(body: any): HttpClientBuilder
+
+  /**
+   * Set the request form.
+   *
+   * @param form {any}
+   * @return {HttpClientBuilder}
+   */
+  form(form: any): HttpClientBuilder
+
+  /**
+   * Set a header at the request.
+   *
+   * @param key {string}
+   * @param value {any}
+   * @return {HttpClientBuilder}
+   */
+  header(key: string, value: any): HttpClientBuilder
+
+  /**
+   * Set a header at the request only if is not already
+   * defined.
+   *
+   * @param key {string}
+   * @param value {string}
+   * @return {HttpClientBuilder}
+   */
+  safeHeader(key: string, value: any): HttpClientBuilder
+
+  /**
+   * Remove a header from the request.
+   *
+   * @param key {string}
+   * @return {HttpClientBuilder}
+   */
+  removeHeader(key: string): HttpClientBuilder
+
+  /**
+   * Decompress the response automatically.
+   *
+   * This will set the `accept-encoding` header to `gzip, deflate, br` unless you set it yourself.
+   *
+   * If this is disabled, a compressed response is returned as a `Buffer`.
+   * This may be useful if you want to handle decompression yourself or stream the raw compressed data.
+   *
+   * @param decompress {boolean}
+   */
+  decompress(decompress: boolean): HttpClientBuilder
+
+  /**
+   * Milliseconds to wait for the server to end the response before aborting the request with `got.TimeoutError` error (a.k.a. `request` property).
+   *
+   * By default, there's no timeout.
+   *
+   * This also accepts an `object` with the following fields to constrain the duration of each phase of the request lifecycle:
+   *
+   * - `lookup` starts when a socket is assigned and ends when the hostname has been resolved.
+   *     Does not apply when using a Unix domain socket.
+   * - `connect` starts when `lookup` completes (or when the socket is assigned if lookup does not apply to the request) and ends when the socket is connected.
+   * - `secureConnect` starts when `connect` completes and ends when the handshaking process completes (HTTPS only).
+   * - `socket` starts when the socket is connected. See [request.setTimeout](https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback).
+   * - `response` starts when the request has been written to the socket and ends when the response headers are received.
+   * - `send` starts when the socket is connected and ends with the request has been written to the socket.
+   * - `request` starts when the request is initiated and ends when the response's end event fires.
+   *
+   * @param delays {Partial<import('got').Delays>}
+   */
+  timeout(delays: Partial<import('got').Delays>): HttpClientBuilder
+
+  /**
+   * Set the request retry strategy.
+   *
+   * @param strategy {Partial<import('got').RetryOptions>}
+   * @return {HttpClientBuilder}
+   */
+  retryStrategy(strategy: Partial<import('got').RetryOptions>): HttpClientBuilder
+
+  /**
+   * Execute the request using all the options defined.
+   *
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  request(options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a GET request.
+   *
+   * @param [url] {string}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  get(url?: string, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a POST request.
+   *
+   * @param [url] {string}
+   * @param [body] {any}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  post(url?: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a PUT request.
+   *
+   * @param url {string}
+   * @param [body] {any}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  put(url?: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a PATCH request.
+   *
+   * @param url {string}
+   * @param [body] {any}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  patch(url?: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a DELETE request.
+   *
+   * @param url {string}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  delete(url?: string, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a HEAD request.
+   *
+   * @param url {string}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  head(url?: string, options?: import('got').Options): import('got').CancelableRequest<any>
+}
+
+export declare class HttpClient {
+  /**
+   * Set the global builder for HttpClient.
+   *
+   * @param builder {HttpClientBuilder}
+   * @return {typeof HttpClient}
+   */
+  static setBuilder(builder: HttpClientBuilder): typeof HttpClient
+
+  /**
+   * Creates an instance of HttpClientBuilder.
+   *
+   * @return {HttpClientBuilder}
+   */
+  static builder(): HttpClientBuilder
+
+  /**
+   * Make a GET request.
+   *
+   * @param url {string}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  static get(url: string, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a POST request.
+   *
+   * @param url {string}
+   * @param [body] {any}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  static post(url: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a PUT request.
+   *
+   * @param url {string}
+   * @param [body] {any}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  static put(url: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a PATCH request.
+   *
+   * @param url {string}
+   * @param [body] {any}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  static patch(url: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a DELETE request.
+   *
+   * @param url {string}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  static delete(url: string, options?: import('got').Options): import('got').CancelableRequest<any>
+
+  /**
+   * Make a HEAD request.
+   *
+   * @param url {string}
+   * @param [options] {import('got').Options}
+   * @return {import('got').CancelableRequest<any>}
+   */
+  static head(url: string, options?: import('got').Options): import('got').CancelableRequest<any>
 }
 
 export declare class Is {
