@@ -1,7 +1,6 @@
 import { pathToFileURL } from 'url'
 import { assert } from '@japa/assert'
 import { specReporter } from '@japa/spec-reporter'
-import { runFailedTests } from '@japa/run-failed-tests'
 import { processCliArgs, configure, run } from '@japa/runner'
 
 /*
@@ -22,7 +21,7 @@ configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
     files: ['tests/**/*Test.js'],
-    plugins: [assert(), runFailedTests()],
+    plugins: [assert()],
     reporters: [specReporter()],
     importer: filePath => import(pathToFileURL(filePath).href),
     timeout: 5000,
