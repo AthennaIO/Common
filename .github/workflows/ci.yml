@@ -33,4 +33,4 @@ jobs:
         with:
           mappings: ${{ github.workspace }}/wiremock/mappings
           files: ${{ github.workspace }}/wiremock/__files
-          command: 'npm run test:coverage'
+          command: npm test
