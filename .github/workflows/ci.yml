@@ -19,7 +19,6 @@ jobs:
           - ./wiremock/mappings:/home/wiremock/mappings
         ports:
           - 9999:8080
-        options: --verbose --disable-banner --local-response-templating
     strategy:
       matrix:
         node-version:
