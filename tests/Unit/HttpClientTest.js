@@ -11,7 +11,7 @@
 import { test } from '@japa/runner'
 import { HttpClient, HttpClientBuilder } from '#src/Helpers/HttpClient'
 
-const FAKE_API_URL = 'http://localhost:9999'
+const FAKE_API_URL = 'http://localhost:8080'
 
 test.group('HttpClientTest', group => {
   group.each.setup(async () => {

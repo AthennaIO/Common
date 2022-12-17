@@ -6,4 +6,4 @@ services:
     volumes:
       - ./wiremock:/home/wiremock
     ports:
-      - "9999:8080"
+      - "8080:8080"
