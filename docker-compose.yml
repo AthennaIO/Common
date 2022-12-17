@@ -4,7 +4,6 @@ services:
   fake-api:
     image: wiremock/wiremock
     volumes:
-      - ./wiremock/__files:/home/wiremock/__files
-      - ./wiremock/mappings:/home/wiremock/mappings
+      - ./wiremock:/home/wiremock
     ports:
       - "9999:8080"

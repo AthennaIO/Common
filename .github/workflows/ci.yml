@@ -11,23 +11,12 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
-    services:
-      fake-api:
-        image: wiremock/wiremock
-        volumes:
-          - ${{ github.workspace }}/wiremock/__files:/home/wiremock/__files
-          - ${{ github.workspace }}/wiremock/mappings:/home/wiremock/mappings
-        ports:
-          - 9999:8080
     strategy:
       matrix:
         node-version:
           - 14.15.4
           - 18.x
     steps:
-      - name: Chown user
-        run: |
-          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -39,4 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run tests
-        run: npm run test:coverage
+        uses: williamhaw/setup-wiremock-action@v0.1.2
+        id: setup-wiremock
+        with:
+          mappings: ${{ github.workspace }}/wiremock/mappings
+          files: ${{ github.workspace }}/wiremock/__files
+          command: npm run test:coverage
