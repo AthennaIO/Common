@@ -1,9 +1,0 @@
-version: "3.9"
-
-services:
-  fake-api:
-    image: wiremock/wiremock
-    volumes:
-      - ./wiremock:/home/wiremock
-    ports:
-      - "8080:8080"

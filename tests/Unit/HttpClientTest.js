@@ -9,17 +9,28 @@
  */
 
 import { test } from '@japa/runner'
-import { HttpClient, HttpClientBuilder } from '#src/Helpers/HttpClient'
+import { FakeApi } from '#tests/Helpers/FakeApi'
+import { Path, HttpClient, HttpClientBuilder } from '#src/index'
 
 const FAKE_API_URL = 'http://localhost:8080'
 
 test.group('HttpClientTest', group => {
+  group.setup(async () => {
+    await FakeApi.get('/users', Path.stubs('server/responses/users.json'))
+      .post('/users', Path.stubs('server/responses/user-created.json'))
+      .start()
+  })
+
   group.each.setup(async () => {
     const client = new HttpClientBuilder()
 
     client.prefixUrl(FAKE_API_URL)
 
     HttpClient.setBuilder(client)
+  })
+
+  group.teardown(async () => {
+    await FakeApi.close()
   })
 
   test('should be able to make a GET request using HttpClient', async ({ assert }) => {
@@ -53,7 +64,6 @@ test.group('HttpClientTest', group => {
       .prefixUrl(FAKE_API_URL)
       .method('post')
       .header('Accept', 'application/json')
-      .safeHeader('Content-Type', 'application/json')
       .url('/users')
       .request()
       .json()

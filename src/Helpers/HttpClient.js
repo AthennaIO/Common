@@ -240,6 +240,7 @@ export class HttpClientBuilder {
    * @return {import('got').CancelableRequest<any>}
    */
   request(options = {}) {
+    console.log({ ...this.#options, ...options })
     return got({ ...this.#options, ...options })
   }
 

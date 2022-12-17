@@ -28,9 +28,4 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run tests
-        uses: williamhaw/setup-wiremock-action@v0.1.2
-        id: setup-wiremock
-        with:
-          mappings: ${{ github.workspace }}/wiremock/mappings
-          files: ${{ github.workspace }}/wiremock/__files
-          command: npm test
+        run: npm run test:coverage
