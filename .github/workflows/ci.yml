@@ -15,8 +15,8 @@ jobs:
       fake-api:
         image: wiremock/wiremock
         volumes:
-          - ./wiremock/stubs:/home/wiremock/__files
-          - ./wiremock/mappings:/home/wiremock/mappings
+          - ${{ github.workspace }}/wiremock/__files:/home/wiremock/__files
+          - ${{ github.workspace }}/wiremock/mappings:/home/wiremock/mappings
         ports:
           - 9999:8080
     strategy:
