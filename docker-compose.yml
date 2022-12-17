@@ -2,10 +2,9 @@ version: "3.9"
 
 services:
   fake-api:
-    image: rodolpheche/wiremock:latest
+    image: wiremock/wiremock
     volumes:
       - ./wiremock/__files:/home/wiremock/__files
       - ./wiremock/mappings:/home/wiremock/mappings
     ports:
       - "9999:8080"
-    command: "--verbose --disable-banner --local-response-templating"

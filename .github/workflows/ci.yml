@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       fake-api:
-        image: rodolpheche/wiremock:latest
+        image: wiremock/wiremock
         volumes:
           - ./wiremock/__files:/home/wiremock/__files
           - ./wiremock/mappings:/home/wiremock/mappings
