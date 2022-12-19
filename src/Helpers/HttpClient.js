@@ -33,15 +33,14 @@ export class HttpClientBuilder {
     this.#options = {}
   }
 
-
   /**
    * Set the following redirects.
    * @param followRedirect {bool}
-   * 
+   *
    */
 
   followRedirect(followRedirect) {
-    this.#options.followRedirect = followRedirect;
+    this.#options.followRedirect = followRedirect
     return this
   }
 
