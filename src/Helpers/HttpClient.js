@@ -33,6 +33,17 @@ export class HttpClientBuilder {
     this.#options = {}
   }
 
+
+  /**
+   * 
+   * @param {mergeOptions} options 
+   * @returns 
+   */
+  mergeOptions(options) {
+    this.#options = {...this.#options, ...options}
+    return this
+  }
+
   /**
    * Set the following redirects.
    * @param followRedirect {bool}
