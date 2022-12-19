@@ -33,9 +33,27 @@ export class HttpClientBuilder {
     this.#options = {}
   }
 
+  /**
+   * Set the agent method.
+   * @param agent
+   */
+  agent(agent) {
+    this.#options.agent = agent
+    return this
+  }
 
   /**
-   * 
+   * Set the h2session method.
+   * @param h2session
+   */
+  h2session(h2session) {
+    this.#options.h2session = h2session
+    return this
+  }
+
+
+  /**
+   * Set the merge options.
    * @param {mergeOptions} options 
    * @returns 
    */
