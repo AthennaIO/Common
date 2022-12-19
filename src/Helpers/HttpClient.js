@@ -51,14 +51,13 @@ export class HttpClientBuilder {
     return this
   }
 
-
   /**
    * Set the merge options.
-   * @param {mergeOptions} options 
-   * @returns 
+   * @param {mergeOptions} options
+   * @returns
    */
   mergeOptions(options) {
-    this.#options = {...this.#options, ...options}
+    this.#options = { ...this.#options, ...options }
     return this
   }
 
