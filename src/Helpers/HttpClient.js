@@ -34,9 +34,9 @@ export class HttpClientBuilder {
   }
 
   /**
-  * Set the parseJson method.
-  * @param parseJson {boolean}
-  * @return {HttpClientBuilder}
+   * Set the parseJson method.
+   * @param parseJson {boolean}
+   * @return {HttpClientBuilder}
   */
   parseJson(parseJson) {
     this.#options.parseJson = parseJson
