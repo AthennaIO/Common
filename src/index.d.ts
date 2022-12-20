@@ -837,20 +837,327 @@ export declare class Folder {
 
 export declare class HttpClientBuilder {
   /**
-   * Set the request url.
+   * Creates a new instance of HttpClientBuilder.
    *
-   * @param url {string}
-   * @return {HttpClientBuilder}
+   * @param [options] {import('got').Options}
    */
-  url(url: string): HttpClientBuilder
+  constructor(options?: import('got').Options)
 
   /**
-   * Set the request method.
+   * Return the options of the client builder.
    *
-   * @param method {import('got').Method}
+   * @return {import('got').Options}
+   */
+  getOptions(): HttpClientBuilder
+
+  /**
+   * From `http-cache-semantics`
+   *
+   * @param cacheOptions {import('got').CacheOptions}
    * @return {HttpClientBuilder}
    */
-  method(method: import('got').Method): HttpClientBuilder
+  cacheOptions(cacheOptions: import('got').CacheOptions): HttpClientBuilder
+
+  /**
+   * Called with the plain request options, right before their normalization.
+   *
+   * The second argument represents the current `Options` instance.
+   *
+   * **Note:**
+   * > - This hook must be synchronous.
+   *
+   * **Note:**
+   * > - This is called every time options are merged.
+   *
+   * **Note:**
+   * > - The `options` object may not have the `url` property. To modify it, use a `beforeRequest` hook instead.
+   *
+   * **Note:**
+   * > - This hook is called when a new instance of `Options` is created.
+   * > - Do not confuse this with the creation of `Request` or `got(…)`.
+   *
+   * **Note:**
+   * > - When using `got(url)` or `got(url, undefined, defaults)` this hook will **not** be called.
+   *
+   * This is especially useful in conjunction with `got.extend()` when the input needs custom handling.
+   *
+   * For example, this can be used to fix typos to migrate from older versions faster.
+   *
+   * @example
+   * ```
+   * await HttpClient.builder()
+   *    .setInitHook(plain => {
+   *       if ('followRedirects' in plain) {
+   *           plain.followRedirect = plain.followRedirects
+   *           delete plain.followRedirects
+   *       }
+   *    })
+   *    .mergeOptions({ followRedirects: true })
+   *    .get('https://example.com')
+   *
+   * // There is no option named `followRedirects` in got, but we correct it
+   * // in an `init` hook.
+   * ```
+   *
+   * @param initHook {import('got').InitHook}
+   * @return {HttpClientBuilder}
+   */
+  setInitHook(initHook: import('got').InitHook): HttpClientBuilder
+
+  /**
+   * Called right before making the request with `options.createNativeRequestOptions()`.
+   *
+   * This hook is especially useful in conjunction with `HttpClient.setBuilder(customBuilder)` when you want to sign your request.
+   *
+   * *Note:**
+   * > - Got will make no further changes to the request before it is sent.
+   *
+   * *Note:**
+   * > - Changing `options.json` or `options.form` has no effect on the request. You should change `options.body` instead. If needed, update the `options.headers` accordingly.
+   *
+   * @example
+   * ```
+   * const response = await HttpClient.builder()
+   *    .setBeforeRequestHook(options => {
+   *        options.body = JSON.stringify({ payload: 'new' })
+   *        options.headers['content-length'] = options.body.length.toString()
+   *    })
+   *    .post('https://httpbin.org/anything', { payload: 'old' })
+   * ```
+   *
+   * @param beforeRequestHook {import('got').BeforeRequestHook}
+   * @return {HttpClientBuilder}
+   */
+  setBeforeRequestHook(beforeRequestHook: import('got').BeforeRequestHook): HttpClientBuilder
+
+  /**
+   * The equivalent of `setBeforeRequestHook` but when redirecting.
+   *
+   * *Tip:**
+   * > - This is especially useful when you want to avoid dead sites.
+   *
+   * @example
+   * ```
+   * const response = await HttpClient.builder()
+   *    .setBeforeRedirectHook((options, response) => {
+   *        if (options.hostname === 'deadSite') {
+   *            options.hostname = 'fallbackSite'
+   *        }
+   *    })
+   *    .get('https://example.com')
+   * ```
+   *
+   * @param beforeRedirectHook {import('got').BeforeRedirectHook}
+   * @return {HttpClientBuilder}
+   */
+  setBeforeRedirectHook(beforeRedirectHook: import('got').BeforeRedirectHook): HttpClientBuilder
+
+  /**
+   * Called with a `RequestError` instance. The error is passed to the hook right before it's thrown.
+   *
+   * This is especially useful when you want to have more detailed errors.
+   *
+   * @example
+   * ```
+   * await HttpClient.builder()
+   *    .responseType('json')
+   *    .setBeforeErrorHook(error => {
+   *        const { response } = error
+   *
+   *        if (response && response.body) {
+   *            error.name = 'GitHubError'
+   *            error.message = `${response.body.message} (${response.statusCode})`
+   *       }
+   *
+   *       return error
+   *    })
+   *    .get('https://api.github.com/repos/AthennaIO/Common/commits')
+   * ```
+   *
+   * @param beforeErrorHook {import('got').BeforeErrorHook}
+   * @return {HttpClientBuilder}
+   */
+  setBeforeErrorHook(beforeErrorHook: import('got').BeforeErrorHook): HttpClientBuilder
+
+  /**
+   * The equivalent of `setBeforeErrorHook` but when retrying. Additionally,
+   * there is a second argument `retryCount`, the current retry number.
+   *
+   * *Note:**
+   * > - When using the Stream API, this hook is ignored.
+   *
+   * *Note:**
+   * > - When retrying, the `beforeRequest` hook is called afterwards.
+   *
+   * *Note:**
+   * > - If no retry occurs, the `beforeError` hook is called instead.
+   *
+   * This hook is especially useful when you want to retrieve the cause of a retry.
+   *
+   * @example
+   * ```
+   * await HttpClient.builder()
+   *    .setBeforeRetryHook((error, retryCount) => {
+   *        console.log(`Retrying [${retryCount}]: ${error.code}`)
+   *        // Retrying [1]: ERR_NON_2XX_3XX_RESPONSE
+   *    })
+   *    .get('https://httpbin.org/status/500')
+   * ```
+   *
+   * @param beforeRetryHook {import('got').BeforeRetryHook}
+   * @return {HttpClientBuilder}
+   */
+  setBeforeRetryHook(beforeRetryHook: import('got').BeforeRetryHook): HttpClientBuilder
+
+  /**
+   * Each function should return the response. This is especially useful when you want to refresh an access token.
+   *
+   * *Note:**
+   * > - When using the Stream API, this hook is ignored.
+   *
+   * *Note:**
+   * > - Calling the `retryWithMergedOptions` function will trigger `beforeRetry` hooks. If the retry is successful, all remaining `afterResponse` hooks will be called. In case of an error, `beforeRetry` hooks will be called instead.
+   * Meanwhile, the `init`, `beforeRequest` , `beforeRedirect` as well as already executed `afterResponse` hooks will be skipped.
+   *
+   * @example
+   * ```
+   * const builder = HttpClient.builder()
+   *    .mutableDefaults(true)
+   *    .setBeforeRetry(error => {
+   *        // This will be called on `retryWithMergedOptions(...)`
+   *    })
+   *    .setAfterResponseHook((response, retryWithMergedOptions) => {
+   *        // Unauthorized
+   *        if (response.statusCode === 401) {
+   *            // Refresh the access token
+   *            const updatedOptions = {
+   *                headers: {
+   *                    token: getNewToken()
+   *                }
+   *           };
+   *
+   *           // Update the defaults
+   *           instance.defaults.options.merge(updatedOptions)
+   *
+   *           // Make a new retry
+   *           return retryWithMergedOptions(updatedOptions)
+   *       }
+   *
+   *       // No changes otherwise
+   *       return response
+   * })
+   * ```
+   *
+   * @param afterResponseHook {import('got').AfterResponseHook}
+   * @return {HttpClientBuilder}
+   */
+  setAfterResponseHook(afterResponseHook: import('got').AfterResponseHook): HttpClientBuilder
+
+  /**
+   * An object representing `http`, `https` and `http2` keys for [`http.Agent`](https://nodejs.org/api/http.html#http_class_http_agent), [`https.Agent`](https://nodejs.org/api/https.html#https_class_https_agent) and [`http2wrapper.Agent`](https://github.com/szmarczak/http2-wrapper#new-http2agentoptions) instance.
+   * This is necessary because a request to one protocol might redirect to another.
+   * In such a scenario, Got will switch over to the right protocol agent for you.
+   *
+   * If a key is not present, it will default to a global agent.
+   *
+   * @example
+   * ```
+   * import HttpAgent from 'agentkeepalive'
+   *
+   * const { HttpsAgent } = HttpAgent
+   *
+   * await HttpClient.builder()
+   *    .agent({ http: new HttpAgent(), https: new HttpsAgent() }
+   *    .get('https://sindresorhus.com')
+   * ```
+   *
+   * @param agents {import('got').Agents}
+   * @return {HttpClientBuilder}
+   */
+  agent(agents: import('got').Agents): HttpClientBuilder
+
+  /**
+   * Set the http2 session.
+   *
+   * @param h2session {import('http2').ClientHttp2Session}
+   * @return {HttpClientBuilder}
+   */
+  h2session(h2session: import('http2').ClientHttp2Session): HttpClientBuilder
+
+  /**
+   * Decompress the response automatically.
+   *
+   * This will set the `accept-encoding` header to `gzip, deflate, br` unless you set it yourself.
+   *
+   * If this is disabled, a compressed response is returned as a `Buffer`.
+   * This may be useful if you want to handle decompression yourself or stream the raw compressed data.
+   *
+   * @param decompress {boolean}
+   * @return {HttpClientBuilder}
+   */
+  decompress(decompress: boolean): HttpClientBuilder
+
+  /**
+   * Milliseconds to wait for the server to end the response before aborting the request with `got.TimeoutError` error (a.k.a. `request` property).
+   *
+   * By default, there's no timeout.
+   *
+   * This also accepts an `object` with the following fields to constrain the duration of each phase of the request lifecycle:
+   *
+   * - `lookup` starts when a socket is assigned and ends when the hostname has been resolved.
+   *     Does not apply when using a Unix domain socket.
+   * - `connect` starts when `lookup` completes (or when the socket is assigned if lookup does not apply to the request) and ends when the socket is connected.
+   * - `secureConnect` starts when `connect` completes and ends when the handshaking process completes (HTTPS only).
+   * - `socket` starts when the socket is connected. See [request.setTimeout](https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback).
+   * - `response` starts when the request has been written to the socket and ends when the response headers are received.
+   * - `send` starts when the socket is connected and ends with the request has been written to the socket.
+   * - `request` starts when the request is initiated and ends when the response's end event fires.
+   * @param delays {Partial<import('got').Delays>}
+   */
+  timeout(delays: Partial<import('got').Delays>): HttpClientBuilder
+
+  /**
+   * Set the request body.
+   *
+   * @param body {Record<string, any> | string | Readable | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike }
+   * @return {HttpClientBuilder}
+   */
+  body(body: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike): HttpClientBuilder
+
+  /**
+   * Set the request form.
+   *
+   * @param form {any}
+   * @return {HttpClientBuilder}
+   */
+  form(form: any): HttpClientBuilder
+
+  /**
+   * Set a header at the request.
+   *
+   * @param key {string}
+   * @param value {string}
+   * @return {HttpClientBuilder}
+   */
+  header(key: string, value: any): HttpClientBuilder
+
+  /**
+   * Set a header at the request only if is not already
+   * defined.
+   *
+   * @param key {string}
+   * @param value {string}
+   * @return {HttpClientBuilder}
+   */
+  safeHeader(key: string, value: any): HttpClientBuilder
+
+  /**
+   * Remove a header from the request.
+   *
+   * @param key {string}
+   * @return {HttpClientBuilder}
+   */
+  removeHeader(key: string): HttpClientBuilder
 
   /**
    * When specified, `prefixUrl` will be prepended to `url`.
@@ -882,82 +1189,342 @@ export declare class HttpClientBuilder {
   prefixUrl(prefixUrl: string): HttpClientBuilder
 
   /**
-   * Set the request body.
+   * Set the request method.
    *
-   * @param body {any}
+   * @param method {import('got').Method}
    * @return {HttpClientBuilder}
    */
-  body(body: any): HttpClientBuilder
+  method(method: import('got').Method): HttpClientBuilder
 
   /**
-   * Set the request form.
+   * Set the request url.
    *
-   * @param form {any}
+   * @param url {string}
    * @return {HttpClientBuilder}
    */
-  form(form: any): HttpClientBuilder
+  url(url: string): HttpClientBuilder
 
   /**
-   * Set a header at the request.
+   * Cookie support. You don't have to care about parsing or how to store them.
    *
-   * @param key {string}
-   * @param value {any}
+   * __Note__: If you provide this option, `options.headers.cookie` will be overridden.
+   *
+   * @param jar {import('got').PromiseCookieJar | import('got').ToughCookieJar}
    * @return {HttpClientBuilder}
    */
-  header(key: string, value: any): HttpClientBuilder
+  cookieJar(jar: import('got').PromiseCookieJar | import('got').ToughCookieJar): HttpClientBuilder
 
   /**
-   * Set a header at the request only if is not already
-   * defined.
+   * You can abort the `request` using [`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).
    *
-   * @param key {string}
+   * Requires Node.js 16 or later.*
+   *
+   * @example
+   * ```
+   * const abortController = new AbortController();
+   *
+   * const request = HttpClient.builder()
+   *   .signal(abortController.signal)
+   *   .get('https://httpbin.org/anything')
+   *
+   * setTimeout(() => {
+   *     abortController.abort();
+   * }, 100);
+   * ```
+   *
+   * @param signal {any}
+   * @return {HttpClientBuilder}
+   */
+  signal(signal: any): HttpClientBuilder
+
+  /**
+   * Ignore invalid cookies instead of throwing an error.
+   * Only useful when the `cookieJar` option has been set. Not recommended.
+   *
+   * @param ignore {boolean}
+   * @return {HttpClientBuilder}
+   */
+  ignoreInvalidCookies(ignore: boolean): HttpClientBuilder
+
+  /**
+   * Query string that will be added to the request URL.
+   * This will override the query string in `url`.
+   *
+   * If you need to pass in an array, you can do it using a `URLSearchParams` instance.
+   *
+   * @example
+   * ```
+   * await HttpClient.builder()
+   *    .searchParams(new URLSearchParams([['key', 'a'], ['key', 'b']]))
+   *    .get('https://example.com')
+   *
+   * console.log(searchParams.toString());
+   * //=> 'key=a&key=b'
+   * ```
+   *
+   *  @param value { string | import('got').SearchParameters | URLSearchParams }
+   *  @return {HttpClientBuilder}
+   */
+  searchParams(value: string | import('got').SearchParameters | URLSearchParams): HttpClientBuilder
+
+  /**
+   * Alias for the searchParameters method.
+   *
+   *  @param value { string | import('got').SearchParameters | URLSearchParams }
+   *  @return {HttpClientBuilder}
+   */
+  searchParameters(value: string | import('got').SearchParameters | URLSearchParams): HttpClientBuilder
+
+  /**
+   * Set the dnsLookup parameter.
+   *
+   * @param cache {any | boolean | undefined}
+   * @return {HttpClientBuilder}
+   */
+  dnsLookup(cache: any | boolean): HttpClientBuilder
+
+  /**
+   * An instance of [`CacheableLookup`](https://github.com/szmarczak/cacheable-lookup) used for making DNS lookups.
+   * Useful when making lots of requests to different *public* hostnames.
+   *
+   * `CacheableLookup` uses `dns.resolver4(..)` and `dns.resolver6(...)` under the hood and fall backs to `dns.lookup(...)` when the first two fail, which may lead to additional delay.
+   *
+   * __Note__: This should stay disabled when making requests to internal hostnames such as `localhost`, `database.local` etc.
+   *
+   * @param cache {any | boolean}
+   * @return {HttpClientBuilder}
+   */
+  dnsCache(cache: any | boolean): HttpClientBuilder
+
+  /**
+   * User data. `context` is shallow merged and enumerable. If it contains non-enumerable properties they will NOT be merged.
+   *
+   * @example
+   * ```
+   * HttpClient.builder()
+   *    .setBeforeRequestHook(options => {
+   *      if (!options.context || !options.context.token) {
+   *          throw new Error('Token required')
+   *      }
+   *
+   *     options.headers.token = options.context.token
+   *    })
+   *
+   * const response = await HttpClient.builder()
+   *     .context({ token: 'secret' })
+   *     .get('https://httpbin.org/headers')
+   *
+   * // Let's see the headers
+   * console.log(response.body)
+   * ```
+   *
+   * @param context {Record<string, unknown>}
+   * @return {HttpClientBuilder}
+   */
+  context(context: Record<string, unknown>): HttpClientBuilder
+
+  /**
+   * Hooks allow modifications during the request lifecycle.
+   * Hook functions may be async and are run serially.
+   *
+   * @param hooks {import('got').Hooks}
+   * @return {HttpClientBuilder}
+   */
+  hooks(hooks: import('got').Hooks): HttpClientBuilder
+
+  /**
+   * Defines if redirect responses should be followed automatically.
+   *
+   * Note that if a `303` is sent by the server in response to any request type (`POST`, `DELETE`, etc.), Got will automatically request the resource pointed to in the location header via `GET`.
+   * This is in accordance with [the spec](https://tools.ietf.org/html/rfc7231#section-6.4.4). You can optionally turn on this behavior also for other redirect codes - see `methodRewriting`.
+   *
+   * @param followRedirect {boolean}
+   * @return {HttpClientBuilder}
+   */
+  followRedirect(followRedirect: boolean): HttpClientBuilder
+
+  /**
+   * Defines if redirect responses should be followed automatically.
+   *
+   * Note that if a `303` is sent by the server in response to any request type (`POST`, `DELETE`, etc.), Got will automatically request the resource pointed to in the location header via `GET`.
+   * This is in accordance with [the spec](https://tools.ietf.org/html/rfc7231#section-6.4.4). You can optionally turn on this behavior also for other redirect codes - see `methodRewriting`.
+   *
+   * @param followRedirect {boolean}
+   * @return {HttpClientBuilder}
+   */
+  followRedirects(followRedirect: boolean): HttpClientBuilder
+
+  /**
+   * If exceeded, the request will be aborted and a `MaxRedirectsError` will be thrown.
+   *
+   * @param maxRedirects {number}
+   * @return {HttpClientBuilder}
+   */
+  maxRedirects(maxRedirects: number): HttpClientBuilder
+
+  /**
+   * A cache adapter instance for storing cached response data.
+   *
+   * @param cache {string | import('keyv').Store<any> | boolean }
+   * @return {HttpClientBuilder}
+   */
+  cache(cache: string | import('keyv').Store<any> | boolean): HttpClientBuilder
+
+  /**
+   * Determines if a `got.HTTPError` is thrown for unsuccessful responses.
+   *
+   * If this is disabled, requests that encounter an error status code will be resolved with the `response` instead of throwing.
+   * This may be useful if you are checking for resource availability and are expecting error responses.
+   *
+   * @param throwHttpErrors {boolean}
+   * @return {HttpClientBuilder}
+   */
+  throwHttpErrors(throwHttpErrors: boolean): HttpClientBuilder
+
+  /**
+   * Set the username.
+   *
    * @param value {string}
    * @return {HttpClientBuilder}
    */
-  safeHeader(key: string, value: any): HttpClientBuilder
+  username(value: string): HttpClientBuilder
 
   /**
-   * Remove a header from the request.
+   * Set the password.
    *
-   * @param key {string}
+   * @param value {string}
    * @return {HttpClientBuilder}
    */
-  removeHeader(key: string): HttpClientBuilder
+  password(value: string): HttpClientBuilder
 
   /**
-   * Decompress the response automatically.
+   * If set to `true`, Got will additionally accept HTTP2 requests.
    *
-   * This will set the `accept-encoding` header to `gzip, deflate, br` unless you set it yourself.
+   * It will choose either HTTP/1.1 or HTTP/2 depending on the ALPN protocol.
    *
-   * If this is disabled, a compressed response is returned as a `Buffer`.
-   * This may be useful if you want to handle decompression yourself or stream the raw compressed data.
+   * __Note__: This option requires Node.js 15.10.0 or newer as HTTP/2 support on older Node.js versions is very buggy.
    *
-   * @param decompress {boolean}
+   * __Note__: Overriding `options.request` will disable HTTP2 support.
+   *
+   * @example
+   * ```
+   * const {headers} = await HttpClient.builder()
+   *    .http2(true)
+   *    .get('https://nghttp2.org/httpbin/anything')
+   *
+   * console.log(headers.via)
+   * //=> '2 nghttpx'
+   * ```
+   *
+   * @param value {boolean}
+   * @return {HttpClientBuilder}
    */
-  decompress(decompress: boolean): HttpClientBuilder
+  http2(value: boolean): HttpClientBuilder
 
   /**
-   * Milliseconds to wait for the server to end the response before aborting the request with `got.TimeoutError` error (a.k.a. `request` property).
+   * Set this to `true` to allow sending body for the `GET` method.
+   * However, the [HTTP/2 specification](https://tools.ietf.org/html/rfc7540#section-8.1.3) says that `An HTTP GET request includes request header fields and no payload body`, therefore when using the HTTP/2 protocol this option will have no effect.
+   * This option is only meant to interact with non-compliant servers when you have no other choice.
    *
-   * By default, there's no timeout.
+   * __Note__: The [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1) doesn't specify any particular behavior for the GET method having a payload, therefore __it's considered an [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern)__.
    *
-   * This also accepts an `object` with the following fields to constrain the duration of each phase of the request lifecycle:
-   *
-   * - `lookup` starts when a socket is assigned and ends when the hostname has been resolved.
-   *     Does not apply when using a Unix domain socket.
-   * - `connect` starts when `lookup` completes (or when the socket is assigned if lookup does not apply to the request) and ends when the socket is connected.
-   * - `secureConnect` starts when `connect` completes and ends when the handshaking process completes (HTTPS only).
-   * - `socket` starts when the socket is connected. See [request.setTimeout](https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback).
-   * - `response` starts when the request has been written to the socket and ends when the response headers are received.
-   * - `send` starts when the socket is connected and ends with the request has been written to the socket.
-   * - `request` starts when the request is initiated and ends when the response's end event fires.
-   *
-   * @param delays {Partial<import('got').Delays>}
+   * @param value {boolean}
+   * @return {HttpClientBuilder}
    */
-  timeout(delays: Partial<import('got').Delays>): HttpClientBuilder
+  allowGetBody(value: boolean): HttpClientBuilder
 
   /**
-   * Set the request retry strategy.
+   * Specifies if the HTTP request method should be [rewritten as `GET`](https://tools.ietf.org/html/rfc7231#section-6.4) on redirects.
+   *
+   * As the [specification](https://tools.ietf.org/html/rfc7231#section-6.4) prefers to rewrite the HTTP method only on `303` responses, this is Got's default behavior.
+   * Setting `methodRewriting` to `true` will also rewrite `301` and `302` responses, as allowed by the spec. This is the behavior followed by `curl` and browsers.
+   *
+   * __Note__: Got never performs method rewriting on `307` and `308` responses, as this is [explicitly prohibited by the specification](https://www.rfc-editor.org/rfc/rfc7231#section-6.4.7).
+   *
+   * @param value {boolean}
+   * @return {HttpClientBuilder}
+   */
+  methodRewriting(value: boolean): HttpClientBuilder
+
+  /**
+   * Indicates which DNS record family to use.
+   *
+   * Values:
+   * - `undefined`: IPv4 (if present) or IPv6
+   * - `4`: Only IPv4
+   * - `6`: Only IPv6
+   *
+   * @param dnsLookupIpVersion {import('got').DnsLookupIpVersion}
+   * @return {HttpClientBuilder}
+   */
+  dnsLookupIpVersion(dnsLookupIpVersion: import('got').DnsLookupIpVersion): HttpClientBuilder
+
+  /**
+   * A function used to parse JSON responses.
+   *
+   * @example
+   * ```
+   * import Bourne from '@hapi/bourne'
+   *
+   * const parsed = await HttpClient.builder()
+   *    .url('https://example.com')
+   *    .parseJson(text => Bourne.parse(text))
+   *    .request()
+   *    .json()
+   *
+   * console.log(parsed)
+   * ```
+   *
+   * @param fn {import('got').ParseJsonFunction}
+   * @return {HttpClientBuilder}
+   */
+  parseJson(fn: import('got').ParseJsonFunction): HttpClientBuilder
+
+  /**
+   * A function used to stringify the body of JSON requests.
+   *
+   * @example
+   * ```
+   * await HttpClient.builder()
+   *  .method('POST')
+   *  .url('https://example.com')
+   *  .body({ some: 'payload', _ignoreMe: 1234 })
+   *  .stringifyJson(object => JSON.stringify(object, (key, value) => {
+   *     if (key.startsWith('_')) {
+   *         return
+   *     }
+   *
+   *     return value
+   *  }))
+   *  .request()
+   * ```
+   *
+   * @param fn {import('got').StringifyJsonFunction}
+   * @return {HttpClientBuilder}
+   */
+  stringifyJson(fn: import('got').StringifyJsonFunction): HttpClientBuilder
+
+  /**
+   * An object representing `limit`, `calculateDelay`, `methods`, `statusCodes`, `maxRetryAfter` and `errorCodes` fields for maximum retry count, retry handler, allowed methods, allowed status codes, maximum [`Retry-After`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After) time and allowed error codes.
+   *
+   * Delays between retries counts with function `1000 * Math.pow(2, retry) + Math.random() * 100`, where `retry` is attempt number (starts from 1).
+   *
+   * The `calculateDelay` property is a `function` that receives an object with `attemptCount`, `retryOptions`, `error` and `computedValue` properties for current retry count, the retry options, error and default computed value.
+   * The function must return a delay in milliseconds (or a Promise resolving with it) (`0` return value cancels retry).
+   *
+   * By default, it retries *only* on the specified methods, status codes, and on these network errors:
+   *
+   * - `ETIMEDOUT`: One of the [timeout](#timeout) limits were reached.
+   * - `ECONNRESET`: Connection was forcibly closed by a peer.
+   * - `EADDRINUSE`: Could not bind to any free port.
+   * - `ECONNREFUSED`: Connection was refused by the server.
+   * - `EPIPE`: The remote side of the stream being written has been closed.
+   * - `ENOTFOUND`: Couldn't resolve the hostname to an IP address.
+   * - `ENETUNREACH`: No internet connection.
+   * - `EAI_AGAIN`: DNS lookup timed out.
+   *
+   * __Note__: If `maxRetryAfter` is set to `undefined`, it will use `options.timeout`.
+   * __Note__: If [`Retry-After`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After) header is greater than `maxRetryAfter`, it will cancel the request.
    *
    * @param strategy {Partial<import('got').RetryOptions>}
    * @return {HttpClientBuilder}
@@ -965,69 +1532,190 @@ export declare class HttpClientBuilder {
   retryStrategy(strategy: Partial<import('got').RetryOptions>): HttpClientBuilder
 
   /**
+   * From `http.RequestOptions`.
+   *
+   * The IP address used to send the request from.
+   *
+   * @param localAddress {string}
+   * @return {HttpClientBuilder}
+   */
+  localAddress(localAddress: string): HttpClientBuilder
+
+  /**
+   * Set the createConnection options.
+   *
+   * @param value {import('got').CreateConnectionFunction}
+   * @return {HttpClientBuilder}
+   */
+  createConnection(value: import('got').CreateConnectionFunction): HttpClientBuilder
+
+  /**
+   * Options for the advanced HTTPS API.
+   *
+   * @param https {import('got').HttpsOptions}
+   * @return {HttpClientBuilder}
+   */
+  https(https: import('got').HttpsOptions): HttpClientBuilder
+
+  /**
+   * [Encoding](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings) to be used on `setEncoding` of the response data.
+   *
+   * To get a [`Buffer`](https://nodejs.org/api/buffer.html), you need to set `responseType` to `buffer` instead.
+   * Don't set this option to `null`.
+   *
+   * __Note__: This doesn't affect streams! Instead, you need to do `got.stream(...).setEncoding(encoding)`.
+   *
+   * @param encoding {BufferEncoding}
+   * @return {HttpClientBuilder}
+   */
+  encoding(encoding: BufferEncoding): HttpClientBuilder
+
+  /**
+   *  When set to `true` the promise will return the
+   *  Response body instead of the Response object.
+   *
+   * @param resolveBodyOnly {boolean}
+   * @return {HttpClientBuilder}
+   */
+  resolveBodyOnly(resolveBodyOnly: boolean): HttpClientBuilder
+
+  /**
+   * Returns a `Stream` instead of a `Promise`.
+   * This is equivalent to calling `got.stream(url, options?)`.
+   *
+   * @param value {boolean}
+   * @return {HttpClientBuilder}
+   */
+  isStream(value: boolean): HttpClientBuilder
+
+  /**
+   * Set pagination options.
+   *
+   * @param options {import('got').PaginationOptions}
+   * @return {HttpClientBuilder}
+   */
+  pagination(options: import('got').PaginationOptions<any, any[]>): HttpClientBuilder
+
+  /**
+   * Set the auth option.
+   *
+   * @param value {any}
+   * @return {HttpClientBuilder}
+   */
+  auth(value: any): HttpClientBuilder
+
+  /**
+   * Set the host option.
+   *
+   * @param value {boolean}
+   * @return {HttpClientBuilder}
+   */
+  setHost(value: boolean): HttpClientBuilder
+
+  /**
+   * Set the maxHeaderSize option.
+   *
+   * @param maxHeaderSize {number}
+   * @return {HttpClientBuilder}
+   */
+  maxHeaderSize(maxHeaderSize: number): HttpClientBuilder
+
+  /**
+   * Set the enableUnixSockets option.
+   *
+   * @param enableUnixSockets {boolean}
+   * @return {HttpClientBuilder}
+   */
+  enableUnixSockets(enableUnixSockets: boolean): HttpClientBuilder
+
+  /**
+   * Set the merge options.
+   *
+   * @param options {import('got').Options}
+   * @return {HttpClientBuilder}
+   */
+  mergeOptions(options: import('got').Options): HttpClientBuilder
+
+  /**
+   * Execute the request and return as stream.
+   *
+   * @param [options] {import('got').Options}
+   * @return {Request}
+   */
+  stream(options?: import('got').Options): Request
+
+  /**
+   * Execute the request and return paginated data.
+   *
+   * @param [options] {import('got').Options}
+   * @return {AsyncIterableIterator<any>}
+   */
+  paginate(options?: import('got').Options): AsyncIterableIterator<any>
+
+  /**
    * Execute the request using all the options defined.
    *
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  request(options?: import('got').Options): import('got').CancelableRequest<any>
+  request(options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a GET request.
    *
    * @param [url] {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  get(url?: string, options?: import('got').Options): import('got').CancelableRequest<any>
+  get(url?: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a POST request.
    *
    * @param [url] {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  post(url?: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+  post(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a PUT request.
    *
-   * @param url {string}
-   * @param [body] {any}
+   * @param [url] {string}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  put(url?: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+  put(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a PATCH request.
    *
-   * @param url {string}
-   * @param [body] {any}
+   * @param [url] {string}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  patch(url?: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+  patch(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a DELETE request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  delete(url?: string, options?: import('got').Options): import('got').CancelableRequest<any>
+  delete(url?: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a HEAD request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  head(url?: string, options?: import('got').Options): import('got').CancelableRequest<any>
+  head(url?: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 }
 
 export declare class HttpClient {
@@ -1040,68 +1728,70 @@ export declare class HttpClient {
   static setBuilder(builder: HttpClientBuilder): typeof HttpClient
 
   /**
-   * Creates an instance of HttpClientBuilder.
+   * Uses the instance of HttpClientBuilder or creates
+   * a new one.
    *
+   * @param [newBuilder] {boolean}
    * @return {HttpClientBuilder}
    */
-  static builder(): HttpClientBuilder
+  static builder(newBuilder?: boolean): HttpClientBuilder
 
   /**
    * Make a GET request.
    *
    * @param url {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  static get(url: string, options?: import('got').Options): import('got').CancelableRequest<any>
+  static get(url: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a POST request.
    *
    * @param url {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  static post(url: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+  static post(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a PUT request.
    *
    * @param url {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  static put(url: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+  static put(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a PATCH request.
    *
    * @param url {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  static patch(url: string, body?: any, options?: import('got').Options): import('got').CancelableRequest<any>
+  static patch(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a DELETE request.
    *
    * @param url {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  static delete(url: string, options?: import('got').Options): import('got').CancelableRequest<any>
+  static delete(url: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 
   /**
    * Make a HEAD request.
    *
    * @param url {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
-  static head(url: string, options?: import('got').Options): import('got').CancelableRequest<any>
+  static head(url: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
 }
 
 export declare class Is {

@@ -395,7 +395,7 @@ export class HttpClientBuilder {
   /**
    * Set the request body.
    *
-   * @param body {Record<string, any> | string | Readable | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike }
+   * @param body {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @return {HttpClientBuilder}
    */
   body(body) {
@@ -1135,7 +1135,7 @@ export class HttpClientBuilder {
    * Execute the request using all the options defined.
    *
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any>}
+   * @return {import('got').CancelableRequest<any> | Request}
    */
   request(options = {}) {
     return got({ ...this.#options, ...options })
@@ -1162,7 +1162,7 @@ export class HttpClientBuilder {
    * Make a POST request.
    *
    * @param [url] {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
@@ -1181,8 +1181,8 @@ export class HttpClientBuilder {
   /**
    * Make a PUT request.
    *
-   * @param url {string}
-   * @param [body] {any}
+   * @param [url] {string}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
@@ -1201,8 +1201,8 @@ export class HttpClientBuilder {
   /**
    * Make a PATCH request.
    *
-   * @param url {string}
-   * @param [body] {any}
+   * @param [url] {string}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
@@ -1221,7 +1221,7 @@ export class HttpClientBuilder {
   /**
    * Make a DELETE request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
@@ -1238,7 +1238,7 @@ export class HttpClientBuilder {
   /**
    * Make a HEAD request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
@@ -1277,10 +1277,10 @@ export class HttpClient {
    * Uses the instance of HttpClientBuilder or creates
    * a new one.
    *
-   * @param newBuilder {boolean}
+   * @param [newBuilder] {boolean}
    * @return {HttpClientBuilder}
    */
-  static builder(newBuilder) {
+  static builder(newBuilder = false) {
     if (newBuilder) {
       return new HttpClientBuilder()
     }
@@ -1303,7 +1303,7 @@ export class HttpClient {
    * Make a POST request.
    *
    * @param url {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
@@ -1315,7 +1315,7 @@ export class HttpClient {
    * Make a PUT request.
    *
    * @param url {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
@@ -1327,7 +1327,7 @@ export class HttpClient {
    * Make a PATCH request.
    *
    * @param url {string}
-   * @param [body] {any}
+   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
    * @return {import('got').CancelableRequest<any> | Request}
    */
