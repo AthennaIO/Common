@@ -33,39 +33,273 @@ export class HttpClientBuilder {
     this.#options = {}
   }
 
+
   /**
-   * Set the signal method.
+  * Set the parseJson method.
+  * @param parseJson {boolean}
+  * @return {HttpClientBuilder}
+  */
+  parseJson(parseJson) {
+    this.#options.parseJson = parseJson
+    return this
+  }
+
+  /**
+   * Set the stringifyJson method.
+   * @param stringifyJson {boolean}
+   * @return {HttpClientBuilder}
+   */
+  stringifyJson(stringifyJson) {
+    this.#options.stringifyJson = stringifyJson
+    return this
+  }
+
+  /**
+   * Set the dnsLookupIpVersion method.
+   * @param dnsLookupIpVersion {4 | 6}
+   * @return {HttpClientBuilder}
+   */
+  dnsLookupIpVersion(dnsLookupIpVersion) {
+    this.#options.dnsLookupIpVersion = dnsLookupIpVersion
+    return this
+  }
+
+  /**
+   * Set the cacheOptions method.
+   * @param cacheOptions {import('got').CacheOptions}
+   * @return {HttpClientBuilder}
+   */
+  cacheOptions(cacheOptions) {
+    this.#options.cacheOptions = cacheOptions
+    return this
+  }
+
+  /**
+   * Set the resolveBodyOnly method.
+   * @param resolveBodyOnly {boolean}
+   * @return {HttpClientBuilder}
+   */
+  resolveBodyOnly(resolveBodyOnly) {
+    this.#options.resolveBodyOnly = resolveBodyOnly
+    return this
+  }
+
+  /**
+   * Set the getRequestFunction method.
+   * @param getRequestFunction {import('got').Options['hooks']['beforeRequest'][0]}
+   * @return {HttpClientBuilder}
+   */
+  getRequestFunction(getRequestFunction) {
+    this.#options.hooks = {
+      ...this.#options.hooks,
+      beforeRequest: [getRequestFunction]
+    }
+    return this
+  }
+
+  /**
+   * Set the getRequestFallbackFunction method.
+   * @param getRequestFallbackFunction {import('got').Options['hooks']['beforeRequest'][0]}
+   * @return {HttpClientBuilder}
+   */
+  getRequestFallbackFunction(getRequestFallbackFunction) {
+    this.#options.hooks = {
+      ...this.#options.hooks,
+      beforeRequest: [getRequestFallbackFunction]
+    }
+    return this
+  }
+
+  /**
+   * Set the maximum number of redirects to follow.
+   * @param maxRedirects {number}
+   */
+  maxRedirects(maxRedirects) {
+    this.#options.maxRedirects = maxRedirects
+    return this
+  }
+
+  /**
+   * Set the cache options.
+   * @param cache {Cache}
+   */
+  cache(cache) {
+    this.#options.cache = cache
+    return this
+  }
+
+  /**
+   * Set the throwHttpErrors option.
+   * @param throwHttpErrors {boolean}
+   */
+  throwHttpErrors(throwHttpErrors) {
+    this.#options.throwHttpErrors = throwHttpErrors
+    return this
+  }
+
+  /**
+   * Set the https options.
+   * @param https {Https}
+   */
+  https(https) {
+    this.#options.https = https
+    return this
+  }
+
+  /**
+   * Enable or disable HTTP2.
+   * @param http2 {boolean}
+   */
+  http2(http2) {
+    this.#options.http2 = http2
+    return this
+  }
+
+  /**
+   * Set the pagination options.
+   * @param paginate {boolean}
+   */
+  paginate(paginate) {
+    this.#options.paginate = paginate
+    return this
+  }
+
+  /**
+   * Set the isStream option.
+   * @param isStream {boolean}
+   */
+  isStream(isStream) {
+    this.#options.isStream = isStream
+    return this
+  }
+
+  /**
+   * Set the host option.
+   * @param host {string}
+   */
+  setHost(host) {
+    this.#options.host = host
+    return this
+  }
+
+  /**
+   * Set the maxHeaderSize option.
+   * @param maxHeaderSize {number}
+   */
+  maxHeaderSize(maxHeaderSize) {
+    this.#options.maxHeaderSize = maxHeaderSize
+    return this
+  }
+
+  /**
+   * Set the enableUnixSockets option.
+   * @param enableUnixSockets {boolean}
+   */
+  enableUnixSockets(enableUnixSockets) {
+    this.#options.enableUnixSockets = enableUnixSockets
+    return this
+  }
+
+  /**
+   * Set the createNativeRequestOptions option.
+   * @param createNativeRequestOptions {Function}
+   */
+  createNativeRequestOptions(createNativeRequestOptions) {
+    this.#options.createNativeRequestOptions = createNativeRequestOptions
+    return this
+  }
+
+  /**
+   * Set the signal.
    * @param signal {AbortSignal}
    * @return {HttpClientBuilder}
    */
   signal(signal) {
     this.#options.signal = signal
   }
+  /**
+   * Set the encoding.
+   * @param encoding {string}
+   * @return {HttpClientBuilder}
+   */
+  encoding(encoding) {
+    this.#options.encoding = encoding
+    return this
+  }
 
   /**
-   * Set the hook functions method.
+   * Set the createConnection.
+   * @param createConnection {Function}
+   * @return {HttpClientBuilder}
+   */
+  createConnection(createConnection) {
+    this.#options.createConnection = createConnection
+    return this
+  }
+
+  /**
+   * Set the localAddress.
+   * @param localAddress {string}
+   * @return {HttpClientBuilder}
+   */
+  localAddress(localAddress) {
+    this.#options.localAddress = localAddress
+    return this
+  }
+
+  /**
+   * Set the auth.
+   * @param auth {string | object}
+   * @return {HttpClientBuilder}
+   */
+  auth(auth) {
+    this.#options.auth = auth
+    return this
+  }
+
+  /**
+   * Set the username.
+   * @param username {string}
+   * @return {HttpClientBuilder}
+   */
+  username(username) {
+    this.#options.username = username
+    return this
+  }
+
+  /**
+   * Set the password.
+   * @param password {string}
+   * @return {HttpClientBuilder}
+   */
+  password(password) {
+    this.#options.password = password
+    return this
+  }
+
+
+  /**
+   * Set the hook functions.
    * @param {} hooks
    * @return {HttpClientBuilder}
    */
-
   hooks(hooks) {
     this.#options.hooks = hooks
     return this
   }
 
   /**
-   * Set the context method.
+   * Set the context.
    * @param {} context
    * @return {HttpClientBuilder}
    */
-
   context(context) {
     this.#options.context = context
     return this
   }
 
   /**
-   * Set the DNSLookup method.
+   * Set the DNSLookup.
    * @param dnsLookup {boolean}
    * @return {HttpClientBuilder}
    */
@@ -85,7 +319,7 @@ export class HttpClientBuilder {
   }
 
   /**
-   * Set the cookie jar method.
+   * Set the cookie jar.
    * @param cookieJar
    * @returns {HttpClientBuilder}
    */
@@ -96,7 +330,7 @@ export class HttpClientBuilder {
   }
 
   /**
-   * Set the invalid cookies method.
+   * Set the invalid cookies.
    * @param ignoreInvalidCookies {bool}
    * @return {HttpClientBuilder}
    */
@@ -106,7 +340,7 @@ export class HttpClientBuilder {
   }
 
   /**
-   * Set the agent method.
+   * Set the agent.
    * @param agent
    * @return {HttpClientBuilder}
    */
@@ -116,7 +350,7 @@ export class HttpClientBuilder {
   }
 
   /**
-   * Set the h2session method.
+   * Set the h2session.
    * @param h2session {string}
    * @return {HttpClientBuilder}
    */
@@ -261,6 +495,11 @@ export class HttpClientBuilder {
 
     this.#options.headers[key] = value
 
+    return this
+  }
+
+  maxHeadersize(maxHeadersize) {
+    this.#options.maxHeadersize = maxHeadersize
     return this
   }
 
@@ -452,6 +691,13 @@ export class HttpClientBuilder {
     this.method('HEAD').url(url || options.url || this.#options.url)
 
     return this.request(options)
+  }
+
+  /**
+   * Freeze the current options object.
+   */
+  freeze() {
+    return Object.freeze({ ...this.#options, freeze: true })
   }
 }
 
