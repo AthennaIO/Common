@@ -1043,6 +1043,45 @@ export class HttpClientBuilder {
   }
 
   /**
+   * The parsing method.
+   *
+   * The promise also has `.text()`, `.json()` and `.buffer()` methods which return another Got promise for the parsed body.
+   *
+   * It's like setting the options to `{responseType: 'json', resolveBodyOnly: true}` but without affecting the main Got promise.
+   *
+   * __Note__: When using streams, this option is ignored.
+   *
+   * @example
+   * ```
+   * const responsePromise = HttpClient.get(url);
+   * const bufferPromise = responsePromise.buffer();
+   * const jsonPromise = responsePromise.json();
+   *
+   * const [response, buffer, json] = Promise.all([responsePromise, bufferPromise, jsonPromise]);
+   * // `response` is an instance of Got Response
+   * // `buffer` is an instance of Buffer
+   * // `json` is an object
+   * ```
+   *
+   * @example
+   * ```
+   * // This
+   * const body = await HttpClient.get(url).json();
+   *
+   * // is semantically the same as this
+   * const body = await HttpClient.get(url, { responseType: 'json', resolveBodyOnly: true })
+   * ```
+   *
+   * @param type {import('got').ResponseType}
+   * @return {HttpClientBuilder}
+   */
+  responseType(type) {
+    this.#options.responseType = type
+
+    return this
+  }
+
+  /**
    * Set pagination options.
    *
    * @param options {import('got').PaginationOptions}

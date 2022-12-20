@@ -26,16 +26,16 @@ export class FakeApi {
   }
 
   /**
-   * Register all routes inside `resources/fake-api` folder
+   * Register all routes inside folder path
    * and start the fake api server at port 8989.
    *
    * @param [port] {number}
-   * @param [registerFiles] {boolean}
+   * @param [folderPath] {string | null}
    * @return {Promise<void>}
    */
-  static async start(port = 8989, registerFiles = true) {
-    if (registerFiles) {
-      await this.#registerFileRoutes()
+  static async start(port = 8989, folderPath = Path.resources('fake-api')) {
+    if (folderPath) {
+      await this.#registerFolder(folderPath)
     }
 
     await app.listen({ port })
@@ -53,40 +53,46 @@ export class FakeApi {
   }
 
   /**
-   * Register all file routes found in `resources/fake-api` folder.
+   * Register all file routes found in folder path.
    *
+   * @param path {string}
    * @return {Promise<void>}
    */
-  static async #registerFileRoutes() {
-    const files = new Folder(Path.resources('fake-api')).getFilesByPattern(
-      '*/**/*.json',
-      true,
-    )
+  static async #registerFolder(path) {
+    const files = new Folder(path).getFilesByPattern('*/**/*.json', true)
 
     const promises = files.map(file =>
-      file.getContent({ saveContent: false }).then(content => {
-        const json = Json.parse(content.toString())
-
-        if (!json) {
-          Debug.log(
-            `The file ${file.path} is not a valid JSON file and is being ignored.`,
-            'api:testing',
-          )
-
-          return
-        }
-
-        new FakeApiBuilder()
-          .path(json.path)
-          .method(json.method)
-          .body(json.body)
-          .statusCode(json.statusCode)
-          .headers(json.headers)
-          .register(json.options)
-      }),
+      file.load().then(fileLoaded => this.#registerFile(fileLoaded)),
     )
 
     await Promise.all(promises)
+  }
+
+  /**
+   * Register a route file.
+   *
+   * @param file {File}
+   * @return {void}
+   */
+  static #registerFile(file) {
+    const object = Json.parse(file.content.toString())
+
+    if (!object) {
+      Debug.log(
+        `The file ${file.path} is not a valid JSON file and is being ignored.`,
+        'api:testing',
+      )
+
+      return
+    }
+
+    new FakeApiBuilder()
+      .path(object.path)
+      .method(object.method)
+      .body(object.body)
+      .statusCode(object.statusCode)
+      .headers(object.headers)
+      .register(object.options)
   }
 }
 

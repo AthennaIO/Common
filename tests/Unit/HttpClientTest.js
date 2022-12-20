@@ -8,16 +8,14 @@
  */
 
 import { test } from '@japa/runner'
-import { FakeApi } from '#tests/Helpers/FakeApi'
-import { Path, HttpClient, HttpClientBuilder } from '#src/index'
+import { Path } from '#src/Helpers/Path'
+import { FakeApi, HttpClient, HttpClientBuilder } from '#src/index'
 
-const FAKE_API_URL = 'http://localhost:8080'
+const FAKE_API_URL = 'http://localhost:8989'
 
 test.group('HttpClientTest', group => {
   group.setup(async () => {
-    await FakeApi.get('/users', Path.stubs('server/responses/users.json'))
-      .post('/users', Path.stubs('server/responses/user-created.json'))
-      .start()
+    await FakeApi.start(8989, Path.stubs('resources/fake-api'))
   })
 
   group.each.setup(async () => {
@@ -29,13 +27,13 @@ test.group('HttpClientTest', group => {
   })
 
   group.teardown(async () => {
-    await FakeApi.close()
+    await FakeApi.stop()
   })
 
   test('should be able to make a GET request using HttpClient', async ({ assert }) => {
     const users = await HttpClient.get('users').json()
 
-    assert.lengthOf(users, 3)
+    assert.lengthOf(users, 2)
     assert.deepEqual(users[0], { id: 1, name: 'Robson Trasel' })
   })
 
@@ -54,7 +52,7 @@ test.group('HttpClientTest', group => {
       .request()
       .json()
 
-    assert.lengthOf(users, 3)
+    assert.lengthOf(users, 2)
     assert.deepEqual(users[0], { id: 1, name: 'Robson Trasel' })
   })
 

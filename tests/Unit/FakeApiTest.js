@@ -31,7 +31,7 @@ test.group('FakeApiTest', group => {
       .statusCode(201)
       .register()
 
-    await FakeApi.start(8989, false)
+    await FakeApi.start(8989, null)
 
     const responseTwo = await HttpClient.get('http://localhost:8989/example', { responseType: 'json' })
 

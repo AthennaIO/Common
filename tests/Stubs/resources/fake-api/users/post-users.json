@@ -1,0 +1,12 @@
+{
+  "path": "/users",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "id": 1,
+    "name": "Robson Trasel"
+  },
+  "statusCode": 201
+}
