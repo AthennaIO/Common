@@ -33,7 +33,6 @@ export class HttpClientBuilder {
     this.#options = {}
   }
 
-
   /**
   * Set the parseJson method.
   * @param parseJson {boolean}
@@ -113,6 +112,7 @@ export class HttpClientBuilder {
   /**
    * Set the maximum number of redirects to follow.
    * @param maxRedirects {number}
+   * @return {HttpClientBuilder}
    */
   maxRedirects(maxRedirects) {
     this.#options.maxRedirects = maxRedirects
@@ -122,6 +122,7 @@ export class HttpClientBuilder {
   /**
    * Set the cache options.
    * @param cache {Cache}
+   * @return {HttpClientBuilder}
    */
   cache(cache) {
     this.#options.cache = cache
@@ -131,6 +132,7 @@ export class HttpClientBuilder {
   /**
    * Set the throwHttpErrors option.
    * @param throwHttpErrors {boolean}
+   * @return {HttpClientBuilder}
    */
   throwHttpErrors(throwHttpErrors) {
     this.#options.throwHttpErrors = throwHttpErrors
@@ -140,6 +142,7 @@ export class HttpClientBuilder {
   /**
    * Set the https options.
    * @param https {Https}
+   * @return {HttpClientBuilder}
    */
   https(https) {
     this.#options.https = https
@@ -149,6 +152,7 @@ export class HttpClientBuilder {
   /**
    * Enable or disable HTTP2.
    * @param http2 {boolean}
+   * @return {HttpClientBuilder}
    */
   http2(http2) {
     this.#options.http2 = http2
@@ -158,6 +162,7 @@ export class HttpClientBuilder {
   /**
    * Set the pagination options.
    * @param paginate {boolean}
+   * @return {HttpClientBuilder}
    */
   paginate(paginate) {
     this.#options.paginate = paginate
@@ -167,6 +172,7 @@ export class HttpClientBuilder {
   /**
    * Set the isStream option.
    * @param isStream {boolean}
+   * @return {HttpClientBuilder}
    */
   isStream(isStream) {
     this.#options.isStream = isStream
@@ -176,6 +182,7 @@ export class HttpClientBuilder {
   /**
    * Set the host option.
    * @param host {string}
+   * @return {HttpClientBuilder}
    */
   setHost(host) {
     this.#options.host = host
@@ -185,6 +192,7 @@ export class HttpClientBuilder {
   /**
    * Set the maxHeaderSize option.
    * @param maxHeaderSize {number}
+   * @return {HttpClientBuilder}
    */
   maxHeaderSize(maxHeaderSize) {
     this.#options.maxHeaderSize = maxHeaderSize
@@ -194,6 +202,7 @@ export class HttpClientBuilder {
   /**
    * Set the enableUnixSockets option.
    * @param enableUnixSockets {boolean}
+   * @return {HttpClientBuilder}
    */
   enableUnixSockets(enableUnixSockets) {
     this.#options.enableUnixSockets = enableUnixSockets
@@ -203,6 +212,7 @@ export class HttpClientBuilder {
   /**
    * Set the createNativeRequestOptions option.
    * @param createNativeRequestOptions {Function}
+   * @return {HttpClientBuilder}
    */
   createNativeRequestOptions(createNativeRequestOptions) {
     this.#options.createNativeRequestOptions = createNativeRequestOptions
@@ -695,6 +705,8 @@ export class HttpClientBuilder {
 
   /**
    * Freeze the current options object.
+   * @param freee {Object}
+   * @return {HttpClientBuilder}
    */
   freeze() {
     return Object.freeze({ ...this.#options, freeze: true })
