@@ -1,0 +1,18 @@
+{
+  "path": "/users",
+  "method": "GET",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": [
+    {
+      "id": 1,
+      "name": "Robson Trasel"
+    },
+    {
+      "id": 2,
+      "name": "Victor Tesoura"
+    }
+  ],
+  "statusCode": 200
+}

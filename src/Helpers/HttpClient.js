@@ -21,6 +21,8 @@ export class HttpClientBuilder {
 
   /**
    * Creates a new instance of HttpClientBuilder.
+   *
+   * @param options {import('got').Options}
    */
   constructor(options = {}) {
     this.#options = options
@@ -1135,7 +1137,7 @@ export class HttpClientBuilder {
    * Execute the request using all the options defined.
    *
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   request(options = {}) {
     return got({ ...this.#options, ...options })
@@ -1146,7 +1148,7 @@ export class HttpClientBuilder {
    *
    * @param [url] {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   get(url, options = {}) {
     this.method('GET').url(url || options.url || this.#options.url)
@@ -1164,7 +1166,7 @@ export class HttpClientBuilder {
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   post(url, body, options = {}) {
     this.method('POST')
@@ -1184,7 +1186,7 @@ export class HttpClientBuilder {
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   put(url, body, options = {}) {
     this.method('PUT')
@@ -1204,7 +1206,7 @@ export class HttpClientBuilder {
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   patch(url, body, options = {}) {
     this.method('PATCH')
@@ -1223,7 +1225,7 @@ export class HttpClientBuilder {
    *
    * @param [url] {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   delete(url, options = {}) {
     this.method('DELETE').url(url || options.url || this.#options.url)
@@ -1240,7 +1242,7 @@ export class HttpClientBuilder {
    *
    * @param [url] {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   head(url, options = {}) {
     this.method('HEAD').url(url || options.url || this.#options.url)
@@ -1293,7 +1295,7 @@ export class HttpClient {
    *
    * @param url {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static get(url, options) {
     return this.#builder.get(url, options)
@@ -1305,7 +1307,7 @@ export class HttpClient {
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static post(url, body, options) {
     return this.#builder.post(url, body, options)
@@ -1317,7 +1319,7 @@ export class HttpClient {
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static put(url, body, options) {
     return this.#builder.put(url, body, options)
@@ -1329,7 +1331,7 @@ export class HttpClient {
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static patch(url, body, options) {
     return this.#builder.patch(url, body, options)
@@ -1340,7 +1342,7 @@ export class HttpClient {
    *
    * @param url {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static delete(url, options) {
     return this.#builder.delete(url, options)
@@ -1351,7 +1353,7 @@ export class HttpClient {
    *
    * @param url {string}
    * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static head(url, options) {
     return this.#builder.head(url, options)

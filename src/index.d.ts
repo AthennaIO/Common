@@ -8,7 +8,7 @@
  */
 
 import { Collection as CollectJS } from 'collect.js'
-import got from 'got'
+import { CancelableRequest, Response, Request, Options as GotOptions } from 'got'
 
 export declare interface ExceptionJSON {
   code?: string
@@ -337,6 +337,82 @@ export declare class Exec {
     total: number,
     pagination: PaginationContract,
   ): PaginatedResponse
+}
+
+export class FakeApi {
+  /**
+   * Creates a new instance of FakeApiBuilder
+   *
+   * @return {FakeApiBuilder}
+   */
+  static build(): FakeApiBuilder
+
+  /**
+   * Register all routes inside `resources/fake-api` folder
+   * and start the fake api server at port 8989.
+   *
+   * @param [port] {number}
+   * @param [registerFiles] {boolean}
+   * @return {Promise<void>}
+   */
+  static start(port?: number, registerFiles?: boolean): Promise<void>
+
+  /**
+   * Stop the fake api server.
+   *
+   * @return {Promise<void>}
+   */
+  static stop(): Promise<void>
+}
+
+export class FakeApiBuilder {
+  /**
+   * Set the route path.
+   *
+   * @param path {string}
+   * @return {FakeApiBuilder}
+   */
+  path(path: string): FakeApiBuilder
+
+  /**
+   * Set the route method.
+   *
+   * @param method {import('fastify').HTTPMethods}
+   * @return {FakeApiBuilder}
+   */
+  method(method: import('fastify').HTTPMethods): FakeApiBuilder
+
+  /**
+   * Set the response body of the route.
+   *
+   * @param body {any | any[]}
+   * @return {FakeApiBuilder}
+   */
+  body(body: any | any[]): FakeApiBuilder
+
+  /**
+   * Set the response headers of the route.
+   *
+   * @param headers {any}
+   * @return {FakeApiBuilder}
+   */
+  headers(headers: any): FakeApiBuilder
+
+  /**
+   * Set the response status code of the route.
+   *
+   * @param statusCode {number}
+   * @return {FakeApiBuilder}
+   */
+  statusCode(statusCode: number): FakeApiBuilder
+
+  /**
+   * Register the route.
+   *
+   * @param [options] {import('fastify').RouteOptions}
+   * @return void
+   */
+  register(options?: import('fastify').RouteOptions): void
 }
 
 export declare class File {
@@ -839,14 +915,14 @@ export declare class HttpClientBuilder {
   /**
    * Creates a new instance of HttpClientBuilder.
    *
-   * @param [options] {import('got').Options}
+   * @param [options] {GotOptions}
    */
-  constructor(options?: import('got').Options)
+  constructor(options?: GotOptions)
 
   /**
    * Return the options of the client builder.
    *
-   * @return {import('got').Options}
+   * @return {GotOptions}
    */
   getOptions(): HttpClientBuilder
 
@@ -1631,91 +1707,91 @@ export declare class HttpClientBuilder {
   /**
    * Set the merge options.
    *
-   * @param options {import('got').Options}
+   * @param options {GotOptions}
    * @return {HttpClientBuilder}
    */
-  mergeOptions(options: import('got').Options): HttpClientBuilder
+  mergeOptions(options: GotOptions): HttpClientBuilder
 
   /**
    * Execute the request and return as stream.
    *
-   * @param [options] {import('got').Options}
+   * @param [options] {GotOptions}
    * @return {Request}
    */
-  stream(options?: import('got').Options): Request
+  stream(options?: GotOptions): Request
 
   /**
    * Execute the request and return paginated data.
    *
-   * @param [options] {import('got').Options}
+   * @param [options] {GotOptions}
    * @return {AsyncIterableIterator<any>}
    */
-  paginate(options?: import('got').Options): AsyncIterableIterator<any>
+  paginate(options?: GotOptions): AsyncIterableIterator<any>
 
   /**
    * Execute the request using all the options defined.
    *
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  request(options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  request(options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a GET request.
    *
    * @param [url] {string}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  get(url?: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  get(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a POST request.
    *
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  post(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  post(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PUT request.
    *
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  put(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  put(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PATCH request.
    *
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  patch(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  patch(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a DELETE request.
    *
    * @param [url] {string}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  delete(url?: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  delete(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a HEAD request.
    *
    * @param [url] {string}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  head(url?: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  head(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 }
 
 export declare class HttpClient {
@@ -1740,58 +1816,58 @@ export declare class HttpClient {
    * Make a GET request.
    *
    * @param url {string}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static get(url: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  static get(url: string, options?: GotOptions): CancelableRequest<Response>
 
   /**
    * Make a POST request.
    *
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static post(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  static post(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PUT request.
    *
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static put(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  static put(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PATCH request.
    *
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static patch(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  static patch(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a DELETE request.
    *
    * @param url {string}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static delete(url: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  static delete(url: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a HEAD request.
    *
    * @param url {string}
-   * @param [options] {import('got').Options}
-   * @return {import('got').CancelableRequest<any> | Request}
+   * @param [options] {GotOptions}
+   * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static head(url: string, options?: import('got').Options): import('got').CancelableRequest<any> | Request
+  static head(url: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 }
 
 export declare class Is {
