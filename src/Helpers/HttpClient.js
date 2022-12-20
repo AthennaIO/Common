@@ -34,8 +34,81 @@ export class HttpClientBuilder {
   }
 
   /**
+   * Set the signal method.
+   * @param signal {AbortSignal}
+   * @return {HttpClientBuilder}
+   */
+  signal(signal) {
+    this.#options.signal = signal
+  }
+
+  /**
+   * Set the hook functions method.
+   * @param {} hooks
+   * @return {HttpClientBuilder}
+   */
+
+  hooks(hooks) {
+    this.#options.hooks = hooks
+    return this
+  }
+
+  /**
+   * Set the context method.
+   * @param {} context
+   * @return {HttpClientBuilder}
+   */
+
+  context(context) {
+    this.#options.context = context
+    return this
+  }
+
+  /**
+   * Set the DNSLookup method.
+   * @param dnsLookup {boolean}
+   * @return {HttpClientBuilder}
+   */
+  dnsLookup(dnsLookup) {
+    this.#options.dnsLookup = dnsLookup
+    return this
+  }
+
+  /**
+   * Set the cache of DNS.
+   * @param {*} dnsCache
+   * @return {HttpClientBuilder}
+   */
+  dnsCache(dnsCache) {
+    this.#options.dnsCache = dnsCache
+    return this
+  }
+
+  /**
+   * Set the cookie jar method.
+   * @param cookieJar
+   * @returns {HttpClientBuilder}
+   */
+
+  cookieJar(cookieJar) {
+    this.#options.CokkieJar = cookieJar
+    return this
+  }
+
+  /**
+   * Set the invalid cookies method.
+   * @param ignoreInvalidCookies {bool}
+   * @return {HttpClientBuilder}
+   */
+  ignoreInvalidCookies(ignoreInvalidCookies) {
+    this.#options.ignoreInvalidCookies = ignoreInvalidCookies
+    return this
+  }
+
+  /**
    * Set the agent method.
    * @param agent
+   * @return {HttpClientBuilder}
    */
   agent(agent) {
     this.#options.agent = agent
@@ -44,7 +117,8 @@ export class HttpClientBuilder {
 
   /**
    * Set the h2session method.
-   * @param h2session
+   * @param h2session {string}
+   * @return {HttpClientBuilder}
    */
   h2session(h2session) {
     this.#options.h2session = h2session
@@ -53,8 +127,8 @@ export class HttpClientBuilder {
 
   /**
    * Set the merge options.
-   * @param {mergeOptions} options
-   * @returns
+   * @param mergeOptions {string}
+   * @return {HttpClientBuilder}
    */
   mergeOptions(options) {
     this.#options = { ...this.#options, ...options }
@@ -64,7 +138,7 @@ export class HttpClientBuilder {
   /**
    * Set the following redirects.
    * @param followRedirect {bool}
-   *
+   * @return {HttpClientBuilder}
    */
 
   followRedirect(followRedirect) {
@@ -85,6 +159,16 @@ export class HttpClientBuilder {
 
     this.#options.url = url
 
+    return this
+  }
+
+  /**
+   * Set the search of the parameters for the url.
+   * @param {*} searchParams
+   * @return {HttpClientBuilder}
+   */
+  searchParams(searchParams) {
+    this.#options.searchParams = searchParams
     return this
   }
 
