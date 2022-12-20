@@ -1,8 +1,7 @@
 /**
  * @athenna/common
  *
- * // TODO Add your email here
- * (c) Robson Trasel <...>
+ * (c) João Lenon <lenon@athenna.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +12,6 @@ import { File, Is } from '#src/index'
 
 const app = fastify()
 
-// TODO Maybe this could become a helper too?
 export class FakeApi {
   static get(uri, body = {}, statusCode = 200) {
     body = this.#getBody(body)
