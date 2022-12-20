@@ -15,14 +15,14 @@ export class HttpClientBuilder {
   /**
    * Got options used to make the request.
    *
-   * @type {import('got').Options}
+   * @type {import('got').OptionsInit}
    */
   #options
 
   /**
    * Creates a new instance of HttpClientBuilder.
    *
-   * @param options {import('got').Options}
+   * @param options {import('got').OptionsInit}
    */
   constructor(options = {}) {
     this.#options = options
@@ -31,7 +31,7 @@ export class HttpClientBuilder {
   /**
    * Return the options of the client builder.
    *
-   * @return {import('got').Options}
+   * @return {import('got').OptionsInit}
    */
   getOptions() {
     return Json.copy(this.#options)
@@ -1105,7 +1105,7 @@ export class HttpClientBuilder {
   /**
    * Set the merge options.
    *
-   * @param options {import('got').Options}
+   * @param options {import('got').OptionsInit}
    * @return {HttpClientBuilder}
    */
   mergeOptions(options) {
@@ -1116,7 +1116,7 @@ export class HttpClientBuilder {
   /**
    * Execute the request and return as stream.
    *
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {Request}
    */
   stream(options) {
@@ -1126,7 +1126,7 @@ export class HttpClientBuilder {
   /**
    * Execute the request and return paginated data.
    *
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {AsyncIterableIterator<any>}
    */
   paginate(options) {
@@ -1136,7 +1136,7 @@ export class HttpClientBuilder {
   /**
    * Execute the request using all the options defined.
    *
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   request(options = {}) {
@@ -1147,7 +1147,7 @@ export class HttpClientBuilder {
    * Make a GET request.
    *
    * @param [url] {string}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   get(url, options = {}) {
@@ -1165,7 +1165,7 @@ export class HttpClientBuilder {
    *
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   post(url, body, options = {}) {
@@ -1185,7 +1185,7 @@ export class HttpClientBuilder {
    *
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   put(url, body, options = {}) {
@@ -1205,7 +1205,7 @@ export class HttpClientBuilder {
    *
    * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   patch(url, body, options = {}) {
@@ -1224,7 +1224,7 @@ export class HttpClientBuilder {
    * Make a DELETE request.
    *
    * @param [url] {string}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   delete(url, options = {}) {
@@ -1241,7 +1241,7 @@ export class HttpClientBuilder {
    * Make a HEAD request.
    *
    * @param [url] {string}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   head(url, options = {}) {
@@ -1294,7 +1294,7 @@ export class HttpClient {
    * Make a GET request.
    *
    * @param url {string}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static get(url, options) {
@@ -1306,7 +1306,7 @@ export class HttpClient {
    *
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static post(url, body, options) {
@@ -1318,7 +1318,7 @@ export class HttpClient {
    *
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static put(url, body, options) {
@@ -1330,7 +1330,7 @@ export class HttpClient {
    *
    * @param url {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static patch(url, body, options) {
@@ -1341,7 +1341,7 @@ export class HttpClient {
    * Make a DELETE request.
    *
    * @param url {string}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static delete(url, options) {
@@ -1352,7 +1352,7 @@ export class HttpClient {
    * Make a HEAD request.
    *
    * @param url {string}
-   * @param [options] {import('got').Options}
+   * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
   static head(url, options) {

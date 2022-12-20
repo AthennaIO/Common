@@ -8,7 +8,7 @@
  */
 
 import { Collection as CollectJS } from 'collect.js'
-import { CancelableRequest, Response, Request, Options as GotOptions } from 'got'
+import { CancelableRequest, Response, Request, OptionsInit as GotOptions } from 'got'
 
 export declare interface ExceptionJSON {
   code?: string
