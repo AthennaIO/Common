@@ -30,6 +30,15 @@ test.group('HttpClientTest', group => {
     await FakeApi.stop()
   })
 
+  test('should set the cacheOptions property in the options object', async ({ assert }) => {
+    const builder = new HttpClientBuilder()
+    const cacheOptions = { cache: true }
+    builder.cacheOptions(cacheOptions)
+
+    const options = builder.getOptions().cacheOptions
+    assert.deepEqual(options, cacheOptions)
+  })
+
   test('should be able to get the options of client builder', async ({ assert }) => {
     const builder = new HttpClientBuilder({ baseUrl: FAKE_API_URL })
     const options = builder.getOptions()
