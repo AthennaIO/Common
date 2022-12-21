@@ -1,0 +1,8 @@
+{
+  "path": "/users/:id",
+  "method": "DELETE",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "statusCode": 204
+}

@@ -348,7 +348,7 @@ export class FakeApi {
   static build(): FakeApiBuilder
 
   /**
-   * Register all routes inside `resources/fake-api` folder
+   * Register all routes inside folder path
    * and start the fake api server at port 8989.
    *
    * @param [port] {number}
@@ -1850,59 +1850,59 @@ export declare class HttpClient {
   /**
    * Make a GET request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static get(url: string, options?: GotOptions): CancelableRequest<Response>
+  static get(url?: string, options?: GotOptions): CancelableRequest<Response>
 
   /**
    * Make a POST request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static post(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static post(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PUT request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static put(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static put(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PATCH request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static patch(url: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static patch(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a DELETE request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static delete(url: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static delete(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a HEAD request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static head(url: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static head(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
 }
 
 export declare class Is {

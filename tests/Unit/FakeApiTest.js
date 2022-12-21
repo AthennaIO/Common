@@ -33,10 +33,10 @@ test.group('FakeApiTest', group => {
 
     await FakeApi.start(8989, null)
 
-    const responseTwo = await HttpClient.get('http://localhost:8989/example', { responseType: 'json' })
+    const response = await HttpClient.get('http://localhost:8989/example', { responseType: 'json' })
 
-    assert.equal(responseTwo.statusCode, 201)
-    assert.deepEqual(responseTwo.body, { hello: 'world', example: 'example' })
+    assert.equal(response.statusCode, 201)
+    assert.deepEqual(response.body, { hello: 'world', example: 'example' })
   })
 
   test('should be able to register file routes with runtime routes', async ({ assert }) => {

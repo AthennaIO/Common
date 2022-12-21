@@ -1332,7 +1332,7 @@ export class HttpClient {
   /**
    * Make a GET request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
@@ -1343,7 +1343,7 @@ export class HttpClient {
   /**
    * Make a POST request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
@@ -1355,7 +1355,7 @@ export class HttpClient {
   /**
    * Make a PUT request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
@@ -1367,7 +1367,7 @@ export class HttpClient {
   /**
    * Make a PATCH request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
    * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
@@ -1379,7 +1379,7 @@ export class HttpClient {
   /**
    * Make a DELETE request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
@@ -1390,7 +1390,7 @@ export class HttpClient {
   /**
    * Make a HEAD request.
    *
-   * @param url {string}
+   * @param [url] {string}
    * @param [options] {import('got').OptionsInit}
    * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
