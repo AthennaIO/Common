@@ -30,6 +30,14 @@ test.group('HttpClientTest', group => {
     await FakeApi.stop()
   })
 
+  test('should be able to get the options of client builder', async ({ assert }) => {
+    const builder = new HttpClientBuilder({ baseUrl: FAKE_API_URL })
+    const options = builder.getOptions()
+
+    assert.isObject(options)
+    assert.deepEqual(options, { baseUrl: FAKE_API_URL })
+  })
+
   test('should be able to make a GET request using HttpClient', async ({ assert }) => {
     const users = await HttpClient.get('users').json()
 
