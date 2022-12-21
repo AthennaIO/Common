@@ -30,6 +30,14 @@ test.group('HttpClientTest', group => {
     await FakeApi.stop()
   })
 
+  test('should get the responseType property be JSON', async ({ assert }) => {
+    const builder = new HttpClientBuilder()
+    builder.responseType('json')
+
+    const options = builder.getOptions().responseType
+    assert.deepEqual(options, 'json')
+  })
+
   test('should set the cacheOptions property in the options object', async ({ assert }) => {
     const builder = new HttpClientBuilder()
     const cacheOptions = { cache: true }
