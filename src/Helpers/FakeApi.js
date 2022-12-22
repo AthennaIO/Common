@@ -8,10 +8,11 @@
  */
 
 import fastify from 'fastify'
-import { Folder } from '#src/Helpers/Folder'
+
 import { Path } from '#src/Helpers/Path'
 import { Json } from '#src/Helpers/Json'
 import { Debug } from '#src/Helpers/Debug'
+import { Folder } from '#src/Helpers/Folder'
 
 let app = fastify()
 
@@ -89,9 +90,10 @@ export class FakeApi {
     new FakeApiBuilder()
       .path(object.path)
       .method(object.method)
-      .body(object.body)
       .statusCode(object.statusCode)
+      .body(object.body)
       .headers(object.headers)
+      .redirectTo(object.redirectTo)
       .register(object.options)
   }
 }
@@ -100,37 +102,44 @@ export class FakeApiBuilder {
   /**
    * The route path.
    *
-   * @type {string}
+   * @type {string | undefined}
    */
-  #path = '/'
+  #path
+
+  /**
+   * The redirect path.
+   *
+   * @type {string | undefined}
+   */
+  #redirectTo
 
   /**
    * The route method.
    *
-   * @type {import('fastify').HTTPMethods}
+   * @type {import('fastify').HTTPMethods | undefined}
    */
-  #method = 'GET'
+  #method
 
   /**
    * The route response body.
    *
-   * @type {any | any[]}
+   * @type {any | any[] | undefined}
    */
-  #body = {}
+  #body
 
   /**
    * The route response headers.
    *
-   * @type {any}
+   * @type {any | undefined}
    */
-  #headers = {}
+  #headers
 
   /**
    * The route response status code.
    *
-   * @type {number}
+   * @type {number | undefined}
    */
-  #statusCode = 200
+  #statusCode
 
   /**
    * Set the route path.
@@ -140,6 +149,18 @@ export class FakeApiBuilder {
    */
   path(path) {
     this.#path = path
+
+    return this
+  }
+
+  /**
+   * Set the redirect path.
+   *
+   * @param redirectTo {string}
+   * @return {FakeApiBuilder}
+   */
+  redirectTo(redirectTo) {
+    this.#redirectTo = redirectTo
 
     return this
   }
@@ -199,23 +220,32 @@ export class FakeApiBuilder {
    * @return void
    */
   register(options = {}) {
-    if (app.hasRoute({ method: this.#method, url: this.#path })) {
-      Debug.log(
-        `Route ${this.#method}::${this.#path} already registered.`,
-        'api:testing',
-      )
+    const url = this.#path || '/'
+    const body = this.#body || {}
+    const headers = this.#headers || {}
+    const method = this.#method || 'GET'
+    let statusCode = this.#statusCode || 200
+
+    if (this.#redirectTo) {
+      statusCode = this.#statusCode || 302
+    }
+
+    if (app.hasRoute({ method, url })) {
+      Debug.log(`Route ${method}::${url} already registered.`, 'api:testing')
 
       return
     }
 
     app.route({
-      method: this.#method,
-      url: this.#path,
-      handler: (_, response) =>
-        response
-          .status(this.#statusCode)
-          .headers(this.#headers)
-          .send(this.#body),
+      url,
+      method,
+      handler: (_, response) => {
+        if (this.#redirectTo) {
+          return response.redirect(statusCode, this.#redirectTo)
+        }
+
+        return response.status(statusCode).headers(headers).send(body)
+      },
       ...options,
     })
   }

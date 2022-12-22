@@ -39,6 +39,24 @@ test.group('FakeApiTest', group => {
     assert.deepEqual(response.body, { hello: 'world', example: 'example' })
   })
 
+  test('should be able to register routes to redirect to other', async ({ assert }) => {
+    FakeApi.build()
+      .path('/example')
+      .method('GET')
+      .body({ hello: 'world', example: 'example' })
+      .statusCode(201)
+      .register()
+
+    FakeApi.build().path('/example-redirect').redirectTo('http://localhost:8989/example').register()
+
+    await FakeApi.start(8989, null)
+
+    const response = await HttpClient.get('http://localhost:8989/example-redirect', { responseType: 'json' })
+
+    assert.equal(response.statusCode, 201)
+    assert.deepEqual(response.body, { hello: 'world', example: 'example' })
+  })
+
   test('should be able to register file routes with runtime routes', async ({ assert }) => {
     FakeApi.build()
       .path('/example')
@@ -63,5 +81,10 @@ test.group('FakeApiTest', group => {
 
     assert.equal(responseTwo.statusCode, 201)
     assert.deepEqual(responseTwo.body, { hello: 'world', example: 'example' })
+
+    const responseThree = await HttpClient.get('http://localhost:8989/example-redirect', options)
+
+    assert.equal(responseThree.statusCode, 201)
+    assert.deepEqual(responseThree.body, { hello: 'world', example: 'example' })
   })
 })
