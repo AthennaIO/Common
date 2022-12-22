@@ -173,4 +173,74 @@ test.group('HttpClientTest', group => {
 
     assert.deepEqual(response.statusCode, 204)
   })
+
+  test('should be to setup init hooks for requests', async ({ assert }) => {
+    const builder = HttpClient.builder()
+      .setInitHook(plain => {
+        assert.isTrue('followRedirects' in plain)
+
+        if ('followRedirects' in plain) {
+          plain.followRedirect = plain.followRedirects
+
+          delete plain.followRedirects
+        }
+      })
+      .mergeOptions({ followRedirects: true })
+
+    await builder.get('/users').json()
+  })
+
+  test('should be to setup before request hooks for requests', async ({ assert }) => {
+    const builder = HttpClient.builder().setBeforeRequestHook(options => {
+      assert.isTrue(options.body.includes('old'))
+      assert.isTrue(options.body.includes('payload'))
+
+      options.body = JSON.stringify({ payload: 'new' })
+      options.headers['content-length'] = options.body.length.toString()
+    })
+
+    await builder.post('users', { payload: 'old' }).json()
+  })
+
+  test('should be to setup before redirect hooks for requests', async ({ assert }) => {
+    const builder = HttpClient.builder().setBeforeRedirectHook((options, response) => {
+      assert.deepEqual(options.hostname, 'deadSite')
+
+      if (options.hostname === 'deadSite') {
+        options.hostname = 'fallbackSite'
+      }
+    })
+
+    await builder.get('users')
+  })
+
+  test('should be to setup before redirect hooks for requests', async ({ assert }) => {
+    const builder = HttpClient.builder(true)
+      .responseType('json')
+      .setBeforeErrorHook(error => {
+        const { response } = error
+
+        if (response && response.body) {
+          error.name = 'GitHubError'
+          error.message = `${response.body.message} (${response.statusCode})`
+        }
+
+        return error
+      })
+
+    try {
+      await builder.get('https://api.github.com/repos/AthennaIO/NotFound/commits')
+    } catch (err) {
+      assert.deepEqual(err.name, 'GitHubError')
+      assert.deepEqual(err.message, 'Not Found (404)')
+    }
+  })
+
+  test('should be to setup before retry hooks for requests', async ({ assert }) => {
+    // TODO
+  }).pin()
+
+  test('should be to setup after response hooks for requests', async ({ assert }) => {
+    // TODO
+  }).pin()
 })
