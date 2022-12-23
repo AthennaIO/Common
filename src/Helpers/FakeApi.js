@@ -229,14 +229,19 @@ export class FakeApiBuilder {
    * @return void
    */
   register(options = {}) {
+    let body = this.#body || {}
+    let statusCode = this.#statusCode || 200
+
     const url = this.#path || '/'
-    const body = this.#body || {}
     const headers = this.#headers || {}
     const method = this.#method || 'GET'
-    let statusCode = this.#statusCode || 200
 
     if (this.#redirectTo) {
       statusCode = this.#statusCode || 302
+    }
+
+    if (statusCode === 204) {
+      body = undefined
     }
 
     if (app.hasRoute({ method, url })) {
