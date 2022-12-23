@@ -87,4 +87,15 @@ test.group('FakeApiTest', group => {
     assert.equal(responseThree.statusCode, 201)
     assert.deepEqual(responseThree.body, { hello: 'world', example: 'example' })
   })
+
+  test('should be able to list all the routes registered in the fake server', async ({ assert }) => {
+    await FakeApi.start()
+
+    const routes = FakeApi.listRoutes()
+
+    assert.isTrue(routes.includes('users (GET)'))
+    assert.isTrue(routes.includes('users (POST)'))
+    assert.isTrue(routes.includes(':id (DELETE)'))
+    assert.isTrue(routes.includes('service-unavailable'))
+  })
 })

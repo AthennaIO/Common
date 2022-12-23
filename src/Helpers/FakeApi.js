@@ -27,6 +27,15 @@ export class FakeApi {
   }
 
   /**
+   * List the routes registered in the fake server.
+   *
+   * @return {string}
+   */
+  static listRoutes() {
+    return app.printRoutes()
+  }
+
+  /**
    * Register all routes inside folder path
    * and start the fake api server at port 8989.
    *

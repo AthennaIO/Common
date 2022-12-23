@@ -348,6 +348,13 @@ export class FakeApi {
   static build(): FakeApiBuilder
 
   /**
+   * List the routes registered in the fake server.
+   *
+   * @return {string}
+   */
+  static listRoutes(): string
+
+  /**
    * Register all routes inside folder path
    * and start the fake api server at port 8989.
    *
