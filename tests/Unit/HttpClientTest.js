@@ -19,11 +19,17 @@ test.group('HttpClientTest', group => {
   })
 
   group.each.setup(async () => {
-    const client = new HttpClientBuilder()
+    const builder = new HttpClientBuilder()
 
-    client.prefixUrl(FAKE_API_URL)
+    builder.prefixUrl(FAKE_API_URL).retryStrategy((response, execCount) => {
+      if (execCount === 3) {
+        return 0
+      }
 
-    HttpClient.setBuilder(client)
+      return 2000
+    })
+
+    HttpClient.setBuilder(builder)
   })
 
   group.teardown(async () => {
@@ -38,15 +44,17 @@ test.group('HttpClientTest', group => {
     const mainBuilder = HttpClient.builder()
     const mainOptions = mainBuilder.getOptions()
 
-    assert.deepEqual(mainOptions, { prefixUrl: FAKE_API_URL })
+    assert.deepEqual(mainOptions.prefixUrl, FAKE_API_URL)
 
     HttpClient.setBuilder(HttpClient.builder().responseType('json').url('/users'))
 
     const testBuilder = HttpClient.builder()
     const testOptions = testBuilder.getOptions()
 
-    assert.deepEqual(testOptions, { prefixUrl: FAKE_API_URL, responseType: 'json', url: 'users' })
-    assert.deepEqual(HttpClient.setBuilder(mainBuilder).builder().getOptions(), { prefixUrl: FAKE_API_URL })
+    assert.deepEqual(testOptions.url, 'users')
+    assert.deepEqual(testOptions.prefixUrl, FAKE_API_URL)
+    assert.deepEqual(testOptions.responseType, 'json')
+    assert.isDefined(HttpClient.setBuilder(mainBuilder).builder().getOptions().prefixUrl)
   })
 
   test('should be able to cache requests', async ({ assert }) => {
@@ -237,10 +245,24 @@ test.group('HttpClientTest', group => {
   })
 
   test('should be to setup before retry hooks for requests', async ({ assert }) => {
-    // TODO
-  }).pin()
+    const builder = HttpClient.builder().setBeforeRetryHook((error, retryCount) =>
+      assert.deepEqual(error.name, 'ERR_NON_2XX_3XX_RESPONSE'),
+    )
+
+    try {
+      await builder.get('/service-unavailable')
+    } catch (err) {
+      assert.deepEqual(err.name, 'RequestError')
+    }
+  })
 
   test('should be to setup after response hooks for requests', async ({ assert }) => {
-    // TODO
-  }).pin()
+    await HttpClient.builder()
+      .setAfterResponseHook(response => {
+        assert.deepEqual(response.statusCode, 200)
+
+        return response
+      })
+      .get('/users')
+  })
 })

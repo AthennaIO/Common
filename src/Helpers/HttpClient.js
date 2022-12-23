@@ -952,11 +952,44 @@ export class HttpClientBuilder {
    * __Note__: If `maxRetryAfter` is set to `undefined`, it will use `options.timeout`.
    * __Note__: If [`Retry-After`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After) header is greater than `maxRetryAfter`, it will cancel the request.
    *
-   * @param strategy {Partial<import('got').RetryOptions>}
+   * @param retry {Partial<import('got').RetryOptions>}
+   * @return {HttpClientBuilder}
+   */
+  retry(retry) {
+    this.#options.retry = retry
+
+    return this
+  }
+
+  /**
+   * This method is just an alias to configure your own retry strategy.
+   *
+   * The strategy function needs to return the delay between the execution count
+   * of each request, if the strategy function returns 0, the retry is canceled.
+   *
+   * @param strategy {(response: import('got').RequestError, execCount: number, retryObject: import('got').RetryObject) => number | Promise<number>}
    * @return {HttpClientBuilder}
    */
   retryStrategy(strategy) {
-    this.#options.retry = strategy
+    if (!this.#options.retry) {
+      this.#options.retry = {}
+    }
+
+    this.#options.retry.calculateDelay = ({
+      error,
+      retryAfter,
+      attemptCount,
+      retryOptions,
+      computedValue,
+    }) => {
+      return strategy(error, attemptCount, {
+        error,
+        retryAfter,
+        attemptCount,
+        retryOptions,
+        computedValue,
+      })
+    }
 
     return this
   }
