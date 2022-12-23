@@ -98,6 +98,12 @@ test.group('HttpClientTest', group => {
     assert.deepEqual(users[0], { id: 1, name: 'Robson Trasel' })
   })
 
+  test('should be able to make a HEAD request using HttpClient', async ({ assert }) => {
+    const response = await HttpClient.head('users')
+
+    assert.deepEqual(response.statusCode, 200)
+  })
+
   test('should be able to make a POST request using HttpClient', async ({ assert }) => {
     const userCreated = await HttpClient.post('/users', { name: 'Robson Trasel' }).json()
 
@@ -133,6 +139,17 @@ test.group('HttpClientTest', group => {
 
     assert.lengthOf(users, 2)
     assert.deepEqual(users[0], { id: 1, name: 'Robson Trasel' })
+  })
+
+  test('should be able to make a HEAD request using HttpClient request builder', async ({ assert }) => {
+    const response = await HttpClient.builder(true)
+      .prefixUrl(FAKE_API_URL)
+      .method('HEAD')
+      .header('Accept', 'application/json')
+      .url('/users')
+      .request()
+
+    assert.deepEqual(response.statusCode, 200)
   })
 
   test('should be able to make a POST request using HttpClient request builder', async ({ assert }) => {
