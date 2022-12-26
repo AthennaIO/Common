@@ -7,8 +7,11 @@
  * file that was distributed with this source code.
  */
 
+import CacheableLookup from 'cacheable-lookup'
 import { Collection as CollectJS } from 'collect.js'
 import { CancelableRequest, Response, Request, OptionsInit as GotOptions } from 'got'
+import fastify from 'fastify'
+import fastifyFormbody from '@fastify/formbody'
 
 export declare interface ExceptionJSON {
   code?: string
@@ -340,6 +343,15 @@ export declare class Exec {
 }
 
 export class FakeApi {
+  /**
+   * Create the fastify server with plugins.
+   *
+   * This method is already called when you import FakeApi module.
+   *
+   * @return {import('fastify').FastifyInstance}
+   */
+  static recreate(): import('fastify').FastifyInstance
+
   /**
    * Creates a new instance of FakeApiBuilder
    *
@@ -675,6 +687,22 @@ export declare class File {
    * @return {Promise<Buffer>}
    */
   getContent(options?: { saveContent?: boolean }): Promise<Buffer>
+
+  /**
+   * Create a readable stream of the file.
+   *
+   * @param options {BufferEncoding | import('node:stream').StreamOptions<any>}
+   * @return {import('node:fs').ReadStream}
+   */
+  createReadStream(options?: BufferEncoding |  import('node:stream').StreamOptions<any>): import('node:fs').ReadStream
+
+  /**
+   * Create a writable stream of the file.
+   *
+   * @param options {BufferEncoding | import('node:stream').StreamOptions<any>}
+   * @return {import('node:fs').WriteStream}
+   */
+  createWriteStream(options?: BufferEncoding | import('node:stream').StreamOptions<any>): import('node:fs').WriteStream
 }
 
 export declare class Folder {
@@ -1195,8 +1223,9 @@ export declare class HttpClientBuilder {
    * - `response` starts when the request has been written to the socket and ends when the response headers are received.
    * - `send` starts when the socket is connected and ends with the request has been written to the socket.
    * - `request` starts when the request is initiated and ends when the response's end event fires.
-   * @param delays {Partial<import('got').Delays>}
+   * @param delays {number | Partial<import('got').Delays>}
    */
+  timeout(delays: number): HttpClientBuilder
   timeout(delays: Partial<import('got').Delays>): HttpClientBuilder
 
   /**
@@ -1361,10 +1390,10 @@ export declare class HttpClientBuilder {
   /**
    * Set the dnsLookup parameter.
    *
-   * @param cache {any | boolean | undefined}
+   * @param lookup {CacheableLookup | boolean}
    * @return {HttpClientBuilder}
    */
-  dnsLookup(cache: any | boolean): HttpClientBuilder
+  dnsLookup(lookup: CacheableLookup['lookup'] | boolean): HttpClientBuilder
 
   /**
    * An instance of [`CacheableLookup`](https://github.com/szmarczak/cacheable-lookup) used for making DNS lookups.
@@ -1377,7 +1406,7 @@ export declare class HttpClientBuilder {
    * @param cache {any | boolean}
    * @return {HttpClientBuilder}
    */
-  dnsCache(cache: any | boolean): HttpClientBuilder
+  dnsCache(cache: CacheableLookup | boolean): HttpClientBuilder
 
   /**
    * User data. `context` is shallow merged and enumerable. If it contains non-enumerable properties they will NOT be merged.
