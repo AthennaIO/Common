@@ -46,7 +46,6 @@ test.group('HttpClientTest', group => {
       .timeout({ response: 1000 })
       .throwHttpErrors(true)
       .resolveBodyOnly(false)
-      .localAddress('127.0.0.1')
       .enableUnixSockets(true)
       .retryStrategy((response, execCount) => {
         if (execCount === 3) {
