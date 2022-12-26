@@ -685,6 +685,10 @@ export class File {
    * @return {import('node:fs').WriteStream}
    */
   createWriteStream(options) {
+    if (!this.fileExists) {
+      this.loadSync()
+    }
+
     return createWriteStream(this.originalPath, options)
   }
 

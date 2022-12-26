@@ -314,15 +314,14 @@ test.group('HttpClientTest', group => {
   })
 
   test('should be able to make a get request and get the response as stream', async ({ assert }) => {
-    const stream = HttpClient.builder().isStream(true).get('users')
-
+    const requestStream = HttpClient.builder().isStream(true).get('users')
     const file = new File(Path.stubs('streamed.json'), Buffer.from(''))
 
-    await pipeline(stream, file.createWriteStream())
-    const fileContent = await file.getContent()
+    await pipeline(requestStream, file.createWriteStream())
+    await file.load({ withContent: true })
 
     assert.isTrue(file.fileExists)
-    assert.deepEqual(fileContent.toString(), '[{"id":1,"name":"Robson Trasel"},{"id":2,"name":"Victor Tesoura"}]')
+    assert.deepEqual(file.content.toString(), '[{"id":1,"name":"Robson Trasel"},{"id":2,"name":"Victor Tesoura"}]')
 
     await File.safeRemove(Path.stubs('streamed.json'))
   })
