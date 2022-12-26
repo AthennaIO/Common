@@ -8,6 +8,7 @@
  */
 
 import fastify from 'fastify'
+import fastifyFormbody from '@fastify/formbody'
 
 import { Path } from '#src/Helpers/Path'
 import { Json } from '#src/Helpers/Json'
@@ -15,6 +16,8 @@ import { Debug } from '#src/Helpers/Debug'
 import { Folder } from '#src/Helpers/Folder'
 
 let app = fastify()
+
+app.register(fastifyFormbody)
 
 export class FakeApi {
   /**
