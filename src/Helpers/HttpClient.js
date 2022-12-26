@@ -386,9 +386,19 @@ export class HttpClientBuilder {
    * - `response` starts when the request has been written to the socket and ends when the response headers are received.
    * - `send` starts when the socket is connected and ends with the request has been written to the socket.
    * - `request` starts when the request is initiated and ends when the response's end event fires.
-   * @param delays {Partial<import('got').Delays>}
+   * @param delays {number | Partial<import('got').Delays>}
    */
   timeout(delays) {
+    if (!this.#options.timeout) {
+      this.#options.timeout = {}
+    }
+
+    if (Is.Number(delays)) {
+      this.#options.timeout.request = delays
+
+      return this
+    }
+
     this.#options.timeout = delays
 
     return this
@@ -638,11 +648,11 @@ export class HttpClientBuilder {
   /**
    * Set the dnsLookup parameter.
    *
-   * @param cache {any | boolean | undefined}
+   * @param lookup {import('cacheable-lookup').default.lookup}
    * @return {HttpClientBuilder}
    */
-  dnsLookup(cache) {
-    this.#options.dnsLookup = cache
+  dnsLookup(lookup) {
+    this.#options.dnsLookup = lookup
 
     return this
   }
@@ -655,7 +665,7 @@ export class HttpClientBuilder {
    *
    * __Note__: This should stay disabled when making requests to internal hostnames such as `localhost`, `database.local` etc.
    *
-   * @param cache {any | boolean | undefined}
+   * @param cache {import('cacheable-lookup').default | boolean}
    * @return {HttpClientBuilder}
    */
   dnsCache(cache) {
