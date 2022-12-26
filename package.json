@@ -41,6 +41,7 @@
     "#tests/*": "./tests/*.js"
   },
   "dependencies": {
+    "@fastify/formbody": "7.4.0",
     "bytes": "3.1.2",
     "callsite": "1.0.0",
     "chalk": "5.0.1",

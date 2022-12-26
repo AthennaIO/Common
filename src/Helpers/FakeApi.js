@@ -15,11 +15,22 @@ import { Json } from '#src/Helpers/Json'
 import { Debug } from '#src/Helpers/Debug'
 import { Folder } from '#src/Helpers/Folder'
 
-let app = fastify()
-
-app.register(fastifyFormbody)
-
 export class FakeApi {
+  /**
+   * Create the fastify server with plugins.
+   *
+   * This method is already called when you import FakeApi module.
+   *
+   * @return {import('fastify').FastifyInstance}
+   */
+  static recreate() {
+    const app = fastify()
+
+    app.register(fastifyFormbody)
+
+    return app
+  }
+
   /**
    * Creates a new instance of FakeApiBuilder
    *
@@ -62,7 +73,7 @@ export class FakeApi {
   static async stop() {
     await app.close()
 
-    app = fastify()
+    app = FakeApi.create()
   }
 
   /**
@@ -267,3 +278,5 @@ export class FakeApiBuilder {
     })
   }
 }
+
+let app = FakeApi.recreate()
