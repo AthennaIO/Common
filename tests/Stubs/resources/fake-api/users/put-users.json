@@ -1,0 +1,12 @@
+{
+  "path": "/users/:id",
+  "method": "PUT",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "id": 1,
+    "name": "Robson Trasel Updated"
+  },
+  "statusCode": 200
+}

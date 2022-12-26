@@ -1,0 +1,12 @@
+{
+  "path": "/users/:id",
+  "method": "PATCH",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "id": 1,
+    "name": "Robson Trasel Updated Patch"
+  },
+  "statusCode": 200
+}

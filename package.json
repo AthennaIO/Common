@@ -41,12 +41,14 @@
     "#tests/*": "./tests/*.js"
   },
   "dependencies": {
+    "@fastify/formbody": "7.4.0",
     "bytes": "3.1.2",
     "callsite": "1.0.0",
     "chalk": "5.0.1",
     "change-case": "4.1.2",
     "collect.js": "4.34.3",
     "debug": "4.3.4",
+    "fastify": "4.9.2",
     "got": "12.5.3",
     "http-status-codes": "2.2.0",
     "kind-of": "6.0.3",
@@ -78,7 +80,6 @@
     "eslint-plugin-n": "15.2.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-promise": "6.0.0",
-    "fastify": "^4.10.2",
     "husky": "3.0.9",
     "lint-staged": "12.4.1",
     "minimist": "1.2.6",
