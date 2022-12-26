@@ -1,0 +1,5 @@
+{
+  "path": "/users/:id",
+  "method": "DELETE",
+  "statusCode": 204
+}

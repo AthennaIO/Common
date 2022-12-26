@@ -1,0 +1,5 @@
+{
+  "path": "/example-redirect",
+  "redirectTo": "/example",
+  "statusCode": 302
+}
