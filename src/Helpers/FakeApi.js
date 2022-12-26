@@ -73,7 +73,7 @@ export class FakeApi {
   static async stop() {
     await app.close()
 
-    app = FakeApi.create()
+    app = FakeApi.recreate()
   }
 
   /**
