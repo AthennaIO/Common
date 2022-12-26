@@ -8,7 +8,9 @@
  */
 
 import { test } from '@japa/runner'
+import { File } from '#src/Helpers/File'
 import { Path } from '#src/Helpers/Path'
+import { pipeline } from 'node:stream/promises'
 import { FakeApi, HttpClient, HttpClientBuilder } from '#src/index'
 
 const FAKE_API_URL = 'http://localhost:8989'
@@ -21,13 +23,34 @@ test.group('HttpClientTest', group => {
   group.each.setup(async () => {
     const builder = new HttpClientBuilder()
 
-    builder.prefixUrl(FAKE_API_URL).retryStrategy((response, execCount) => {
-      if (execCount === 3) {
-        return 0
-      }
+    builder
+      .http2(false)
+      .setHost(true)
+      .isStream(false)
+      .timeout(10000)
+      .dnsCache(false)
+      .prefixUrl(FAKE_API_URL)
+      .allowGetBody(false)
+      .encoding('utf-8')
+      .decompress(true)
+      .methodRewriting(false)
+      .maxRedirects(10)
+      .maxHeaderSize(1000)
+      .followRedirect(true)
+      .followRedirects(true)
+      .ignoreInvalidCookies(false)
+      .timeout({ response: 1000 })
+      .throwHttpErrors(true)
+      .resolveBodyOnly(false)
+      .localAddress('127.0.0.1')
+      .enableUnixSockets(true)
+      .retryStrategy((response, execCount) => {
+        if (execCount === 3) {
+          return 0
+        }
 
-      return 2000
-    })
+        return 2000
+      })
 
     HttpClient.setBuilder(builder)
   })
@@ -199,7 +222,7 @@ test.group('HttpClientTest', group => {
     assert.deepEqual(response.statusCode, 204)
   })
 
-  test('should be to setup init hooks for requests', async ({ assert }) => {
+  test('should be able to setup init hooks for requests', async ({ assert }) => {
     const builder = HttpClient.builder()
       .setInitHook(plain => {
         assert.isTrue('followRedirects' in plain)
@@ -215,19 +238,19 @@ test.group('HttpClientTest', group => {
     await builder.get('/users').json()
   })
 
-  test('should be to setup before request hooks for requests', async ({ assert }) => {
+  test('should be able to setup before request hooks for requests', async ({ assert }) => {
     const builder = HttpClient.builder().setBeforeRequestHook(options => {
-      assert.isTrue(options.body.includes('old'))
       assert.isTrue(options.body.includes('payload'))
 
       options.body = JSON.stringify({ payload: 'new' })
       options.headers['content-length'] = options.body.length.toString()
+      options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     })
 
-    await builder.post('users', { payload: 'old' }).json()
+    await builder.post('users', '{"payload":"old"}')
   })
 
-  test('should be to setup before redirect hooks for requests', async ({ assert }) => {
+  test('should be able to setup before redirect hooks for requests', async ({ assert }) => {
     const builder = HttpClient.builder().setBeforeRedirectHook((options, response) => {
       assert.deepEqual(options.hostname, 'deadSite')
 
@@ -239,7 +262,7 @@ test.group('HttpClientTest', group => {
     await builder.get('users')
   })
 
-  test('should be to setup before redirect hooks for requests', async ({ assert }) => {
+  test('should be able to setup before redirect hooks for requests', async ({ assert }) => {
     const builder = HttpClient.builder(true)
       .responseType('json')
       .setBeforeErrorHook(error => {
@@ -261,7 +284,7 @@ test.group('HttpClientTest', group => {
     }
   })
 
-  test('should be to setup before retry hooks for requests', async ({ assert }) => {
+  test('should be able to setup before retry hooks for requests', async ({ assert }) => {
     const builder = HttpClient.builder().setBeforeRetryHook((error, retryCount) =>
       assert.deepEqual(error.name, 'ERR_NON_2XX_3XX_RESPONSE'),
     )
@@ -273,13 +296,30 @@ test.group('HttpClientTest', group => {
     }
   })
 
-  test('should be to setup after response hooks for requests', async ({ assert }) => {
+  test('should be able to setup after response hooks for requests', async ({ assert }) => {
     await HttpClient.builder()
       .setAfterResponseHook(response => {
         assert.deepEqual(response.statusCode, 200)
 
         return response
       })
+      .safeHeader('Content-Type', 'application/json')
+      .removeHeader('Content-Type')
+      .removeHeader('Content-Type')
       .get('/users')
+  })
+
+  test('should be able to make a get request and get the response as stream', async ({ assert }) => {
+    const stream = HttpClient.builder().isStream(true).get('users')
+
+    const file = new File(Path.stubs('streamed.json'), Buffer.from(''))
+
+    await pipeline(stream, file.createWriteStream())
+    const fileContent = await file.getContent()
+
+    assert.isTrue(file.fileExists)
+    assert.deepEqual(fileContent.toString(), '[{"id":1,"name":"Robson Trasel"},{"id":2,"name":"Victor Tesoura"}]')
+
+    await File.safeRemove(Path.stubs('streamed.json'))
   })
 })
