@@ -669,6 +669,26 @@ export class File {
   }
 
   /**
+   * Create a readable stream of the file.
+   *
+   * @param [options] {BufferEncoding | import('node:stream').StreamOptions<any>}
+   * @return {import('node:fs').ReadStream}
+   */
+  createReadStream(options) {
+    return createReadStream(this.originalPath, options)
+  }
+
+  /**
+   * Create a writable stream of the file.
+   *
+   * @param [options] {BufferEncoding | import('node:stream').StreamOptions<any>}
+   * @return {import('node:fs').WriteStream}
+   */
+  createWriteStream(options) {
+    return createWriteStream(this.originalPath, options)
+  }
+
+  /**
    * Create file values.
    *
    * @private
