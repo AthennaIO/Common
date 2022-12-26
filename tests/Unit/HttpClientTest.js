@@ -7,11 +7,15 @@
  * file that was distributed with this source code.
  */
 
+import stream from 'node:stream'
+
 import { test } from '@japa/runner'
+import { promisify } from 'node:util'
 import { File } from '#src/Helpers/File'
 import { Path } from '#src/Helpers/Path'
-import { pipeline } from 'node:stream/promises'
 import { FakeApi, HttpClient, HttpClientBuilder } from '#src/index'
+
+const pipeline = promisify(stream.pipeline)
 
 const FAKE_API_URL = 'http://localhost:8989'
 
