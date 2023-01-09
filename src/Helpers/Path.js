@@ -22,6 +22,26 @@ export class Path {
   static defaultBeforePath = ''
 
   /**
+   * Return js or ts extension depending on IS_TS.
+   *
+   * @return {string}
+   */
+  static ext() {
+    const isTs = !!(
+      process.env.IS_TS &&
+      (process.env.IS_TS === true ||
+        process.env.IS_TS === 'true' ||
+        process.env.IS_TS === '(true)')
+    )
+
+    if (isTs) {
+      return 'ts'
+    }
+
+    return 'js'
+  }
+
+  /**
    * Return the pwd path of your project.
    *
    * @param {string} [subPath]
