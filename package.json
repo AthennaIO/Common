@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "1.0.2",
+  "version": "3.0.0",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",

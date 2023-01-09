@@ -10,7 +10,7 @@
 import { dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-import { Folder } from '#src/index'
+import { Folder, Path } from '#src/index'
 
 export class Module {
   /**
@@ -148,8 +148,8 @@ export class Module {
 
     // FIXME Why glob pattern *.js is retrieving .d.ts and .js.map files?
     return folder
-      .getFilesByPattern('*/**/*.js', true)
-      .filter(file => file.extension.endsWith('.js'))
+      .getFilesByPattern(`*/**/*.${Path.ext()}`, true)
+      .filter(file => file.extension.endsWith(`.${Path.ext()}`))
   }
 
   /**
