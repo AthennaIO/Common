@@ -9,7 +9,12 @@
 
 import CacheableLookup from 'cacheable-lookup'
 import { Collection as CollectJS } from 'collect.js'
-import { CancelableRequest, Response, Request, OptionsInit as GotOptions } from 'got'
+import {
+  CancelableRequest,
+  Response,
+  Request,
+  OptionsInit as GotOptions,
+} from 'got'
 import fastify from 'fastify'
 import fastifyFormbody from '@fastify/formbody'
 
@@ -694,7 +699,9 @@ export declare class File {
    * @param options {BufferEncoding | import('node:stream').StreamOptions<any>}
    * @return {import('node:fs').ReadStream}
    */
-  createReadStream(options?: BufferEncoding |  import('node:stream').StreamOptions<any>): import('node:fs').ReadStream
+  createReadStream(
+    options?: BufferEncoding | import('node:stream').StreamOptions<any>,
+  ): import('node:fs').ReadStream
 
   /**
    * Create a writable stream of the file.
@@ -702,7 +709,9 @@ export declare class File {
    * @param options {BufferEncoding | import('node:stream').StreamOptions<any>}
    * @return {import('node:fs').WriteStream}
    */
-  createWriteStream(options?: BufferEncoding | import('node:stream').StreamOptions<any>): import('node:fs').WriteStream
+  createWriteStream(
+    options?: BufferEncoding | import('node:stream').StreamOptions<any>,
+  ): import('node:fs').WriteStream
 }
 
 export declare class Folder {
@@ -1039,7 +1048,9 @@ export declare class HttpClientBuilder {
    * @param beforeRequestHook {import('got').BeforeRequestHook}
    * @return {HttpClientBuilder}
    */
-  setBeforeRequestHook(beforeRequestHook: import('got').BeforeRequestHook): HttpClientBuilder
+  setBeforeRequestHook(
+    beforeRequestHook: import('got').BeforeRequestHook,
+  ): HttpClientBuilder
 
   /**
    * The equivalent of `setBeforeRequestHook` but when redirecting.
@@ -1061,7 +1072,9 @@ export declare class HttpClientBuilder {
    * @param beforeRedirectHook {import('got').BeforeRedirectHook}
    * @return {HttpClientBuilder}
    */
-  setBeforeRedirectHook(beforeRedirectHook: import('got').BeforeRedirectHook): HttpClientBuilder
+  setBeforeRedirectHook(
+    beforeRedirectHook: import('got').BeforeRedirectHook,
+  ): HttpClientBuilder
 
   /**
    * Called with a `RequestError` instance. The error is passed to the hook right before it's thrown.
@@ -1088,7 +1101,9 @@ export declare class HttpClientBuilder {
    * @param beforeErrorHook {import('got').BeforeErrorHook}
    * @return {HttpClientBuilder}
    */
-  setBeforeErrorHook(beforeErrorHook: import('got').BeforeErrorHook): HttpClientBuilder
+  setBeforeErrorHook(
+    beforeErrorHook: import('got').BeforeErrorHook,
+  ): HttpClientBuilder
 
   /**
    * The equivalent of `setBeforeErrorHook` but when retrying. Additionally,
@@ -1118,7 +1133,9 @@ export declare class HttpClientBuilder {
    * @param beforeRetryHook {import('got').BeforeRetryHook}
    * @return {HttpClientBuilder}
    */
-  setBeforeRetryHook(beforeRetryHook: import('got').BeforeRetryHook): HttpClientBuilder
+  setBeforeRetryHook(
+    beforeRetryHook: import('got').BeforeRetryHook,
+  ): HttpClientBuilder
 
   /**
    * Each function should return the response. This is especially useful when you want to refresh an access token.
@@ -1162,7 +1179,9 @@ export declare class HttpClientBuilder {
    * @param afterResponseHook {import('got').AfterResponseHook}
    * @return {HttpClientBuilder}
    */
-  setAfterResponseHook(afterResponseHook: import('got').AfterResponseHook): HttpClientBuilder
+  setAfterResponseHook(
+    afterResponseHook: import('got').AfterResponseHook,
+  ): HttpClientBuilder
 
   /**
    * An object representing `http`, `https` and `http2` keys for [`http.Agent`](https://nodejs.org/api/http.html#http_class_http_agent), [`https.Agent`](https://nodejs.org/api/https.html#https_class_https_agent) and [`http2wrapper.Agent`](https://github.com/szmarczak/http2-wrapper#new-http2agentoptions) instance.
@@ -1234,7 +1253,15 @@ export declare class HttpClientBuilder {
    * @param body {Record<string, any> | string | Readable | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike }
    * @return {HttpClientBuilder}
    */
-  body(body: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike): HttpClientBuilder
+  body(
+    body:
+      | Record<string, any>
+      | string
+      | ReadableStream
+      | Generator
+      | AsyncGenerator
+      | import('form-data-encoder').FormDataLike,
+  ): HttpClientBuilder
 
   /**
    * Set the request form.
@@ -1324,7 +1351,9 @@ export declare class HttpClientBuilder {
    * @param jar {import('got').PromiseCookieJar | import('got').ToughCookieJar}
    * @return {HttpClientBuilder}
    */
-  cookieJar(jar: import('got').PromiseCookieJar | import('got').ToughCookieJar): HttpClientBuilder
+  cookieJar(
+    jar: import('got').PromiseCookieJar | import('got').ToughCookieJar,
+  ): HttpClientBuilder
 
   /**
    * You can abort the `request` using [`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).
@@ -1377,7 +1406,9 @@ export declare class HttpClientBuilder {
    *  @param value { string | import('got').SearchParameters | URLSearchParams }
    *  @return {HttpClientBuilder}
    */
-  searchParams(value: string | import('got').SearchParameters | URLSearchParams): HttpClientBuilder
+  searchParams(
+    value: string | import('got').SearchParameters | URLSearchParams,
+  ): HttpClientBuilder
 
   /**
    * Alias for the searchParameters method.
@@ -1385,7 +1416,9 @@ export declare class HttpClientBuilder {
    *  @param value { string | import('got').SearchParameters | URLSearchParams }
    *  @return {HttpClientBuilder}
    */
-  searchParameters(value: string | import('got').SearchParameters | URLSearchParams): HttpClientBuilder
+  searchParameters(
+    value: string | import('got').SearchParameters | URLSearchParams,
+  ): HttpClientBuilder
 
   /**
    * Set the dnsLookup parameter.
@@ -1569,7 +1602,9 @@ export declare class HttpClientBuilder {
    * @param dnsLookupIpVersion {import('got').DnsLookupIpVersion}
    * @return {HttpClientBuilder}
    */
-  dnsLookupIpVersion(dnsLookupIpVersion: import('got').DnsLookupIpVersion): HttpClientBuilder
+  dnsLookupIpVersion(
+    dnsLookupIpVersion: import('got').DnsLookupIpVersion,
+  ): HttpClientBuilder
 
   /**
    * A function used to parse JSON responses.
@@ -1653,7 +1688,13 @@ export declare class HttpClientBuilder {
    * @param strategy {(response: import('got').RequestError, execCount: number, retryObject: import('got').RetryObject) => number | Promise<number>}
    * @return {HttpClientBuilder}
    */
-  retryStrategy(strategy: (response: import('got').RequestError, execCount: number, retryObject: import('got').RetryObject) => number | Promise<number>): HttpClientBuilder
+  retryStrategy(
+    strategy: (
+      response: import('got').RequestError,
+      execCount: number,
+      retryObject: import('got').RetryObject,
+    ) => number | Promise<number>,
+  ): HttpClientBuilder
 
   /**
    * From `http.RequestOptions`.
@@ -1671,7 +1712,9 @@ export declare class HttpClientBuilder {
    * @param value {import('got').CreateConnectionFunction}
    * @return {HttpClientBuilder}
    */
-  createConnection(value: import('got').CreateConnectionFunction): HttpClientBuilder
+  createConnection(
+    value: import('got').CreateConnectionFunction,
+  ): HttpClientBuilder
 
   /**
    * Options for the advanced HTTPS API.
@@ -1753,7 +1796,9 @@ export declare class HttpClientBuilder {
    * @param options {import('got').PaginationOptions}
    * @return {HttpClientBuilder}
    */
-  pagination(options: import('got').PaginationOptions<any, any[]>): HttpClientBuilder
+  pagination(
+    options: import('got').PaginationOptions<any, any[]>,
+  ): HttpClientBuilder
 
   /**
    * Set the auth option.
@@ -1817,7 +1862,9 @@ export declare class HttpClientBuilder {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  request(options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  request(
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a GET request.
@@ -1826,7 +1873,10 @@ export declare class HttpClientBuilder {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  get(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  get(
+    url?: string,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a POST request.
@@ -1836,7 +1886,17 @@ export declare class HttpClientBuilder {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  post(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  post(
+    url?: string,
+    body?:
+      | Record<string, any>
+      | string
+      | ReadableStream
+      | Generator
+      | AsyncGenerator
+      | import('form-data-encoder').FormDataLike,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PUT request.
@@ -1846,7 +1906,17 @@ export declare class HttpClientBuilder {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  put(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  put(
+    url?: string,
+    body?:
+      | Record<string, any>
+      | string
+      | ReadableStream
+      | Generator
+      | AsyncGenerator
+      | import('form-data-encoder').FormDataLike,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PATCH request.
@@ -1856,7 +1926,17 @@ export declare class HttpClientBuilder {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  patch(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  patch(
+    url?: string,
+    body?:
+      | Record<string, any>
+      | string
+      | ReadableStream
+      | Generator
+      | AsyncGenerator
+      | import('form-data-encoder').FormDataLike,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a DELETE request.
@@ -1865,7 +1945,10 @@ export declare class HttpClientBuilder {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  delete(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  delete(
+    url?: string,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a HEAD request.
@@ -1874,7 +1957,10 @@ export declare class HttpClientBuilder {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  head(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  head(
+    url?: string,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 }
 
 export declare class HttpClient {
@@ -1912,7 +1998,17 @@ export declare class HttpClient {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static post(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static post(
+    url?: string,
+    body?:
+      | Record<string, any>
+      | string
+      | ReadableStream
+      | Generator
+      | AsyncGenerator
+      | import('form-data-encoder').FormDataLike,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PUT request.
@@ -1922,7 +2018,17 @@ export declare class HttpClient {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static put(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static put(
+    url?: string,
+    body?:
+      | Record<string, any>
+      | string
+      | ReadableStream
+      | Generator
+      | AsyncGenerator
+      | import('form-data-encoder').FormDataLike,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a PATCH request.
@@ -1932,7 +2038,17 @@ export declare class HttpClient {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static patch(url?: string, body?: Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static patch(
+    url?: string,
+    body?:
+      | Record<string, any>
+      | string
+      | ReadableStream
+      | Generator
+      | AsyncGenerator
+      | import('form-data-encoder').FormDataLike,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a DELETE request.
@@ -1941,7 +2057,10 @@ export declare class HttpClient {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static delete(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static delete(
+    url?: string,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 
   /**
    * Make a HEAD request.
@@ -1950,7 +2069,10 @@ export declare class HttpClient {
    * @param [options] {GotOptions}
    * @return {CancelableRequest<Response> | CancelableRequest | Request}
    */
-  static head(url?: string, options?: GotOptions): CancelableRequest<Response> | CancelableRequest | Request
+  static head(
+    url?: string,
+    options?: GotOptions,
+  ): CancelableRequest<Response> | CancelableRequest | Request
 }
 
 export declare class Is {
@@ -2585,6 +2707,13 @@ export declare class Path {
    * @type {string}
    */
   static defaultBeforePath: string
+
+  /**
+   * Return js or ts extension depending on IS_TS.
+   *
+   * @return {string}
+   */
+  static ext(): string
 
   /**
    * Return the pwd path of your project.

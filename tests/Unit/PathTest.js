@@ -12,6 +12,25 @@ import { Path } from '#src/index'
 import { test } from '@japa/runner'
 
 test.group('PathTest', () => {
+  test('should get the extension js and ts', async ({ assert }) => {
+    assert.equal(Path.ext(), 'js')
+
+    process.env.IS_TS = true
+    assert.equal(Path.ext(), 'ts')
+
+    process.env.IS_TS = 'true'
+    assert.equal(Path.ext(), 'ts')
+
+    process.env.IS_TS = '(true)'
+    assert.equal(Path.ext(), 'ts')
+
+    process.env.IS_TS = 'false'
+    Path.defaultBeforePath = 'build'
+    assert.isTrue(Path.pwd(`artisan.${Path.ext()}`).includes('build/artisan.js'))
+
+    Path.defaultBeforePath = ''
+  })
+
   test('should get pwd path', async ({ assert }) => {
     const mainPath = process.cwd()
     const srcPath = mainPath.concat(sep, 'src')
