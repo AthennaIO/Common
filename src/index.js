@@ -8,6 +8,8 @@
  */
 
 // Helpers
+import { Path } from './Helpers/Path.js'
+
 export * from './Helpers/Clean.js'
 export * from './Helpers/Collection.js'
 export * from './Helpers/Debug.js'
@@ -27,3 +29,7 @@ export * from './Helpers/Path.js'
 export * from './Helpers/Route.js'
 export * from './Helpers/String.js'
 export * from './Helpers/Uuid.js'
+
+if (!global.Path) {
+  global.Path = Path
+}

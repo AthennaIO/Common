@@ -634,15 +634,13 @@ export class HttpClientBuilder {
   }
 
   /**
-   * Alias for the searchParameters method.
+   * Alias for the searchParams method.
    *
    *  @param value { string | import('got').SearchParameters | URLSearchParams }
    *  @return {HttpClientBuilder}
    */
-  searchParameters(value) {
-    this.#options.searchParameters = value
-
-    return this
+  queryParams(value) {
+    return this.searchParams(value)
   }
 
   /**

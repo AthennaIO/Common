@@ -1,3 +1,4 @@
+/* eslint-disable no-extend-native */
 /**
  * @athenna/common
  *
@@ -114,19 +115,56 @@ export class Exception extends Error {
       displayMainFrameOnly: false,
     })
 
-    const message = `${chalk.yellow.bold('MESSAGE')}\n   ${this.message}`
-    const help = ` ${chalk.green.bold('HELP')}\n   ${this.help}`
-
     this.name = this.code
+    const helpKey = chalk.green.bold('HELP')
+    const messageKey = chalk.yellow.bold('MESSAGE')
 
-    if (this.help) {
-      this.message = `${message}\n\n${help}`
-    } else {
-      this.message = `${message}`
+    if (this.message && this.message !== '') {
+      this.message = `${messageKey}\n   ${this.message}`
     }
 
-    const jsonResponse = await new Youch(this, {}).toJSON()
+    if (this.help && this.help !== '') {
+      this.message = `${this.message}\n\n ${helpKey}\n   ${this.help}`
+    }
 
-    return YouchTerminal(jsonResponse, options).concat('\n')
+    const pretty = await new Youch(this, {}).toJSON()
+
+    if (!pretty.error.frames.find(frame => frame.isApp)) {
+      pretty.error.frames = pretty.error.frames.map(frame => {
+        frame.isApp = true
+        return frame
+      })
+    }
+
+    return YouchTerminal(pretty, options).concat('\n')
   }
+}
+
+/**
+ * Transform your error to an instance of
+ * the Athenna exception.
+ *
+ * @param options {{
+ *   code?: string,
+ *   status?: number,
+ *   content?: string,
+ *   help?: string,
+ *   stack?: any
+ * }}
+ * @return {Exception}
+ */
+Error.prototype.toAthennaException = function (options) {
+  const { content, status, code, help, stack } = Options.create(options, {
+    content: this.message,
+    status: 0,
+    code: this.name,
+    help: undefined,
+    stack: this.stack,
+  })
+
+  const exception = new Exception(content, status, code, help)
+
+  exception.stack = stack
+
+  return exception
 }

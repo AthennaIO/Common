@@ -8,10 +8,21 @@
  */
 
 import { sep } from 'node:path'
-import { Path } from '#src/index'
 import { test } from '@japa/runner'
 
 test.group('PathTest', () => {
+  test('should be able to resolve the environment where the app will run', async ({ assert }) => {
+    Path.resolveEnvironment(import.meta.url.replace('.js', '.ts'))
+
+    assert.equal(process.env.IS_TS, 'true')
+    assert.equal(Path.defaultBeforePath, '/build')
+
+    Path.resolveEnvironment(import.meta.url)
+
+    assert.equal(process.env.IS_TS, 'false')
+    assert.equal(Path.defaultBeforePath, '')
+  })
+
   test('should get the extension js and ts', async ({ assert }) => {
     assert.equal(Path.ext(), 'js')
 

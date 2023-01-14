@@ -17,6 +17,13 @@ import { Folder } from '#src/Helpers/Folder'
 
 export class FakeApi {
   /**
+   * Set if the FakeApi server is running.
+   *
+   * @type {boolean}
+   */
+  static #isRunning = false
+
+  /**
    * Create the fastify server with plugins.
    *
    * This method is already called when you import FakeApi module.
@@ -50,6 +57,15 @@ export class FakeApi {
   }
 
   /**
+   * List the routes registered in the fake server.
+   *
+   * @return {boolean}
+   */
+  static isRunning() {
+    return this.#isRunning
+  }
+
+  /**
    * Register all routes inside folder path
    * and start the fake api server at port 8989.
    *
@@ -63,6 +79,7 @@ export class FakeApi {
     }
 
     await app.listen({ port })
+    this.#isRunning = true
   }
 
   /**
@@ -74,6 +91,7 @@ export class FakeApi {
     await app.close()
 
     app = FakeApi.recreate()
+    this.#isRunning = false
   }
 
   /**
