@@ -22,6 +22,20 @@ test.group('ExceptionTest', () => {
     assert.equal(errorJson.content, 'My custom instance error')
   })
 
+  test('should be able to create a new exception from vanilla errors', async ({ assert }) => {
+    const exception = new Error('My custom instance error').toAthennaException({
+      code: 'EXCEPTION',
+      name: 'Exception',
+    })
+
+    const errorJson = exception.toJSON()
+
+    assert.equal(errorJson.status, 0)
+    assert.equal(errorJson.code, 'EXCEPTION')
+    assert.equal(errorJson.name, 'Exception')
+    assert.equal(errorJson.content, 'My custom instance error')
+  })
+
   test('should be able to extend exception class to create a new exception', async ({ assert }) => {
     class InternalServerException extends Exception {
       constructor(content = 'Internal Server Error', status = 500) {

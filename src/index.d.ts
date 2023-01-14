@@ -372,6 +372,13 @@ export class FakeApi {
   static listRoutes(): string
 
   /**
+   * List the routes registered in the fake server.
+   *
+   * @return {boolean}
+   */
+  static isRunning(): boolean
+
+  /**
    * Register all routes inside folder path
    * and start the fake api server at port 8989.
    *
@@ -1411,14 +1418,12 @@ export declare class HttpClientBuilder {
   ): HttpClientBuilder
 
   /**
-   * Alias for the searchParameters method.
+   * Alias for the searchParams method.
    *
    *  @param value { string | import('got').SearchParameters | URLSearchParams }
    *  @return {HttpClientBuilder}
    */
-  searchParameters(
-    value: string | import('got').SearchParameters | URLSearchParams,
-  ): HttpClientBuilder
+  queryParams(value: string | import('got').SearchParameters | URLSearchParams): HttpClientBuilder
 
   /**
    * Set the dnsLookup parameter.
@@ -2709,6 +2714,21 @@ export declare class Path {
   static defaultBeforePath: string
 
   /**
+   * Resolve the environment where the application
+   * is running by verifying the import.meta.url.
+   *
+   * This method will auto set the IS_TS env and the
+   * defaultBeforePath if IS_TS is true.
+   *
+   * The beforePath is always set as '/build' by default.
+   *
+   * @param metaUrl {string}
+   * @param beforePath {string}
+   * @return {typeof Path}
+   */
+  static resolveEnvironment(metaUrl: string, beforePath?: string): typeof Path
+
+  /**
    * Return js or ts extension depending on IS_TS.
    *
    * @return {string}
@@ -3182,9 +3202,290 @@ export declare class Uuid {
 }
 
 declare global {
+  export class Path {
+    /**
+     * Set a default beforePath for all Path methods that
+     * use Path.pwd.
+     *
+     * @type {string}
+     */
+    static defaultBeforePath: string
+
+    /**
+     * Resolve the environment where the application
+     * is running by verifying the import.meta.url.
+     *
+     * This method will auto set the IS_TS env and the
+     * defaultBeforePath if IS_TS is true.
+     *
+     * The beforePath is always set as '/build' by default.
+     *
+     * @param metaUrl {string}
+     * @param beforePath {string}
+     * @return {typeof Path}
+     */
+    static resolveEnvironment(metaUrl: string, beforePath?: string): typeof Path
+
+    /**
+     * Return js or ts extension depending on IS_TS.
+     *
+     * @return {string}
+     */
+    static ext(): string
+
+    /**
+     * Return the pwd path of your project.
+     *
+     * @param {string} [subPath]
+     * @return {string}
+     */
+    static pwd(subPath?: string): string
+
+    /**
+     * Return the app path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static app(subPath?: string): string
+
+    /**
+     * Return the bootstrap path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static bootstrap(subPath?: string): string
+
+    /**
+     * Return the config path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static config(subPath?: string): string
+
+    /**
+     * Return the database path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static database(subPath?: string): string
+
+    /**
+     * Return the lang path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static lang(subPath?: string): string
+
+    /**
+     * Return the node_modules path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static nodeModules(subPath?: string): string
+
+    /**
+     * Return the providers' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static providers(subPath?: string): string
+
+    /**
+     * Return the public path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static public(subPath?: string): string
+
+    /**
+     * Return the resources' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static resources(subPath?: string): string
+
+    /**
+     * Return the routes' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static routes(subPath?: string): string
+
+    /**
+     * Return the storage path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static storage(subPath?: string): string
+
+    /**
+     * Return the tests' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static tests(subPath?: string): string
+
+    /**
+     * Return the logs' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static logs(subPath?: string): string
+
+    /**
+     * Return the views' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static views(subPath?: string): string
+
+    /**
+     * Return the assets' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static assets(subPath?: string): string
+
+    /**
+     * Return the locales' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static locales(subPath?: string): string
+
+    /**
+     * Return the facades' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static facades(subPath?: string): string
+
+    /**
+     * Return the stubs' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static stubs(subPath?: string): string
+
+    /**
+     * Return the http path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static http(subPath?: string): string
+
+    /**
+     * Return the console path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static console(subPath?: string): string
+
+    /**
+     * Return the services' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static services(subPath?: string): string
+
+    /**
+     * Return the migrations' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static migrations(subPath?: string): string
+
+    /**
+     * Return the seeders' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static seeders(subPath?: string): string
+
+    /**
+     * Return the .bin path of your node_modules.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static bin(subPath?: string): string
+
+    /**
+     * Return the tmp path of your vm.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static vmTmp(subPath?: string): string
+
+    /**
+     * Return the home path of your vm.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static vmHome(subPath?: string): string
+
+    /**
+     * Return the execution path of where this method
+     * is being called.
+     *
+     * @param {string} subPath
+     * @param {number} [stackIndex]
+     * @return {string}
+     */
+    static this(subPath?: string, stackIndex?: number): string
+  }
+
   interface Array<T> {
     toResource(criterias?: any): T[]
 
     toCollection(): Collection<T>
+  }
+
+  interface ErrorConstructor {
+    /**
+     * Transform your error to an instance of
+     * the Athenna exception.
+     *
+     * @param options {{
+     *   code?: string,
+     *   status?: number,
+     *   content?: string,
+     *   help?: string,
+     *   stack?: any
+     * }}
+     * @return {Exception}
+     */
+    toAthennaException(options?: {
+      code?: string
+      status?: number
+      content?: string
+      help?: string
+      stack?: any
+    }): Exception
   }
 }

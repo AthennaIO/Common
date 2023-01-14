@@ -22,6 +22,28 @@ export class Path {
   static defaultBeforePath = ''
 
   /**
+   * Resolve the environment where the application
+   * is running by verifying the import.meta.url.
+   *
+   * This method will auto set the IS_TS env and the
+   * defaultBeforePath if IS_TS is true.
+   *
+   * The beforePath is always set as '/build' by default.
+   *
+   * @param metaUrl {string}
+   * @param beforePath {string}
+   * @return {typeof Path}
+   */
+  static resolveEnvironment(metaUrl, beforePath = '/build') {
+    const isTs = metaUrl.endsWith('.ts') ? 'true' : 'false'
+
+    process.env.IS_TS = isTs
+    this.defaultBeforePath = isTs === 'true' ? beforePath : ''
+
+    return this
+  }
+
+  /**
    * Return js or ts extension depending on IS_TS.
    *
    * @return {string}

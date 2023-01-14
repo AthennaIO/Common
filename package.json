@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -140,6 +140,9 @@
     "env": {
       "es2021": true,
       "node": true
+    },
+    "globals": {
+      "Path": true
     },
     "plugins": [
       "prettier"

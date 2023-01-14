@@ -31,10 +31,12 @@ test.group('FakeApiTest', group => {
       .statusCode(201)
       .register()
 
+    assert.isFalse(FakeApi.isRunning())
     await FakeApi.start(8989, null)
 
     const response = await HttpClient.get('http://localhost:8989/example', { responseType: 'json' })
 
+    assert.isTrue(FakeApi.isRunning())
     assert.equal(response.statusCode, 201)
     assert.deepEqual(response.body, { hello: 'world', example: 'example' })
   })
@@ -49,10 +51,12 @@ test.group('FakeApiTest', group => {
 
     FakeApi.build().path('/example-redirect').redirectTo('http://localhost:8989/example').register()
 
+    assert.isFalse(FakeApi.isRunning())
     await FakeApi.start(8989, null)
 
     const response = await HttpClient.get('http://localhost:8989/example-redirect', { responseType: 'json' })
 
+    assert.isTrue(FakeApi.isRunning())
     assert.equal(response.statusCode, 201)
     assert.deepEqual(response.body, { hello: 'world', example: 'example' })
   })
