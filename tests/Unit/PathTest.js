@@ -12,12 +12,28 @@ import { test } from '@japa/runner'
 
 test.group('PathTest', () => {
   test('should be able to resolve the environment where the app will run', async ({ assert }) => {
-    Path.resolveEnvironment(import.meta.url.replace('.js', '.ts'))
+    const metaUrl = import.meta.url
+    const metaUrlTs = metaUrl.replace('.js', '.ts')
+
+    Path.resolveEnvironment(metaUrlTs)
 
     assert.equal(process.env.IS_TS, 'true')
+    assert.equal(Path.defaultBeforePath, '')
+
+    delete process.env.IS_TS
+    Path.resolveEnvironment(metaUrlTs, '/build')
+
+    assert.equal(process.env.IS_TS, 'true')
+    assert.equal(Path.defaultBeforePath, '')
+
+    delete process.env.IS_TS
+    Path.resolveEnvironment(metaUrl, '/build')
+
+    assert.equal(process.env.IS_TS, 'false')
     assert.equal(Path.defaultBeforePath, '/build')
 
-    Path.resolveEnvironment(import.meta.url)
+    delete process.env.IS_TS
+    Path.resolveEnvironment(metaUrl)
 
     assert.equal(process.env.IS_TS, 'false')
     assert.equal(Path.defaultBeforePath, '')
@@ -81,6 +97,7 @@ test.group('PathTest', () => {
     assert.equal(Path.http(), mainPath.concat(sep, 'Http'))
     assert.equal(Path.console(), mainPath.concat(sep, 'Console'))
     assert.equal(Path.services(), mainPath.concat(sep, 'Services'))
+    assert.equal(Path.repositories(), mainPath.concat(sep, 'Repositories'))
   })
 
   test('should get the sub paths of database main path', async ({ assert }) => {

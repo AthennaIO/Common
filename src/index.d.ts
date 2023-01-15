@@ -2912,6 +2912,14 @@ export declare class Path {
   static services(subPath?: string): string
 
   /**
+   * Return the repositories' path of your project.
+   *
+   * @param {string} subPath
+   * @return {string}
+   */
+  static repositories(subPath?: string): string
+
+  /**
    * Return the migrations' path of your project.
    *
    * @param {string} subPath
@@ -3408,6 +3416,14 @@ declare global {
      * @return {string}
      */
     static services(subPath?: string): string
+
+    /**
+     * Return the repositories' path of your project.
+     *
+     * @param {string} subPath
+     * @return {string}
+     */
+    static repositories(subPath?: string): string
 
     /**
      * Return the migrations' path of your project.

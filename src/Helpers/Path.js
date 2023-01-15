@@ -34,11 +34,11 @@ export class Path {
    * @param beforePath {string}
    * @return {typeof Path}
    */
-  static resolveEnvironment(metaUrl, beforePath = '/build') {
+  static resolveEnvironment(metaUrl, beforePath = '') {
     const isTs = metaUrl.endsWith('.ts') ? 'true' : 'false'
 
-    process.env.IS_TS = isTs
-    this.defaultBeforePath = isTs === 'true' ? beforePath : ''
+    process.env.IS_TS = process.env.IS_TS || isTs
+    this.defaultBeforePath = process.env.IS_TS === 'true' ? '' : beforePath
 
     return this
   }
@@ -287,6 +287,16 @@ export class Path {
    */
   static services(subPath = sep) {
     return this.app('Services' + sep + normalize(subPath))
+  }
+
+  /**
+   * Return the repositories' path of your project.
+   *
+   * @param {string} subPath
+   * @return {string}
+   */
+  static repositories(subPath = sep) {
+    return this.app('Repositories' + sep + normalize(subPath))
   }
 
   /**
