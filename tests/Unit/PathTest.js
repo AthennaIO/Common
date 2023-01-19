@@ -53,7 +53,9 @@ test.group('PathTest', () => {
 
     process.env.IS_TS = 'false'
     Path.defaultBeforePath = 'build'
-    assert.isTrue(Path.pwd(`artisan.${Path.ext()}`).includes('build/artisan.js'))
+    console.log(Path.pwd(`artisan.${Path.ext()}`))
+
+    assert.isTrue(Path.pwd(`artisan.${Path.ext()}`).includes(`build${sep}artisan.js`))
 
     Path.defaultBeforePath = ''
   })
