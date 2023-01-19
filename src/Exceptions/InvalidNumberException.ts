@@ -10,13 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class InvalidNumberException extends Exception {
-  /**
-   * Creates a new instance of InvalidNumberException.
-   *
-   * @param {string} number
-   * @return {InvalidNumberException}
-   */
-  constructor(number) {
+  constructor(number: string) {
     const content = `The number ${number} is not a valid string number.`
 
     super(

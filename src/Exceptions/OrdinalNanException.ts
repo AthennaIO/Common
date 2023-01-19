@@ -10,11 +10,6 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class OrdinalNanException extends Exception {
-  /**
-   * Creates a new instance of OrdinalNanException.
-   *
-   * @return {OrdinalNanException}
-   */
   constructor() {
     const content = 'Cannot ordinal NaN or infinite numbers.'
 

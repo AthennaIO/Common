@@ -12,13 +12,8 @@ import { Is } from '#src/Helpers/Is'
 export class Clean {
   /**
    * Remove all falsy values from array.
-   *
-   * @param {any[]} array
-   * @param {boolean} [removeEmpty]
-   * @param {boolean} [cleanInsideObjects]
-   * @return {any[]}
    */
-  static cleanArray(array, removeEmpty = false, cleanInsideObjects = false) {
+  static cleanArray(array: any[], removeEmpty = false, cleanInsideObjects = false): any[] {
     return array.filter((item, i) => {
       let returnItem = !!item
 
@@ -45,13 +40,8 @@ export class Clean {
 
   /**
    * Remove all falsy values from object.
-   *
-   * @param {any} object
-   * @param {boolean} [removeEmpty]
-   * @param {boolean} [cleanInsideArrays]
-   * @return {any}
    */
-  static cleanObject(object, removeEmpty = false, cleanInsideArrays = false) {
+  static cleanObject(object: any, removeEmpty = false, cleanInsideArrays = false): any {
     Object.keys(object).forEach(prop => {
       if (removeEmpty && Is.Empty(object[prop])) {
         delete object[prop]

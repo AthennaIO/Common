@@ -10,13 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class InvalidUuidException extends Exception {
-  /**
-   * Creates a new instance of InvalidUuidException.
-   *
-   * @param {string} value
-   * @return {InvalidUuidException}
-   */
-  constructor(value) {
+  constructor(value: string) {
     const content = `The value ${value} is not a valid uuid.`
 
     super(content, 500, 'E_INVALID_UUID', 'Use a valid uuid instead.')

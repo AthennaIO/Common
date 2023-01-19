@@ -11,7 +11,7 @@ import { promisify } from 'node:util'
 import { Transform } from 'node:stream'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
-import { exec as childProcessExec } from 'node:child_process'
+import { exec as childProcessExec, ExecOptions } from 'node:child_process'
 
 import { File } from '#src/Helpers/File'
 import { Uuid } from '#src/Helpers/Uuid'
@@ -20,36 +20,49 @@ import { NodeCommandException } from '#src/Exceptions/NodeCommandException'
 
 const exec = promisify(childProcessExec)
 
+export interface PaginationOptions {
+  page?: number,
+  limit?: number,
+  resourceUrl?: string
+}
+
+export interface PaginatedResponse<T = any> {
+  data?: T[],
+  meta?: {
+    totalItems: number,
+    itemsPerPage: number,
+    totalPages: number,
+    currentPage: number,
+    itemCount: number
+ },
+ links?: {
+   next: string,
+   previous: string,
+   last: string,
+   first: string
+ }
+}
+
 export class Exec {
   /**
    * Sleep the code in the line that this function
    * is being called.
-   *
-   * @param {number} ms
-   * @return {Promise<void>}
    */
-  static async sleep(ms) {
+  static async sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   /**
    * Execute a command of child process exec as promise.
-   *
-   * @param {string} command
-   * @param {{
-   *   ignoreErrors?: boolean
-   * }} [options]
-   * @throws {NodeCommandException}
-   * @return {Promise<{ stdout: string, stderr: string }>}
    */
-  static async command(command, options) {
+  static async command(command: string, options?: { ignoreErrors?: boolean }): Promise<{ stdout: string, stderr: string }> {
     options = Options.create(options, {
       withContent: true,
       mockedValues: false,
     })
 
     try {
-      const execOptions = {}
+      const execOptions: ExecOptions = {}
 
       if (process.platform === 'win32' && Uuid.verify(process.env.WT_SESSION)) {
         execOptions.shell = 'powershell'
@@ -68,13 +81,8 @@ export class Exec {
 
   /**
    * Download an archive to determined path.
-   *
-   * @param {string} name
-   * @param {string} path
-   * @param {string} url
-   * @return {Promise<File>}
    */
-  static async download(name, path, url) {
+  static async download(name: string, path: string, url: string): Promise<File> {
     return new Promise((resolve, reject) => {
       const callback = response => {
         const data = new Transform()
@@ -100,32 +108,14 @@ export class Exec {
 
   /**
    * Paginate a collection of data.
-   *
-   * @param {any[]} data
-   * @param {number} total
-   * @param {{
-   *   page?: number,
-   *   limit?: number,
-   *   resourceUrl?: string
-   * }} pagination
-   * @return {{
-   *   data: any[],
-   *   meta: {
-   *     totalItems: number,
-   *     itemsPerPage: number,
-   *     totalPages: number,
-   *     currentPage: number,
-   *     itemCount: number
-   *  },
-   *  links: {
-   *    next: string,
-   *    previous: string,
-   *    last: string,
-   *    first: string
-   *  }
-   * }}
    */
-  static pagination(data, total, pagination) {
+  static pagination<T = any>(data: any[], total: number, pagination?: PaginationOptions): PaginatedResponse<T> {
+    pagination = Options.create(pagination, {
+      page: 0,
+      limit: 10,
+      resourceUrl: '/'
+    })
+
     const totalPages = Math.ceil(total / pagination.limit)
 
     const meta = {

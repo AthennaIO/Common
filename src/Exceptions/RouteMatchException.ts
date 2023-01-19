@@ -10,14 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class RouteMatchException extends Exception {
-  /**
-   * Creates a new instance of RouteMatchException.
-   *
-   * @param {string} routeWithParams
-   * @param {string} routeWithValues
-   * @return {RouteMatchException}
-   */
-  constructor(routeWithParams, routeWithValues) {
+  constructor(routeWithParams: string, routeWithValues: string) {
     const content = `The route ${routeWithParams} does not match ${routeWithValues}`
 
     super(

@@ -10,14 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class NodeCommandException extends Exception {
-  /**
-   * Creates a new instance of NodeCommandException.
-   *
-   * @param {string} command
-   * @param {any} error
-   * @return {NodeCommandException}
-   */
-  constructor(command, error) {
+  constructor(command: string, error: any) {
     const content = `Error has occurred when executing the command "${command}"`
 
     let help = ''

@@ -15,12 +15,9 @@ import { Is } from '#src/Helpers/Is'
 export class Debug {
   /**
    * Get the timestamp ms.
-   *
-   * @private
-   * @return {string}
    */
-  static #getTimestamp() {
-    const localeStringOptions = {
+  private static getTimestamp() {
+    const localeStringOptions: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
@@ -34,17 +31,14 @@ export class Debug {
 
   /**
    * Format the message using Chalk API.
-   *
-   * @param {string} message
-   * @return {string}
    */
-  static format(message) {
+  static format(message: string) {
     if (Is.Object(message)) {
       message = JSON.stringify(message)
     }
 
     const pid = chalk.yellow(`PID: ${process.pid}`)
-    const timestamp = Debug.#getTimestamp()
+    const timestamp = Debug.getTimestamp()
 
     return `${chalk.yellow(`[Debug]`)} - ${pid} - ${timestamp} ${chalk.yellow(
       message,
@@ -53,12 +47,8 @@ export class Debug {
 
   /**
    * Format and throw the message in the stdout accordingly to the namespace.
-   *
-   * @param {string|any} message
-   * @param {string} [namespace]
-   * @return {void}
    */
-  static log(message, namespace = 'api:main') {
+  static log(message: string, namespace = 'api:main'): void {
     debug(namespace)(Debug.format(message))
   }
 }

@@ -10,13 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class NotFoundFolderException extends Exception {
-  /**
-   * Creates a new instance of NotFoundFolderException.
-   *
-   * @param {string} filePath
-   * @return {NotFoundFolderException}
-   */
-  constructor(filePath) {
+  constructor(filePath: string) {
     const content = `The folder ${filePath} doesnt exist.`
 
     super(

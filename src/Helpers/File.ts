@@ -20,68 +20,163 @@ import {
   rmSync,
   statSync,
   writeFileSync,
+  ReadStream,
+  WriteStream,
 } from 'node:fs'
 
 import { lookup } from 'mime-types'
 import { pathToFileURL } from 'node:url'
-import { randomBytes } from 'node:crypto'
-import { isAbsolute, parse, sep } from 'node:path'
-
 import { Path } from '#src/Helpers/Path'
 import { Json } from '#src/Helpers/Json'
+import { randomBytes } from 'node:crypto'
 import { Debug } from '#src/Helpers/Debug'
+import { StreamOptions } from 'node:stream'
 import { Parser } from '#src/Helpers/Parser'
 import { Options } from '#src/Helpers/Options'
+import { isAbsolute, parse, sep } from 'node:path'
 import { NotFoundFileException } from '#src/Exceptions/NotFoundFileException'
+
+export interface FileJSON {
+  dir: string,
+  name: string,
+  base: string,
+  path: string,
+  mime: string,
+  createdAt: Date,
+  accessedAt: Date,
+  modifiedAt: Date,
+  fileSize: number,
+  extension: string,
+  isCopy: boolean,
+  originalDir: string,
+  originalName: string,
+  originalPath: string,
+  originalHref: string,
+  originalFileExists: boolean,
+  content: string,
+}
 
 export class File {
   /**
-   * Creates a new instance of File.
-   *
-   * @param {string} filePath
-   * @param {Buffer} [content]
-   * @param {boolean} [mockedValues]
-   * @param {boolean} [isCopy]
-   * @return {File}
+   * The original or faked file directory.
    */
+  public dir: string
+
+  /**
+   * The original or faked file name.
+   */
+  public name: string
+
+  /**
+   * The original or faked file base.
+   */
+  public base: string
+
+  /**
+   * The original or faked file path.
+   */
+  public path: string
+
+  /**
+   * The original or faked href path.
+   */
+  public href: string
+
+  /**
+   * The file mime type.
+   */
+  public mime: string
+
+  /**
+   * Set if original or fake file exists.
+   */
+  public fileExists: boolean
+
+  /**
+   * Date when the file was created.
+   */
+  public createdAt: Date
+
+  /**
+   * Date when the file was last accessed.
+   */
+  public accessedAt: Date
+
+  /**
+   * Date when the file was last modified.
+   */
+  public modifiedAt: Date
+
+  /**
+   * The file size.
+   */
+  public fileSize: number
+
+  /**
+   * The file extension.
+   */
+  public extension: string
+
+  /**
+   * Set if file is a copy or not.
+   */
+  public isCopy: boolean
+
+  /**
+   * Original file directory.
+   */
+  public originalDir: string
+
+  /**
+   * Original file name.
+   */
+  public originalName: string
+
+  /**
+   * Original file base.
+   */
+  public originalBase: string
+
+  /**
+   * Original file path.
+   */
+  public originalPath: string
+
+  /**
+   * Original file href.
+   */
+  public originalHref: string
+
+  /**
+   * Set if original file exists.
+   */
+  public originalFileExists: boolean
+
+  /**
+   * The file content as Buffer.
+   */
+  public content: Buffer
+
   constructor(
-    filePath,
-    content = undefined,
+    filePath: string,
+    content: Buffer = undefined,
     mockedValues = false,
     isCopy = false,
   ) {
-    const { ext, dir, name, base, mime, path } = File.#parsePath(filePath)
+    const { ext, dir, name, base, mime, path } = File.parsePath(filePath)
 
-    /** @type {string} */
     this.originalDir = dir
-
-    /** @type {string} */
     this.originalName = name
-
-    /** @type {string} */
     this.originalBase = base
-
-    /** @type {string} */
     this.originalPath = path
-
-    /** @type {boolean} */
+    this.originalHref = pathToFileURL(path).href
     this.isCopy = isCopy
-
-    /** @type {boolean} */
     this.originalFileExists = File.existsSync(this.originalPath) && !this.isCopy
-
-    /** @type {boolean} */
     this.fileExists = this.originalFileExists
-
-    /** @type {Buffer} */
     this.content = content
-
-    /** @type {string} */
     this.mime = mime
-
-    /** @type {string} */
     this.extension = ext
-    this.#createFileValues(mockedValues)
+    this.createFileValues(mockedValues)
 
     if (!this.originalFileExists && !this.content) {
       throw new NotFoundFileException(this.originalPath)
@@ -90,12 +185,9 @@ export class File {
 
   /**
    * Remove the file it's existing or not.
-   *
-   * @param {string} filePath
-   * @return {Promise<void>}
    */
-  static async safeRemove(filePath) {
-    const { path } = File.#parsePath(filePath)
+  static async safeRemove(filePath: string): Promise<void> {
+    const { path } = File.parsePath(filePath)
 
     if (!(await File.exists(path))) {
       return
@@ -106,24 +198,18 @@ export class File {
 
   /**
    * Verify if file exists.
-   *
-   * @param {string} filePath
-   * @return {boolean}
    */
-  static existsSync(filePath) {
-    const { path } = File.#parsePath(filePath)
+  static existsSync(filePath: string): boolean {
+    const { path } = File.parsePath(filePath)
 
     return existsSync(path)
   }
 
   /**
    * Verify if file exists.
-   *
-   * @param {string} filePath
-   * @return {Promise<boolean>}
    */
-  static async exists(filePath) {
-    const { path } = File.#parsePath(filePath)
+  static async exists(filePath: string): Promise<boolean> {
+    const { path } = File.parsePath(filePath)
 
     return promises
       .access(path)
@@ -133,37 +219,27 @@ export class File {
 
   /**
    * Verify if path is from file or directory.
-   *
-   * @param {string} path
-   * @return {boolean}
    */
-  static isFileSync(path) {
-    const { path: parsedPath } = File.#parsePath(path)
+  static isFileSync(path: string): boolean {
+    const { path: parsedPath } = File.parsePath(path)
 
     return statSync(parsedPath).isFile()
   }
 
   /**
    * Verify if path is from file or directory.
-   *
-   * @param {string} path
-   * @return {Promise<boolean>}
    */
-  static async isFile(path) {
-    const { path: parsedPath } = File.#parsePath(path)
+  static async isFile(path: string): Promise<boolean> {
+    const { path: parsedPath } = File.parsePath(path)
 
     return promises.stat(parsedPath).then(stat => stat.isFile())
   }
 
   /**
    * Create fake file with determined size.
-   *
-   * @param {string} filePath
-   * @param {number} size
-   * @return {Promise<typeof File>}
    */
-  static async createFileOfSize(filePath, size) {
-    const { dir, path } = File.#parsePath(filePath)
+  static async createFileOfSize(filePath: string, size: number): Promise<typeof File> {
+    const { dir, path } = File.parsePath(filePath)
 
     await promises.mkdir(dir, { recursive: true })
 
@@ -179,20 +255,16 @@ export class File {
 
   /**
    * Parse the file path.
-   *
-   * @private
-   * @param {string} filePath
-   * @return {{
-   *   ext: string,
-   *   path: string,
-   *   root: string,
-   *   mime: string,
-   *   name: string,
-   *   dir: string,
-   *   base: string
-   * }}
    */
-  static #parsePath(filePath) {
+  private static parsePath(filePath: string): {
+    ext: string,
+    path: string,
+    root: string,
+    mime: string,
+    name: string,
+    dir: string,
+    base: string
+  } {
     if (!isAbsolute(filePath)) {
       filePath = Path.this(filePath, 3)
     }
@@ -213,27 +285,8 @@ export class File {
 
   /**
    * Returns the file as a JSON object.
-   *
-   * @return {{
-   *   dir: string,
-   *   name: string,
-   *   base: string,
-   *   path: string,
-   *   mime: string,
-   *   createdAt: Date,
-   *   accessedAt: Date,
-   *   modifiedAt: Date,
-   *   fileSize: number,
-   *   extension: string,
-   *   isCopy: boolean,
-   *   originalDir: string,
-   *   originalName: string,
-   *   originalPath: string,
-   *   originalFileExists: boolean,
-   *   content: string,
-   * }}
    */
-  toJSON() {
+  toJSON(): FileJSON {
     return Json.copy({
       dir: this.dir,
       name: this.name,
@@ -251,6 +304,7 @@ export class File {
       originalDir: this.originalDir,
       originalName: this.originalName,
       originalPath: this.originalPath,
+      originalHref: this.originalHref,
       originalFileExists: this.originalFileExists,
       content: this.content,
     })
@@ -258,14 +312,8 @@ export class File {
 
   /**
    * Load or create the file.
-   *
-   * @param {{
-   *   withContent?: boolean,
-   *   isInternalLoad?: boolean
-   * }} [options]
-   * @return {File}
    */
-  loadSync(options) {
+  loadSync(options?: { withContent?: boolean, isInternalLoad?: boolean }): File {
     options = Options.create(options, {
       withContent: true,
       isInternalLoad: false,
@@ -309,14 +357,8 @@ export class File {
 
   /**
    * Load or create the file.
-   *
-   * @param {{
-   *   withContent?: boolean,
-   *   isInternalLoad?: boolean
-   * }} [options]
-   * @return {Promise<File>}
    */
-  async load(options) {
+  async load(options: { withContent?: boolean, isInternalLoad?: boolean }): Promise<File> {
     options = Options.create(options, {
       withContent: true,
       isInternalLoad: false,
@@ -383,10 +425,8 @@ export class File {
 
   /**
    * Remove the file.
-   *
-   * @return {void}
    */
-  removeSync() {
+  removeSync(): void {
     if (!this.fileExists) {
       throw new NotFoundFileException(this.path)
     }
@@ -404,10 +444,8 @@ export class File {
 
   /**
    * Remove the file.
-   *
-   * @return {Promise<void>}
    */
-  async remove() {
+  async remove(): Promise<void> {
     if (!this.fileExists) {
       throw new NotFoundFileException(this.path)
     }
@@ -425,16 +463,9 @@ export class File {
 
   /**
    * Create a copy of the file.
-   *
-   * @param {string} path
-   * @param {{
-   *   withContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {File}
    */
-  copySync(path, options) {
-    path = File.#parsePath(path).path
+  copySync(path: string, options?: { withContent?: boolean, mockedValues?: boolean }): File {
+    path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
@@ -453,16 +484,9 @@ export class File {
 
   /**
    * Create a copy of the file.
-   *
-   * @param {string} path
-   * @param {{
-   *   withContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {Promise<File>}
    */
-  async copy(path, options) {
-    path = File.#parsePath(path).path
+  async copy(path: string, options?: { withContent?: boolean, mockedValues?: boolean }): Promise<File> {
+    path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
@@ -481,16 +505,9 @@ export class File {
 
   /**
    * Move the file to other path.
-   *
-   * @param {string} path
-   * @param {{
-   *   withContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {File}
    */
-  moveSync(path, options) {
-    path = File.#parsePath(path).path
+  moveSync(path: string, options?: { withContent?: boolean, mockedValues?: boolean }): File {
+    path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
@@ -513,16 +530,9 @@ export class File {
 
   /**
    * Move the file to other path.
-   *
-   * @param {string} path
-   * @param {{
-   *   withContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {Promise<File>}
    */
-  async move(path, options) {
-    path = File.#parsePath(path).path
+  async move(path: string, options?: { withContent?: boolean, mockedValues?: boolean }): Promise<File> {
+    path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
@@ -545,11 +555,8 @@ export class File {
 
   /**
    * Append any data to the file.
-   *
-   * @param {string|Buffer} data
-   * @return {File}
    */
-  appendSync(data) {
+  appendSync(data: string | Buffer): File {
     this.loadSync({ isInternalLoad: true, withContent: false })
 
     appendFileSync(this.path, data)
@@ -560,11 +567,8 @@ export class File {
 
   /**
    * Append any data to the file.
-   *
-   * @param {string|Buffer} data
-   * @return {Promise<File>}
    */
-  async append(data) {
+  async append(data: string | Buffer): Promise<File> {
     await this.load({ isInternalLoad: true, withContent: false })
 
     const writeStream = createWriteStream(this.path, { flags: 'a' })
@@ -581,11 +585,8 @@ export class File {
 
   /**
    * Prepend any data to the file.
-   *
-   * @param {string|Buffer} data
-   * @return {File}
    */
-  prependSync(data) {
+  prependSync(data: string | Buffer): File {
     this.loadSync({ isInternalLoad: true, withContent: false })
 
     prependFile.sync(this.path, data)
@@ -596,11 +597,8 @@ export class File {
 
   /**
    * Prepend any data to the file.
-   *
-   * @param {string|Buffer} data
-   * @return {Promise<File>}
    */
-  async prepend(data) {
+  async prepend(data: string | Buffer): Promise<File> {
     await this.load({ isInternalLoad: true, withContent: false })
 
     await prependFile(this.path, data)
@@ -611,13 +609,8 @@ export class File {
 
   /**
    * Get only the content of the file.
-   *
-   * @param {{
-   *   saveContent?: boolean
-   * }} [options]
-   * @return {Buffer}
    */
-  getContentSync(options) {
+  getContentSync(options?: { saveContent?: boolean }): Buffer {
     this.loadSync({ isInternalLoad: true, withContent: false })
 
     options = Options.create(options, { saveContent: false })
@@ -633,13 +626,8 @@ export class File {
 
   /**
    * Get only the content of the file.
-   *
-   * @param {{
-   *   saveContent?: boolean
-   * }} [options]
-   * @return {Promise<Buffer>}
    */
-  async getContent(options) {
+  async getContent(options?: { saveContent?: boolean }): Promise<Buffer> {
     await this.load({ isInternalLoad: true, withContent: false })
 
     options = Options.create(options, { saveContent: false })
@@ -670,21 +658,15 @@ export class File {
 
   /**
    * Create a readable stream of the file.
-   *
-   * @param [options] {BufferEncoding | import('node:stream').StreamOptions<any>}
-   * @return {import('node:fs').ReadStream}
    */
-  createReadStream(options) {
+  createReadStream(options?: BufferEncoding | StreamOptions<any>): ReadStream {
     return createReadStream(this.originalPath, options)
   }
 
   /**
    * Create a writable stream of the file.
-   *
-   * @param [options] {BufferEncoding | import('node:stream').StreamOptions<any>}
-   * @return {import('node:fs').WriteStream}
    */
-  createWriteStream(options) {
+  createWriteStream(options?: BufferEncoding | StreamOptions<any>): WriteStream {
     if (!this.fileExists) {
       this.loadSync()
     }
@@ -694,12 +676,8 @@ export class File {
 
   /**
    * Create file values.
-   *
-   * @private
-   * @param {boolean?} mockedValues
-   * @return {void}
    */
-  #createFileValues(mockedValues) {
+  private createFileValues(mockedValues?: boolean): void {
     if (mockedValues && !this.originalFileExists) {
       const bytes = randomBytes(30)
       const buffer = Buffer.from(bytes)
@@ -707,7 +685,7 @@ export class File {
       this.dir = this.originalDir
       this.name = buffer.toString('base64').replace(/[^a-zA-Z0-9]/g, '')
       this.base = this.name + this.extension
-      this.path = this.dir + '/' + this.base
+      this.path = this.dir + sep + this.base
       this.href = pathToFileURL(this.path).href
 
       return
@@ -717,6 +695,6 @@ export class File {
     this.name = this.originalName
     this.base = this.originalBase
     this.path = this.originalPath
-    this.href = pathToFileURL(this.path).href
+    this.href = this.originalHref
   }
 }

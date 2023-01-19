@@ -1,3 +1,12 @@
+/**
+ * @athenna/common
+ *
+ * (c) João Lenon <lenon@athenna.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 import { pathToFileURL } from 'url'
 import { assert } from '@japa/assert'
 import { specReporter } from '@japa/spec-reporter'
@@ -20,7 +29,7 @@ import { processCliArgs, configure, run } from '@japa/runner'
 configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
-    files: ['tests/**/*Test.js'],
+    files: ['tests/**/*Test.ts'],
     plugins: [assert()],
     reporters: [specReporter()],
     importer: filePath => import(pathToFileURL(filePath).href),
