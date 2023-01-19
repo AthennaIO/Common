@@ -12,21 +12,15 @@ import lodash from 'lodash'
 export class Json {
   /**
    * Deep copy any object properties without reference.
-   *
-   * @param {any} object
-   * @return {any}
    */
-  static copy(object) {
+  public static copy(object: any): any {
     return lodash.cloneDeep(object)
   }
 
   /**
    * Find all JSON inside string and return it.
-   *
-   * @param {string} text
-   * @return {string[]}
    */
-  static getJson(text) {
+  public static getJson(text: string): string[] {
     let match
     const json = []
 
@@ -40,23 +34,12 @@ export class Json {
   }
 
   /**
-   * Reviver callback.
-   *
-   * @callback reviver
-   * @param {any} this
-   * @param {string} key
-   * @param {any} value
-   * @return any
-   */
-
-  /**
    * Converts a JSON string into an object without exception.
-   *
-   * @param {string} text
-   * @param {reviver?} reviver
-   * @return {any}
    */
-  static parse(text, reviver) {
+  public static parse(
+    text: string,
+    reviver?: (this: any, key: string, value: any) => any,
+  ): any {
     try {
       return JSON.parse(text, reviver)
     } catch (error) {
@@ -72,7 +55,7 @@ export class Json {
    * @param {...any[]} args
    * @return {any}
    */
-  static observeChanges(object, func, ...args) {
+  public static observeChanges(object: any, func: any, ...args: any[]): any {
     return new Proxy(object, {
       set: (target, key, value) => {
         func(value, ...args)
@@ -91,7 +74,7 @@ export class Json {
    * @param {any[]} keys
    * @return {any[]}
    */
-  static fillable(data, keys) {
+  public static fillable(data: any, keys: any[]): any[] {
     return keys.reduce((previous, key) => {
       if (data[key]) {
         previous[key] = data[key]
@@ -105,10 +88,8 @@ export class Json {
    * Remove all duplicated values from the array.
    *
    * @deprecated Use the Collection.removeDuplicated method.
-   * @param {any[]} array
-   * @return {any[]}
    */
-  static removeDuplicated(array) {
+  public static removeDuplicated(array: any[]): any[] {
     return [...new Set(array)]
   }
 
@@ -116,10 +97,8 @@ export class Json {
    * Raffle any value from the array.
    *
    * @deprecated Use the Collection.random method.
-   * @param {any[]} array
-   * @return {any}
    */
-  static raffle(array) {
+  public static raffle(array: any[]): any {
     const index = Math.random() * array.length
 
     return array[Math.floor(index)]
@@ -127,13 +106,12 @@ export class Json {
 
   /**
    * Get the object properties based on key.
-   *
-   * @param {string} key
-   * @param {any} [defaultValue]
-   * @param {any} object
-   * @return {any|undefined}
    */
-  static get(object, key, defaultValue) {
+  public static get<T = any>(
+    object: T,
+    key: string,
+    defaultValue: any = undefined,
+  ): T | undefined {
     if (key === '' && object) {
       return object
     }

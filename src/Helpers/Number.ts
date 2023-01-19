@@ -12,22 +12,19 @@ import { Parser } from '#src/Helpers/Parser'
 export class Number {
   /**
    * Get the higher number from an array of numbers.
-   *
-   * @param {number[]} numbers
-   * @return {number}
    */
-  static getHigher(numbers) {
+  public static getHigher(numbers: number[]): number {
+    // eslint-disable-next-line prefer-spread
     return Math.max.apply(Math, numbers)
   }
 
   /**
    * Get km radius between two coordinates.
-   *
-   * @param {{ latitude: number, longitude: number }} centerCord
-   * @param {{ latitude: number, longitude: number }} pointCord
-   * @return {number}
    */
-  static getKmRadius(centerCord, pointCord) {
+  public static getKmRadius(
+    centerCord: { latitude: number; longitude: number },
+    pointCord: { latitude: number; longitude: number },
+  ): number {
     const deg2rad = deg => deg * (Math.PI / 180)
 
     const radius = 6371
@@ -52,32 +49,24 @@ export class Number {
 
   /**
    * Get the lower number from an array of numbers.
-   *
-   * @param {number[]} numbers
-   * @return {number}
    */
-  static getLower(numbers) {
+  public static getLower(numbers: number[]): number {
+    // eslint-disable-next-line prefer-spread
     return Math.min.apply(Math, numbers)
   }
 
   /**
    * Extract all numbers inside a string and
    * return as a unique number.
-   *
-   * @param {string} string
-   * @return {number}
    */
-  static extractNumber(string) {
+  public static extractNumber(string: string): number {
     return Parser.stringToNumber(string.replace(/\D/g, ''))
   }
 
   /**
    * Extract all numbers inside a string.
-   *
-   * @param {string} string
-   * @return {number[]}
    */
-  static extractNumbers(string) {
+  public static extractNumbers(string: string): number[] {
     return string.match(/\d+/g).map(numberString => {
       return Parser.stringToNumber(numberString)
     })
@@ -85,32 +74,22 @@ export class Number {
 
   /**
    * The average of all numbers in function arguments.
-   *
-   * @param {number[]} args
-   * @return {number}
    */
-  static argsAverage(...args) {
+  public static argsAverage(...args: number[]): number {
     return Number.arrayAverage(args)
   }
 
   /**
    * The average of all numbers in the array.
-   *
-   * @param {number[]} array
-   * @return {number}
    */
-  static arrayAverage(array) {
+  public static arrayAverage(array: number[]): number {
     return array.reduce((acc, curr) => acc + curr, 0) / array.length
   }
 
   /**
    * Generate a random integer from a determined interval of numbers.
-   *
-   * @param {number} min
-   * @param {number} max
-   * @return {number}
    */
-  static randomIntFromInterval(min, max) {
+  public static randomIntFromInterval(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
 }

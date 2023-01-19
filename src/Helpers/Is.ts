@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /**
  * @athenna/common
  *
@@ -16,12 +17,8 @@ import { isCep, isCnpj, isCpf } from 'validator-brazil'
 export class Is {
   /**
    * Return the kindOf.
-   *
-   * @private
-   * @param {any} value
-   * @return {any}
    */
-  static #kindOf(value) {
+  public static kindOf(value: any): string {
     const kind = kindOf(value)
 
     if (
@@ -36,21 +33,15 @@ export class Is {
 
   /**
    * Verify if is valid Uuid.
-   *
-   * @param {string} value
-   * @return {boolean}
    */
-  static Uuid(value) {
+  public static Uuid(value: string): boolean {
     return validate(value)
   }
 
   /**
    * Verify if is valid Json.
-   *
-   * @param {string} value
-   * @return {boolean}
    */
-  static Json(value) {
+  public static Json(value: string): boolean {
     try {
       JSON.parse(value)
 
@@ -62,11 +53,8 @@ export class Is {
 
   /**
    * Verify if is valid Ip.
-   *
-   * @param {string} value
-   * @return {boolean}
    */
-  static Ip(value) {
+  public static Ip(value: string): boolean {
     // Removes http/https and port/route values
     value = value.replace(/^https?:\/\//, '').split(':')[0]
 
@@ -75,11 +63,8 @@ export class Is {
 
   /**
    * Verify if is valid Empty.
-   *
-   * @param {string|any|any[]} value
-   * @return {boolean}
    */
-  static Empty(value) {
+  public static Empty(value: string | any | any[]): boolean {
     if (!value) {
       return true
     }
@@ -101,47 +86,41 @@ export class Is {
 
   /**
    * Verify if is a valid Cep.
-   *
-   * @param {string|number} cep
-   * @return {boolean}
    */
-  static Cep(cep) {
-    if (typeof cep === 'number') cep = cep.toString()
+  public static Cep(cep: string | number): boolean {
+    if (Is.Number(cep)) {
+      cep = cep.toString()
+    }
 
     return isCep(cep)
   }
 
   /**
    * Verify if is a valid Cpf.
-   *
-   * @param {string|number} cpf
-   * @return {boolean}
    */
-  static Cpf(cpf) {
-    if (typeof cpf === 'number') cpf = cpf.toString()
+  public static Cpf(cpf: string | number): boolean {
+    if (Is.Number(cpf)) {
+      cpf = cpf.toString()
+    }
 
     return isCpf(cpf)
   }
 
   /**
    * Verify if is a valid Cnpj.
-   *
-   * @param {string|number} cnpj
-   * @return {boolean}
    */
-  static Cnpj(cnpj) {
-    if (typeof cnpj === 'number') cnpj = cnpj.toString()
+  public static Cnpj(cnpj: string | number): boolean {
+    if (Is.Number(cnpj)) {
+      cnpj = cnpj.toString()
+    }
 
     return isCnpj(cnpj)
   }
 
   /**
    * Verify if is a valid Async function.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Async(value) {
+  public static Async(value: any): boolean {
     const fnString = value.toString().trim()
 
     const validation = !!(
@@ -153,161 +132,113 @@ export class Is {
 
   /**
    * Verify if is a valid Undefined.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Undefined(value) {
-    return Is.#kindOf(value) === 'undefined'
+  public static Undefined(value: any): value is undefined {
+    return Is.kindOf(value) === 'undefined'
   }
 
   /**
    * Verify if is a valid Null.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Null(value) {
-    return Is.#kindOf(value) === 'null'
+  public static Null(value: any): value is null {
+    return Is.kindOf(value) === 'null'
   }
 
   /**
    * Verify if is a valid Boolean.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Boolean(value) {
-    return Is.#kindOf(value) === 'boolean'
+  public static Boolean(value: any): value is boolean {
+    return Is.kindOf(value) === 'boolean'
   }
 
   /**
    * Verify if is a valid Buffer.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Buffer(value) {
-    return Is.#kindOf(value) === 'buffer'
+  public static Buffer(value: any): value is Buffer {
+    return Is.kindOf(value) === 'buffer'
   }
 
   /**
    * Verify if is a valid Number.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Number(value) {
-    return Is.#kindOf(value) === 'number'
+  public static Number(value: any): value is number {
+    return Is.kindOf(value) === 'number'
   }
 
   /**
    * Verify if is a valid String.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static String(value) {
-    return Is.#kindOf(value) === 'string'
+  public static String(value: any): value is string {
+    return Is.kindOf(value) === 'string'
   }
 
   /**
    * Verify if is a valid Object.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Object(value) {
-    return Is.#kindOf(value) === 'object'
+  public static Object(value: any): value is object | Record<string, any> {
+    return Is.kindOf(value) === 'object'
   }
 
   /**
    * Verify if is a valid Date.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Date(value) {
-    return Is.#kindOf(value) === 'date'
+  public static Date(value: any): value is Date {
+    return Is.kindOf(value) === 'date'
   }
 
   /**
    * Verify if is a valid Array.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Array(value) {
-    return Is.#kindOf(value) === 'array'
+  public static Array(value: any): value is Array<any> {
+    return Is.kindOf(value) === 'array'
   }
 
   /**
    * Verify if is a valid Regexp.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Regexp(value) {
-    return Is.#kindOf(value) === 'regexp'
+  public static Regexp(value: any): value is RegExp {
+    return Is.kindOf(value) === 'regexp'
   }
 
   /**
    * Verify if is a valid Error.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Error(value) {
-    return Is.#kindOf(value) === 'error'
+  public static Error(value: any): value is Error {
+    return Is.kindOf(value) === 'error'
   }
 
   /**
    * Verify if is a valid Function.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Function(value) {
-    return Is.#kindOf(value) === 'function'
+  public static Function(value: any): value is Function {
+    return Is.kindOf(value) === 'function'
   }
 
   /**
    * Verify if is a valid Class.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Class(value) {
-    return Is.#kindOf(value) === 'class'
+  public static Class(value: any): boolean {
+    return Is.kindOf(value) === 'class'
   }
 
   /**
    * Verify if is a valid Integer.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Integer(value) {
+  public static Integer(value: any): value is number {
     return Number.isInteger(value)
   }
 
   /**
    * Verify if is a valid Float.
-   *
-   * @param {any} value
-   * @return {boolean}
    */
-  static Float(value) {
+  public static Float(value: any): value is number {
     return value !== (value | 0)
   }
 
   /**
    * Verify if is a valid ArrayOfObjects.
-   *
-   * @param {any[]} value
-   * @return {boolean}
    */
-  static ArrayOfObjects(value) {
+  public static ArrayOfObjects(value: any[]): value is Array<any> {
     if (!value.length) return false
 
     const results = value.map(v => Is.Object(v))

@@ -21,26 +21,26 @@ import { NodeCommandException } from '#src/Exceptions/NodeCommandException'
 const exec = promisify(childProcessExec)
 
 export interface PaginationOptions {
-  page?: number,
-  limit?: number,
+  page?: number
+  limit?: number
   resourceUrl?: string
 }
 
 export interface PaginatedResponse<T = any> {
-  data?: T[],
+  data?: T[]
   meta?: {
-    totalItems: number,
-    itemsPerPage: number,
-    totalPages: number,
-    currentPage: number,
+    totalItems: number
+    itemsPerPage: number
+    totalPages: number
+    currentPage: number
     itemCount: number
- },
- links?: {
-   next: string,
-   previous: string,
-   last: string,
-   first: string
- }
+  }
+  links?: {
+    next: string
+    previous: string
+    last: string
+    first: string
+  }
 }
 
 export class Exec {
@@ -48,14 +48,17 @@ export class Exec {
    * Sleep the code in the line that this function
    * is being called.
    */
-  static async sleep(ms: number): Promise<void> {
+  public static async sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   /**
    * Execute a command of child process exec as promise.
    */
-  static async command(command: string, options?: { ignoreErrors?: boolean }): Promise<{ stdout: string, stderr: string }> {
+  public static async command(
+    command: string,
+    options?: { ignoreErrors?: boolean },
+  ): Promise<{ stdout: string; stderr: string }> {
     options = Options.create(options, {
       withContent: true,
       mockedValues: false,
@@ -82,7 +85,11 @@ export class Exec {
   /**
    * Download an archive to determined path.
    */
-  static async download(name: string, path: string, url: string): Promise<File> {
+  public static async download(
+    name: string,
+    path: string,
+    url: string,
+  ): Promise<File> {
     return new Promise((resolve, reject) => {
       const callback = response => {
         const data = new Transform()
@@ -109,11 +116,15 @@ export class Exec {
   /**
    * Paginate a collection of data.
    */
-  static pagination<T = any>(data: any[], total: number, pagination?: PaginationOptions): PaginatedResponse<T> {
+  public static pagination<T = any>(
+    data: any[],
+    total: number,
+    pagination?: PaginationOptions,
+  ): PaginatedResponse<T> {
     pagination = Options.create(pagination, {
       page: 0,
       limit: 10,
-      resourceUrl: '/'
+      resourceUrl: '/',
     })
 
     const totalPages = Math.ceil(total / pagination.limit)

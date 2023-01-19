@@ -13,7 +13,11 @@ export class Clean {
   /**
    * Remove all falsy values from array.
    */
-  static cleanArray(array: any[], removeEmpty = false, cleanInsideObjects = false): any[] {
+  public static cleanArray(
+    array: any[],
+    removeEmpty = false,
+    cleanInsideObjects = false,
+  ): any[] {
     return array.filter((item, i) => {
       let returnItem = !!item
 
@@ -41,7 +45,11 @@ export class Clean {
   /**
    * Remove all falsy values from object.
    */
-  static cleanObject(object: any, removeEmpty = false, cleanInsideArrays = false): any {
+  public static cleanObject(
+    object: any,
+    removeEmpty = false,
+    cleanInsideArrays = false,
+  ): any {
     Object.keys(object).forEach(prop => {
       if (removeEmpty && Is.Empty(object[prop])) {
         delete object[prop]

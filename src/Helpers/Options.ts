@@ -10,12 +10,8 @@
 export class Options {
   /**
    * Creates an option object with default values.
-   *
-   * @param {any} object
-   * @param {any} defaultValues
-   * @return {any}
    */
-  static create(object, defaultValues) {
+  public static create<T = any>(object: T, defaultValues?: Partial<T>): T {
     return Object.assign({}, defaultValues, object)
   }
 }

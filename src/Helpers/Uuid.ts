@@ -14,12 +14,8 @@ import { InvalidUuidException } from '#src/Exceptions/InvalidUuidException'
 export class Uuid {
   /**
    * Verify if string is a valid uuid.
-   *
-   * @param {string} token
-   * @param {boolean} [isPrefixed]
-   * @return {boolean}
    */
-  static verify(token, isPrefixed = false) {
+  public static verify(token: string, isPrefixed = false): boolean {
     if (isPrefixed) {
       return Is.Uuid(this.getToken(token))
     }
@@ -29,11 +25,8 @@ export class Uuid {
 
   /**
    * Generate an uuid token
-   *
-   * @param {string} [prefix]
-   * @return {string}
    */
-  static generate(prefix) {
+  public static generate(prefix?: string): string {
     if (prefix) {
       return `${prefix}::${v4()}`
     }
@@ -43,11 +36,8 @@ export class Uuid {
 
   /**
    * Return the token without his prefix.
-   *
-   * @param {string} token
-   * @return {string}
    */
-  static getToken(token) {
+  public static getToken(token: string): string {
     const prefix = Uuid.getPrefix(token)
 
     if (!prefix) {
@@ -59,11 +49,8 @@ export class Uuid {
 
   /**
    * Return the prefix without his token.
-   *
-   * @param {string} token
-   * @return {string|null}
    */
-  static getPrefix(token) {
+  public static getPrefix(token: string): string | null {
     const prefix = token.split('::')[0]
 
     /**
@@ -79,13 +66,8 @@ export class Uuid {
 
   /**
    * Inject a prefix in the uuid token.
-   *
-   * @param {string} prefix
-   * @param {string} token
-   * @throws {InvalidUuidException}
-   * @return {string}
    */
-  static injectPrefix(prefix, token) {
+  public static injectPrefix(prefix: string, token: string): string {
     if (!this.verify(token)) {
       throw new InvalidUuidException(token)
     }
@@ -95,13 +77,8 @@ export class Uuid {
 
   /**
    * Change the prefix of and uuid token
-   *
-   * @param {string} newPrefix
-   * @param {string} token
-   * @throws {InvalidUuidException}
-   * @return {string}
    */
-  static changePrefix(newPrefix, token) {
+  public static changePrefix(newPrefix: string, token: string): string {
     const uuid = this.getToken(token)
 
     if (!this.verify(uuid)) {
@@ -113,12 +90,8 @@ export class Uuid {
 
   /**
    * Change the token prefix or generate a new one
-   *
-   * @param {string} prefix
-   * @param {string?} token
-   * @return {string}
    */
-  static changeOrGenerate(prefix, token) {
+  public static changeOrGenerate(prefix: string, token?: string): string {
     if (token) {
       return this.changePrefix(prefix, token)
     }

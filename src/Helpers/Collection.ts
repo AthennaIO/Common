@@ -43,21 +43,22 @@ export class Collection<T = any> extends CollectJS<T> {
    *    return value.trim().toUpperCase()
    *  })
    */
-  static macro(name: string, fn: any): void {
+  public static macro(name: string, fn: any): void {
     return new Collection().macro(name, fn)
   }
 
   /**
    * Remove all duplicated values from the array.
    */
-  removeDuplicated(): T[] {
+  public removeDuplicated(): T[] {
     return [...new Set(this.all())]
   }
 
   /**
    * Execute the toResource method inside objects if exists.
    */
-  toResource(criterias = {}): T[] {
+  public toResource(criterias = {}): T[] {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this.all().map(item => item.toResource(criterias))
   }
@@ -69,4 +70,3 @@ Collection.prototype.orderByDesc = Collection.prototype.sortByDesc
 Collection.prototype.orderDesc = Collection.prototype.sortDesc
 Collection.prototype.orderKeys = Collection.prototype.sortKeys
 Collection.prototype.orderKeysDesc = Collection.prototype.sortKeysDesc
-

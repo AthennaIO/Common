@@ -7,13 +7,12 @@
  * file that was distributed with this source code.
  */
 
-// Helpers
-import { Path } from './Helpers/Path.js'
+import { Path as PathImpl } from './Helpers/Path.js'
 
+export * from './Helpers/Exception.js'
 export * from './Helpers/Clean.js'
 export * from './Helpers/Collection.js'
 export * from './Helpers/Debug.js'
-export * from './Helpers/Exception.js'
 export * from './Helpers/Exec.js'
 export * from './Helpers/FakeApi.js'
 export * from './Helpers/File.js'
@@ -30,6 +29,12 @@ export * from './Helpers/Route.js'
 export * from './Helpers/String.js'
 export * from './Helpers/Uuid.js'
 
-if (!global.Path) {
-  global.Path = Path
+declare global {
+  export class Path extends PathImpl {}
+}
+
+const __global: any = global
+
+if (!__global.Path) {
+  __global.Path = PathImpl
 }

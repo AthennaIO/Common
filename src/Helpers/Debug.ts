@@ -32,7 +32,7 @@ export class Debug {
   /**
    * Format the message using Chalk API.
    */
-  static format(message: string) {
+  public static format(message: string) {
     if (Is.Object(message)) {
       message = JSON.stringify(message)
     }
@@ -48,7 +48,7 @@ export class Debug {
   /**
    * Format and throw the message in the stdout accordingly to the namespace.
    */
-  static log(message: string, namespace = 'api:main'): void {
+  public static log(message: string, namespace = 'api:main'): void {
     debug(namespace)(Debug.format(message))
   }
 }

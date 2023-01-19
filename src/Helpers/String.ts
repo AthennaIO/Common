@@ -16,11 +16,8 @@ import { OrdinalNanException } from '#src/Exceptions/OrdinalNanException'
 export class String {
   /**
    * Generate random string by size.
-   *
-   * @param {number} size
-   * @return {string}
    */
-  static generateRandom(size) {
+  public static generateRandom(size: number): string {
     const bits = (size + 1) * 6
     const buffer = randomBytes(Math.ceil(bits / 8))
 
@@ -29,42 +26,30 @@ export class String {
 
   /**
    * Generate random color in hexadecimal format.
-   *
-   * @return {string}
    */
-  static generateRandomColor() {
+  public static generateRandomColor(): string {
     return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
   }
 
   /**
    * Normalizes the string in base64 format removing
    * special chars.
-   *
-   * @param {string} value
-   * @return {string}
    */
-  static normalizeBase64(value) {
+  public static normalizeBase64(value: string): string {
     return value.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
   }
 
   /**
    * Transforms the string to "camelCase".
-   *
-   * @param {string} value
-   * @return {string}
    */
-  static toCamelCase(value) {
+  public static toCamelCase(value: string): string {
     return changeCase.camelCase(value)
   }
 
   /**
    * Transforms the string to "snake_case".
-   *
-   * @param {string} value
-   * @param {boolean} [capitalize]
-   * @return {string}
    */
-  static toSnakeCase(value, capitalize) {
+  public static toSnakeCase(value: string, capitalize?: boolean): string {
     if (capitalize) {
       return changeCase.snakeCase(value, {
         transform: changeCase.capitalCaseTransform,
@@ -76,32 +61,22 @@ export class String {
 
   /**
    * Transforms the string to "CONSTANT_CASE".
-   *
-   * @param {string} value
-   * @return {string}
    */
-  static toConstantCase(value) {
+  public static toConstantCase(value: string): string {
     return changeCase.constantCase(value)
   }
 
   /**
    * Transforms the string to "PascalCase".
-   *
-   * @param {string} value
-   * @return {string}
    */
-  static toPascalCase(value) {
+  public static toPascalCase(value: string): string {
     return changeCase.pascalCase(value)
   }
 
   /**
    * Transforms the string to "Sentence case".
-   *
-   * @param {string} value
-   * @param {boolean} [capitalize]
-   * @return {string}
    */
-  static toSentenceCase(value, capitalize) {
+  public static toSentenceCase(value: string, capitalize?: boolean): string {
     if (capitalize) {
       return changeCase.capitalCase(value)
     }
@@ -111,12 +86,8 @@ export class String {
 
   /**
    * Transforms the string to "dot.case".
-   *
-   * @param {string} value
-   * @param {boolean} [capitalize]
-   * @return {string}
    */
-  static toDotCase(value, capitalize) {
+  public static toDotCase(value: string, capitalize?: boolean): string {
     if (capitalize) {
       return changeCase.dotCase(value, {
         transform: changeCase.capitalCaseTransform,
@@ -128,22 +99,15 @@ export class String {
 
   /**
    * Removes all sorted cases from string.
-   *
-   * @param {string} value
-   * @return {string}
    */
-  static toNoCase(value) {
+  public static toNoCase(value: string): string {
     return changeCase.noCase(value)
   }
 
   /**
    * Transforms a string to "dash-case"
-   *
-   * @param {string} value
-   * @param {boolean} [capitalize]
-   * @return {string}
    */
-  static toDashCase(value, capitalize) {
+  public static toDashCase(value: string, capitalize?: boolean): string {
     if (capitalize) {
       return changeCase.headerCase(value)
     }
@@ -152,33 +116,23 @@ export class String {
   }
 
   /**
-   * Transforms a word to plural.
-   *
-   * @param {string} word
-   * @return {string}
+   * Transforms a word to plural
    */
-  static pluralize(word) {
+  public static pluralize(word: string): string {
     return pluralize.plural(word)
   }
 
   /**
    * Transforms a word to singular.
-   *
-   * @param {string} word
-   * @return {string}
    */
-  static singularize(word) {
+  public static singularize(word: string): string {
     return pluralize.singular(word)
   }
 
   /**
    * Transforms a number to your ordinal format.
-   *
-   * @param {string,number} value
-   * @throws {OrdinalNanException}
-   * @return {string}
    */
-  static ordinalize(value) {
+  public static ordinalize(value: string | number): string {
     const transformedValue = Math.abs(
       typeof value === 'string' ? parseInt(value) : value,
     )

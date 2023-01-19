@@ -8,13 +8,13 @@
  */
 
 import fastifyFormbody from '@fastify/formbody'
-import fastify, { FastifyInstance, HTTPMethods, RouteOptions } from 'fastify'
 
 import { File } from '#src/Helpers/File'
 import { Path } from '#src/Helpers/Path'
 import { Json } from '#src/Helpers/Json'
 import { Debug } from '#src/Helpers/Debug'
 import { Folder } from '#src/Helpers/Folder'
+import { fastify, FastifyInstance, HTTPMethods, RouteOptions } from 'fastify'
 
 export class FakeApi {
   /**
@@ -27,7 +27,7 @@ export class FakeApi {
    *
    * This method is already called when you import FakeApi module.
    */
-  static recreate(): FastifyInstance {
+  public static recreate(): FastifyInstance {
     const app = fastify()
 
     app.register(fastifyFormbody)
@@ -38,7 +38,7 @@ export class FakeApi {
   /**
    * Creates a new instance of FakeApiBuilder
    */
-  static build(): FakeApiBuilder {
+  public static build(): FakeApiBuilder {
     return new FakeApiBuilder()
   }
 
@@ -47,14 +47,14 @@ export class FakeApi {
    *
    * @return {string}
    */
-  static listRoutes(): string {
+  public static listRoutes(): string {
     return app.printRoutes()
   }
 
   /**
    * Verify if the FakeApi server is running.
    */
-  static isRunning(): boolean {
+  public static isRunning(): boolean {
     return this._isRunning
   }
 
@@ -62,7 +62,10 @@ export class FakeApi {
    * Register all routes inside folder path
    * and start the fake api server at port 8989.
    */
-  static async start(port = 8989, folderPath = Path.resources('fake-api')): Promise<void> {
+  public static async start(
+    port = 8989,
+    folderPath = Path.resources('fake-api'),
+  ): Promise<void> {
     if (folderPath) {
       await this.registerFolder(folderPath)
     }
@@ -74,7 +77,7 @@ export class FakeApi {
   /**
    * Stop the fake api server.
    */
-  static async stop(): Promise<void> {
+  public static async stop(): Promise<void> {
     await app.close()
 
     app = FakeApi.recreate()
@@ -84,7 +87,7 @@ export class FakeApi {
   /**
    * Register all file routes found in folder path.
    */
-  static async registerFolder(path: string): Promise<void> {
+  public static async registerFolder(path: string): Promise<void> {
     const files = new Folder(path).getFilesByPattern('*/**/*.json', true)
 
     const promises = files.map(file =>
@@ -97,7 +100,7 @@ export class FakeApi {
   /**
    * Register a route file.
    */
-  static registerFile(file: File): void {
+  public static registerFile(file: File): void {
     const object = Json.parse(file.content.toString())
 
     if (!object) {
@@ -163,7 +166,7 @@ export class FakeApiBuilder {
   /**
    * Set the redirect path.
    */
-  redirectTo(redirectTo: string): FakeApiBuilder {
+  public redirectTo(redirectTo: string): FakeApiBuilder {
     this._redirectTo = redirectTo
 
     return this
@@ -172,7 +175,7 @@ export class FakeApiBuilder {
   /**
    * Set the route method.
    */
-  method(method: HTTPMethods): FakeApiBuilder {
+  public method(method: HTTPMethods): FakeApiBuilder {
     this._method = method
 
     return this
@@ -181,7 +184,7 @@ export class FakeApiBuilder {
   /**
    * Set the response body of the route.
    */
-  body(body: any | any[]): FakeApiBuilder {
+  public body(body: any | any[]): FakeApiBuilder {
     this._body = body
 
     return this
@@ -190,7 +193,7 @@ export class FakeApiBuilder {
   /**
    * Set the response headers of the route.
    */
-  headers(headers: any): FakeApiBuilder {
+  public headers(headers: any): FakeApiBuilder {
     this._headers = headers
 
     return this
@@ -199,7 +202,7 @@ export class FakeApiBuilder {
   /**
    * Set the response status code of the route.
    */
-  statusCode(statusCode: number): FakeApiBuilder {
+  public statusCode(statusCode: number): FakeApiBuilder {
     this._statusCode = statusCode
 
     return this
@@ -208,7 +211,7 @@ export class FakeApiBuilder {
   /**
    * Register the route.
    */
-  register(options: Partial<RouteOptions> = {}): void {
+  public register(options: Partial<RouteOptions> = {}): void {
     let body = this._body || {}
     let statusCode = this._statusCode || 200
 

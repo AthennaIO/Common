@@ -16,65 +16,144 @@ import {
   readdirSync,
   rmSync,
   statSync,
+  Dirent,
 } from 'node:fs'
-
-import { randomBytes } from 'node:crypto'
-import { isAbsolute, join, parse, resolve, sep } from 'node:path'
 
 import { Json } from '#src/Helpers/Json'
 import { File } from '#src/Helpers/File'
 import { Path } from '#src/Helpers/Path'
+import { randomBytes } from 'node:crypto'
 import { Parser } from '#src/Helpers/Parser'
 import { Options } from '#src/Helpers/Options'
+import { isAbsolute, join, parse, resolve, sep } from 'node:path'
 import { NotFoundFolderException } from '#src/Exceptions/NotFoundFolderException'
+
+export interface FolderJSON {
+  dir: string
+  name: string
+  base: string
+  path: string
+  files: File[]
+  // eslint-disable-next-line no-use-before-define
+  folders: Folder[]
+  createdAt: Date
+  accessedAt: Date
+  modifiedAt: Date
+  folderSize: number
+  isCopy: boolean
+  originalDir: string
+  originalName: string
+  originalPath: string
+  originalFolderExists: boolean
+}
 
 export class Folder {
   /**
-   * Creates a new instance of Folder.
-   *
-   * @param {string} folderPath
-   * @param {boolean} [mockedValues]
-   * @param {boolean} [isCopy]
-   * @return {Folder}
+   * The original or faked folder directory.
    */
-  constructor(folderPath, mockedValues = false, isCopy = false) {
-    const { dir, name, path } = Folder.#parsePath(folderPath)
+  public dir: string
 
-    /** @type {File[]} */
+  /**
+   * The original or faked folder name.
+   */
+  public name: string
+
+  /**
+   * The original or faked folder base.
+   */
+  public base: string
+
+  /**
+   * The original or faked folder path.
+   */
+  public path: string
+
+  /**
+   * All the files inside of the folder.
+   */
+  public files: File[]
+
+  /**
+   * All the folders inside of the folder.
+   */
+  // eslint-disable-next-line no-use-before-define
+  public folders: Folder[]
+
+  /**
+   * Set if original or fake folder exists.
+   */
+  public folderExists: boolean
+
+  /**
+   * Date when the folder was created.
+   */
+  public createdAt: Date
+
+  /**
+   * Date when the folder was last accessed.
+   */
+  public accessedAt: Date
+
+  /**
+   * Date when the folder was last modified.
+   */
+  public modifiedAt: Date
+
+  /**
+   * The folder size.
+   */
+  public folderSize: number
+
+  /**
+   * Set if folder is a copy or not.
+   */
+  public isCopy: boolean
+
+  /**
+   * Original folder directory.
+   */
+  public originalDir: string
+
+  /**
+   * Original folder name.
+   */
+  public originalName: string
+
+  /**
+   * Original folder base.
+   */
+  public originalBase: string
+
+  /**
+   * Original folder path.
+   */
+  public originalPath: string
+
+  /**
+   * Set if original folder exists.
+   */
+  public originalFolderExists: boolean
+
+  public constructor(folderPath: string, mockedValues = false, isCopy = false) {
+    const { dir, name, path } = Folder.parsePath(folderPath)
+
     this.files = []
-
-    /** @type {Folder[]} */
     this.folders = []
-
-    /** @type {string} */
     this.originalDir = dir
-
-    /** @type {string} */
     this.originalName = name
-
-    /** @type {string} */
     this.originalPath = path
-
-    /** @type {boolean} */
     this.isCopy = isCopy
-
-    /** @type {boolean} */
     this.originalFolderExists =
       Folder.existsSync(this.originalPath) && !this.isCopy
-
-    /** @type {boolean} */
     this.folderExists = this.originalFolderExists
 
-    this.#createFolderValues(mockedValues)
+    this.createFolderValues(mockedValues)
   }
 
   /**
    * Get the size of the folder.
-   *
-   * @param {string} folderPath
-   * @return {number}
    */
-  static folderSizeSync(folderPath) {
+  public static folderSizeSync(folderPath: string): number {
     const files = readdirSync(folderPath)
     const stats = files.map(file => statSync(join(folderPath, file)))
 
@@ -83,11 +162,8 @@ export class Folder {
 
   /**
    * Get the size of the folder.
-   *
-   * @param {string} folderPath
-   * @return {Promise<number>}
    */
-  static async folderSize(folderPath) {
+  public static async folderSize(folderPath: string): Promise<number> {
     const files = await promises.readdir(folderPath)
     const stats = files.map(file => promises.stat(join(folderPath, file)))
 
@@ -99,12 +175,9 @@ export class Folder {
 
   /**
    * Remove the folder it's existing or not.
-   *
-   * @param {string} folderPath
-   * @return {Promise<void>}
    */
-  static async safeRemove(folderPath) {
-    const { path } = Folder.#parsePath(folderPath)
+  public static async safeRemove(folderPath: string): Promise<void> {
+    const { path } = Folder.parsePath(folderPath)
 
     if (!(await Folder.exists(path))) {
       return
@@ -115,24 +188,18 @@ export class Folder {
 
   /**
    * Verify if folder exists.
-   *
-   * @param {string} folderPath
-   * @return {boolean}
    */
-  static existsSync(folderPath) {
-    const { path } = Folder.#parsePath(folderPath)
+  public static existsSync(folderPath: string): boolean {
+    const { path } = Folder.parsePath(folderPath)
 
     return existsSync(path)
   }
 
   /**
    * Verify if folder exists.
-   *
-   * @param {string} folderPath
-   * @return {Promise<boolean>}
    */
-  static async exists(folderPath) {
-    const { path } = Folder.#parsePath(folderPath)
+  public static async exists(folderPath: string): Promise<boolean> {
+    const { path } = Folder.parsePath(folderPath)
 
     return promises
       .access(path)
@@ -142,12 +209,9 @@ export class Folder {
 
   /**
    * Verify if path is from folder or file.
-   *
-   * @param {string} path
-   * @return {boolean}
    */
-  static isFolderSync(path) {
-    const { path: parsedPath } = Folder.#parsePath(path)
+  public static isFolderSync(path: string): boolean {
+    const { path: parsedPath } = Folder.parsePath(path)
 
     return statSync(parsedPath).isDirectory()
   }
@@ -158,20 +222,16 @@ export class Folder {
    * @param {string} path
    * @return {Promise<boolean>}
    */
-  static async isFolder(path) {
-    const { path: parsedPath } = Folder.#parsePath(path)
+  public static async isFolder(path: string): Promise<boolean> {
+    const { path: parsedPath } = Folder.parsePath(path)
 
     return promises.stat(parsedPath).then(stat => stat.isDirectory())
   }
 
   /**
    * Get sub files of folder.
-   *
-   * @param {Folder[]} folders
-   * @param {string} [pattern]
-   * @return {File[]}
    */
-  static #getSubFiles(folders, pattern) {
+  private static getSubFiles(folders: Folder[], pattern?: string): File[] {
     const files = []
 
     folders.forEach(folder => {
@@ -188,7 +248,7 @@ export class Folder {
       })
 
       if (folder.folders.length) {
-        files.push(...this.#getSubFiles(folder.folders, pattern))
+        files.push(...this.getSubFiles(folder.folders, pattern))
       }
     })
 
@@ -197,13 +257,12 @@ export class Folder {
 
   /**
    * Get sub folders of folder.
-   *
-   * @param {Folder} folder
-   * @param {boolean} recursive
-   * @param {string} [pattern]
-   * @return {Folder[]}
    */
-  static #getSubFolders(folder, recursive, pattern) {
+  private static getSubFolders(
+    folder: Folder,
+    recursive: boolean,
+    pattern?: string,
+  ): Folder[] {
     const subFolders = []
 
     folder.folders.forEach(f => {
@@ -212,7 +271,7 @@ export class Folder {
       }
 
       if (recursive && f.folders.length) {
-        subFolders.push(...this.#getSubFolders(f, recursive, pattern))
+        subFolders.push(...this.getSubFolders(f, recursive, pattern))
       }
 
       if (pattern && minimatch(f.path, pattern)) {
@@ -225,12 +284,12 @@ export class Folder {
 
   /**
    * Parse the folder path.
-   *
-   * @private
-   * @param {string} folderPath
-   * @return {{path: string, name: string, dir: string}}
    */
-  static #parsePath(folderPath) {
+  private static parsePath(folderPath: string): {
+    path: string
+    name: string
+    dir: string
+  } {
     if (!isAbsolute(folderPath)) {
       folderPath = Path.this(folderPath, 3)
     }
@@ -248,26 +307,8 @@ export class Folder {
 
   /**
    * Returns the file as a JSON object.
-   *
-   * @return {{
-   *   dir: string,
-   *   name: string,
-   *   base: string,
-   *   path: string,
-   *   files: File[],
-   *   folders: Folder[],
-   *   createdAt: Date,
-   *   accessedAt: Date,
-   *   modifiedAt: Date,
-   *   folderSize: number,
-   *   isCopy: boolean,
-   *   originalDir: string,
-   *   originalName: string,
-   *   originalPath: string,
-   *   originalFolderExists: boolean
-   * }}
    */
-  toJSON() {
+  public toJSON(): FolderJSON {
     return Json.copy({
       dir: this.dir,
       name: this.name,
@@ -289,18 +330,15 @@ export class Folder {
 
   /**
    * Load or create the folder.
-   *
-   * @param {{
-   *   withSub?: boolean,
-   *   withFileContent?: boolean,
-   *   isInternalLoad?: boolean,
-   * }} [options]
-   * @return {Folder}
    */
-  loadSync(options) {
+  public loadSync(options?: {
+    withSub?: boolean
+    withContent?: boolean
+    isInternalLoad?: boolean
+  }): Folder {
     options = Options.create(options, {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
       isInternalLoad: false,
     })
 
@@ -325,10 +363,10 @@ export class Folder {
       return this
     }
 
-    this.#loadSubSync(
+    this.loadSubSync(
       this.path,
       readdirSync(this.path, { withFileTypes: true }),
-      options.withFileContent,
+      options.withContent,
     )
 
     return this
@@ -336,18 +374,15 @@ export class Folder {
 
   /**
    * Load or create the folder.
-   *
-   * @param {{
-   *   withSub?: boolean,
-   *   withFileContent?: boolean,
-   *   isInternalLoad?: boolean,
-   * }} [options]
-   * @return {Promise<Folder>}
    */
-  async load(options) {
+  public async load(options?: {
+    withSub?: boolean
+    withContent?: boolean
+    isInternalLoad?: boolean
+  }): Promise<Folder> {
     options = Options.create(options, {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
       isInternalLoad: false,
     })
 
@@ -372,10 +407,10 @@ export class Folder {
       return this
     }
 
-    await this.#loadSub(
+    await this.loadSub(
       this.path,
       await promises.readdir(this.path, { withFileTypes: true }),
-      options.withFileContent,
+      options.withContent,
     )
 
     return this
@@ -383,10 +418,8 @@ export class Folder {
 
   /**
    * Remove the folder.
-   *
-   * @return {void}
    */
-  removeSync() {
+  public removeSync(): void {
     if (!this.folderExists) {
       throw new NotFoundFolderException(this.name)
     }
@@ -405,10 +438,8 @@ export class Folder {
 
   /**
    * Remove the folder.
-   *
-   * @return {Promise<void>}
    */
-  async remove() {
+  public async remove(): Promise<void> {
     if (!this.folderExists) {
       throw new NotFoundFolderException(this.name)
     }
@@ -427,27 +458,26 @@ export class Folder {
 
   /**
    * Create a copy of the folder.
-   *
-   * @param {string} path
-   * @param {{
-   *   withSub?: boolean,
-   *   withFileContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {Folder}
    */
-  copySync(path, options) {
-    path = Folder.#parsePath(path).path
+  public copySync(
+    path: string,
+    options?: {
+      withSub?: boolean
+      withContent?: boolean
+      mockedValues?: boolean
+    },
+  ): Folder {
+    path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
       mockedValues: false,
     })
 
     this.loadSync({
       withSub: options.withSub,
-      withContent: options.withFileContent,
+      withContent: options.withContent,
       isInternalLoad: true,
     })
 
@@ -458,15 +488,15 @@ export class Folder {
     folder.files = this.files.map(f => {
       return f.copySync(`${folder.path}/${f.base}`, {
         mockedValues: options.mockedValues,
-        withContent: options.withFileContent,
+        withContent: options.withContent,
       })
     })
 
     folder.folders = this.folders.map(f => {
       return f.copySync(`${folder.path}/${f.base}`, {
         withSub: options.withSub,
+        withContent: options.withContent,
         mockedValues: options.mockedValues,
-        withContent: options.withFileContent,
       })
     })
 
@@ -475,27 +505,26 @@ export class Folder {
 
   /**
    * Create a copy of the folder.
-   *
-   * @param {string} path
-   * @param {{
-   *   withSub?: boolean,
-   *   withFileContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {Promise<Folder>}
    */
-  async copy(path, options) {
-    path = Folder.#parsePath(path).path
+  public async copy(
+    path: string,
+    options?: {
+      withSub?: boolean
+      withContent?: boolean
+      mockedValues?: boolean
+    },
+  ): Promise<Folder> {
+    path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
       mockedValues: false,
     })
 
     await this.load({
       withSub: options.withSub,
-      withContent: options.withFileContent,
+      withContent: options.withContent,
       isInternalLoad: true,
     })
 
@@ -507,7 +536,7 @@ export class Folder {
       this.files.map(f => {
         return f.copy(`${folder.path}/${f.base}`, {
           mockedValues: options.mockedValues,
-          withContent: options.withFileContent,
+          withContent: options.withContent,
         })
       }),
     )
@@ -517,7 +546,7 @@ export class Folder {
         return f.copy(`${folder.path}/${f.name}`, {
           withSub: options.withSub,
           mockedValues: options.mockedValues,
-          withContent: options.withFileContent,
+          withContent: options.withContent,
         })
       }),
     )
@@ -527,27 +556,26 @@ export class Folder {
 
   /**
    * Move the folder to other path.
-   *
-   * @param {string} path
-   * @param {{
-   *   withSub?: boolean,
-   *   withFileContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {Folder}
    */
-  moveSync(path, options) {
-    path = Folder.#parsePath(path).path
+  public moveSync(
+    path: string,
+    options?: {
+      withSub?: boolean
+      withContent?: boolean
+      mockedValues?: boolean
+    },
+  ): Folder {
+    path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
       mockedValues: false,
     })
 
     this.loadSync({
       withSub: options.withSub,
-      withContent: options.withFileContent,
+      withContent: options.withContent,
       isInternalLoad: true,
     })
 
@@ -558,7 +586,7 @@ export class Folder {
     folder.files = this.files.map(f => {
       return f.moveSync(`${folder.path}/${f.base}`, {
         mockedValues: options.mockedValues,
-        withContent: options.withFileContent,
+        withContent: options.withContent,
       })
     })
 
@@ -566,7 +594,7 @@ export class Folder {
       return f.moveSync(`${folder.path}/${f.name}`, {
         withSub: options.withSub,
         mockedValues: options.mockedValues,
-        withContent: options.withFileContent,
+        withContent: options.withContent,
       })
     })
 
@@ -577,27 +605,26 @@ export class Folder {
 
   /**
    * Move the folder to other path.
-   *
-   * @param {string} path
-   * @param {{
-   *   withSub?: boolean,
-   *   withFileContent?: boolean,
-   *   mockedValues?: boolean
-   * }} [options]
-   * @return {Promise<Folder>}
    */
-  async move(path, options) {
-    path = Folder.#parsePath(path).path
+  public async move(
+    path: string,
+    options?: {
+      withSub?: boolean
+      withContent?: boolean
+      mockedValues?: boolean
+    },
+  ): Promise<Folder> {
+    path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
       mockedValues: false,
     })
 
     await this.load({
       withSub: options.withSub,
-      withContent: options.withFileContent,
+      withContent: options.withContent,
       isInternalLoad: true,
     })
 
@@ -609,7 +636,7 @@ export class Folder {
       this.files.map(f => {
         return f.move(`${folder.path}/${f.base}`, {
           mockedValues: options.mockedValues,
-          withContent: options.withFileContent,
+          withContent: options.withContent,
         })
       }),
     )
@@ -619,7 +646,7 @@ export class Folder {
         return f.move(`${folder.path}/${f.name}`, {
           withSub: options.withSub,
           mockedValues: options.mockedValues,
-          withContent: options.withFileContent,
+          withContent: options.withContent,
         })
       }),
     )
@@ -631,12 +658,8 @@ export class Folder {
 
   /**
    * Get all the files of folder using glob pattern.
-   *
-   * @param {string} [pattern]
-   * @param {boolean} [recursive]
-   * @return {File[]}
    */
-  getFilesByPattern(pattern, recursive = false) {
+  public getFilesByPattern(pattern?: string, recursive = false): File[] {
     this.loadSync({ withSub: true, isInternalLoad: true })
 
     if (pattern) {
@@ -656,7 +679,7 @@ export class Folder {
     })
 
     if (recursive) {
-      files.push(...Folder.#getSubFiles(this.folders, pattern))
+      files.push(...Folder.getSubFiles(this.folders, pattern))
     }
 
     return files
@@ -664,12 +687,8 @@ export class Folder {
 
   /**
    * Get all the folders of folder using glob pattern.
-   *
-   * @param {string} [pattern]
-   * @param {boolean} [recursive]
-   * @return {Folder[]}
    */
-  getFoldersByPattern(pattern, recursive = false) {
+  public getFoldersByPattern(pattern: string, recursive = false): Folder[] {
     this.loadSync({ withSub: true, isInternalLoad: true })
 
     if (pattern) {
@@ -680,7 +699,7 @@ export class Folder {
 
     this.folders.forEach(folder => {
       if (recursive && folder.folders.length) {
-        folders.push(...Folder.#getSubFolders(folder, recursive, pattern))
+        folders.push(...Folder.getSubFolders(folder, recursive, pattern))
       }
 
       if (pattern && minimatch(folder.path, pattern)) {
@@ -697,11 +716,8 @@ export class Folder {
 
   /**
    * Create folder values.
-   *
-   * @param {boolean?} mockedValues
-   * @return {void}
    */
-  #createFolderValues(mockedValues) {
+  private createFolderValues(mockedValues?: boolean): void {
     if (mockedValues && !this.originalFolderExists) {
       const bytes = randomBytes(8)
       const buffer = Buffer.from(bytes)
@@ -720,20 +736,19 @@ export class Folder {
 
   /**
    * Load sub files/folder of folder.
-   *
-   * @param {string} path
-   * @param {Dirent[]} dirents
-   * @param {boolean} withFileContent
-   * @return {void}
    */
-  #loadSubSync(path, dirents, withFileContent) {
+  private loadSubSync(
+    path: string,
+    dirents: Dirent[],
+    withContent: boolean,
+  ): void {
     dirents.forEach(dirent => {
       const name = resolve(path, dirent.name)
 
       if (dirent.isDirectory()) {
         const folder = new Folder(name).loadSync({
           withSub: true,
-          withFileContent,
+          withContent,
           isInternalLoad: true,
         })
 
@@ -743,7 +758,7 @@ export class Folder {
       }
 
       const file = new File(name).loadSync({
-        withContent: withFileContent,
+        withContent,
         isInternalLoad: true,
       })
 
@@ -753,13 +768,12 @@ export class Folder {
 
   /**
    * Load sub files/folder of folder.
-   *
-   * @param {string} path
-   * @param {Dirent[]} dirents
-   * @param {boolean} withFileContent
-   * @return {Promise<void>}
    */
-  async #loadSub(path, dirents, withFileContent) {
+  private async loadSub(
+    path: string,
+    dirents: Dirent[],
+    withContent?: boolean,
+  ): Promise<void> {
     const files = []
     const folders = []
 
@@ -769,7 +783,7 @@ export class Folder {
       if (dirent.isDirectory()) {
         const folder = new Folder(name).load({
           withSub: true,
-          withFileContent,
+          withContent,
           isInternalLoad: true,
         })
 
@@ -779,7 +793,7 @@ export class Folder {
       }
 
       const file = new File(name).load({
-        withContent: withFileContent,
+        withContent,
         isInternalLoad: true,
       })
 

@@ -8,18 +8,16 @@
  */
 
 import { dirname } from 'node:path'
+import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-import { Folder, Path } from '#src/index'
+import { Path, File, Folder } from '#src/index'
 
 export class Module {
   /**
    * Get the module first export match or default.
-   *
-   * @param {any|Promise<any>} module
-   * @return {Promise<any>}
    */
-  static async get(module) {
+  public static async get(module: any | Promise<any>): Promise<any> {
     module = await module
 
     if (module.default) {
@@ -30,13 +28,21 @@ export class Module {
   }
 
   /**
-   * Get the module first export match or default with alias.
+   * Get the module first export match or default with an alias.
    *
-   * @param {any|Promise<any>} module
-   * @param {string} subAlias
-   * @return {Promise<{ alias: string, module: any }>}
+   * @example
+   *  const _module = import('#app/Services/MyService')
+   *  const _alias = 'App/Services'
+   *
+   *  const { alias, module } = Module.getWithAlias(_module, _alias)
+   *
+   *  console.log(alias) // 'App/Services/MyService'
+   *  console.log(module) // [class MyService]
    */
-  static async getWithAlias(module, subAlias) {
+  public static async getWithAlias(
+    module: any | Promise<any>,
+    subAlias: string,
+  ): Promise<{ alias: string; module: any }> {
     module = await Module.get(module)
 
     if (!subAlias.endsWith('/')) {
@@ -51,25 +57,29 @@ export class Module {
   /**
    * Get all modules first export match or default and return
    * as array.
-   *
-   * @param {any[]|Promise<any[]>} modules
-   * @return {Promise<any[]>}
    */
-  static async getAll(modules) {
+  public static async getAll(modules: any[]): Promise<any[]> {
     const promises = modules.map(m => Module.get(m))
 
     return Promise.all(promises)
   }
 
   /**
-   * Get all modules first export match or default with alias and return
-   * as array.
+   * Get all modules first export match or default with an alias.
    *
-   * @param {any[]|Promise<any[]>} modules
-   * @param {string} subAlias
-   * @return {Promise<any[]>}
+   * @example
+   *  const _modules = [import('#app/Services/MyService')]
+   *  const _alias = 'App/Services'
+   *
+   *  const [{ alias, module }] = Module.getAllWithAlias(_modules, _alias)
+   *
+   *  console.log(alias) // 'App/Services/MyService'
+   *  console.log(module) // [class MyService]
    */
-  static async getAllWithAlias(modules, subAlias) {
+  public static async getAllWithAlias(
+    modules: any[],
+    subAlias: string,
+  ): Promise<{ alias: string; module: any }[]> {
     const promises = modules.map(m => Module.getWithAlias(m, subAlias))
 
     return Promise.all(promises)
@@ -77,11 +87,8 @@ export class Module {
 
   /**
    * Same as get method, but import the path directly.
-   *
-   * @param {string} path
-   * @return {Promise<any>}
    */
-  static async getFrom(path) {
+  public static async getFrom(path: string): Promise<any> {
     const module = await Module.import(path)
 
     return Module.get(module)
@@ -89,12 +96,11 @@ export class Module {
 
   /**
    * Same as getWithAlias method, but import the path directly.
-   *
-   * @param {string} path
-   * @param {string} subAlias
-   * @return {Promise<{ alias: string, module: any }>}
    */
-  static async getFromWithAlias(path, subAlias) {
+  public static async getFromWithAlias(
+    path: string,
+    subAlias: string,
+  ): Promise<{ alias: string; module: any }> {
     const module = await Module.import(path)
 
     return Module.getWithAlias(module, subAlias)
@@ -102,11 +108,8 @@ export class Module {
 
   /**
    * Same as getAll method but import everything in the path directly.
-   *
-   * @param {string} path
-   * @return {Promise<any[]>}
    */
-  static async getAllFrom(path) {
+  public static async getAllFrom(path: string): Promise<any[]> {
     const files = await Module.getAllJSFilesFrom(path)
 
     const promises = files.map(file => Module.getFrom(file.path))
@@ -116,12 +119,11 @@ export class Module {
 
   /**
    * Same as getAllWithAlias method but import everything in the path directly.
-   *
-   * @param {string} path
-   * @param {string} subAlias
-   * @return {Promise<{ alias: string, module: any }[]>}
    */
-  static async getAllFromWithAlias(path, subAlias) {
+  public static async getAllFromWithAlias(
+    path: string,
+    subAlias: string,
+  ): Promise<{ alias: string; module: any }[]> {
     const files = await Module.getAllJSFilesFrom(path)
 
     const promises = files.map(f => Module.getFromWithAlias(f.path, subAlias))
@@ -131,11 +133,8 @@ export class Module {
 
   /**
    * Verify if folder exists and get all .js files inside.
-   *
-   * @param {string} path
-   * @return {Promise<File[]>}
    */
-  static async getAllJSFilesFrom(path) {
+  public static async getAllJSFilesFrom(path: string): Promise<File[]> {
     if (!(await Folder.exists(path))) {
       return []
     }
@@ -155,22 +154,18 @@ export class Module {
   /**
    * Import a full path using the path href to ensure compatibility
    * between OS's.
-   *
-   * @param {string} path
-   * @return {Promise<any>}
    */
-  static async import(path) {
+  public static async import(path: string): Promise<any> {
     return import(pathToFileURL(path).href)
   }
 
   /**
    * Create the __dirname property. Set in global if necessary.
-   *
-   * @param {string} [url]
-   * @param {boolean} [setInGlobal]
-   * @return {string}
    */
-  static createDirname(url = import.meta.url, setInGlobal = false) {
+  public static createDirname(
+    url = import.meta.url,
+    setInGlobal = false,
+  ): string {
     const __dirname = dirname(Module.createFilename(url, false))
 
     if (setInGlobal) {
@@ -182,12 +177,11 @@ export class Module {
 
   /**
    * Create the __filename property. Set in global if necessary.
-   *
-   * @param {string} [url]
-   * @param {boolean} [setInGlobal]
-   * @return {string}
    */
-  static createFilename(url = import.meta.url, setInGlobal = false) {
+  public static createFilename(
+    url = import.meta.url,
+    setInGlobal = false,
+  ): string {
     const __filename = fileURLToPath(url)
 
     if (setInGlobal) {
@@ -195,5 +189,21 @@ export class Module {
     }
 
     return __filename
+  }
+
+  /**
+   * Create the require function. Set in global if necessary.
+   */
+  public static createRequire(
+    url = import.meta.url,
+    setInGlobal = false,
+  ): typeof require {
+    const require = createRequire(url)
+
+    if (setInGlobal) {
+      global.require = require
+    }
+
+    return require
   }
 }

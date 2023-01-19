@@ -10,37 +10,31 @@
 import ms from 'ms'
 import bytes from 'bytes'
 
-import { getReasonPhrase, getStatusCode } from 'http-status-codes'
-
 import { Is } from '#src/Helpers/Is'
 import { String } from '#src/Helpers/String'
 import { Options } from '#src/Helpers/Options'
+import { getReasonPhrase, getStatusCode } from 'http-status-codes'
 import { InvalidNumberException } from '#src/Exceptions/InvalidNumberException'
 
 export class Parser {
   /**
    * Parse a string to array.
-   *
-   * @param {string} string
-   * @param {string} separator
-   * @return {string[]}
    */
-  static stringToArray(string, separator) {
+  public static stringToArray(string: string, separator: string): string[] {
     return string.split(separator).map(index => index.trim())
   }
 
   /**
    * Parse an array of strings to a string.
-   *
-   * @param {string[]} values
-   * @param {{
-   *   separator?: string,
-   *   pairSeparator?: string,
-   *   lastSeparator?: string
-   * }} [options]
-   * @return {string}
    */
-  static arrayToString(values, options) {
+  public static arrayToString(
+    values: string[],
+    options?: {
+      separator?: string
+      pairSeparator?: string
+      lastSeparator?: string
+    },
+  ): string {
     if (values.length === 0) {
       return ''
     }
@@ -67,13 +61,8 @@ export class Parser {
 
   /**
    * Parse a string to number or Coordinate.
-   *
-   * @param {string} string
-   * @param {boolean} isCoordinate
-   * @throws {InvalidNumberException}
-   * @return {number}
    */
-  static stringToNumber(string, isCoordinate = false) {
+  public static stringToNumber(string: string, isCoordinate = false): number {
     if (!string.replace(/\D/g, '')) {
       throw new InvalidNumberException(string)
     }
@@ -93,7 +82,7 @@ export class Parser {
    * @param {any} object
    * @return {string}
    */
-  static jsonToFormData(object) {
+  public static jsonToFormData(object: any): string {
     return Object.keys(object)
       .reduce((previous, current) => {
         return previous + `&${current}=${encodeURIComponent(object[current])}`
@@ -103,11 +92,8 @@ export class Parser {
 
   /**
    * Parse form data to json.
-   *
-   * @param {string} formData
-   * @return {any}
    */
-  static formDataToJson(formData) {
+  public static formDataToJson(formData: string): any {
     const object = {}
 
     if (formData.startsWith('?')) formData = formData.replace('?', '')
@@ -124,11 +110,8 @@ export class Parser {
   /**
    * Parses all links inside the string to HTML link
    * with <a href= .../>.
-   *
-   * @param {string} string
-   * @return {string}
    */
-  static linkToHref(string) {
+  public static linkToHref(string: string): string {
     const regex = /(https?:\/\/[^\s]+)/g
 
     return string.replace(regex, '<a href="$1">$1</a>')
@@ -136,68 +119,46 @@ export class Parser {
 
   /**
    * Parses a number to Byte format.
-   *
-   * @param {number} value
-   * @param {object} [options]
-   * @param {number} [options.decimalPlaces=2]
-   * @param {number} [options.fixedDecimals=false]
-   * @param {string} [options.thousandsSeparator=]
-   * @param {string} [options.unit=]
-   * @param {string} [options.unitSeparator=]
-   * @return {string}
    */
-  static sizeToByte(value, options) {
+  public static sizeToByte(
+    value: number,
+    options?: bytes.BytesOptions,
+  ): string {
     return bytes.format(value, options)
   }
 
   /**
    * Parses a byte format to number.
-   *
-   * @param {string|number} byte
-   * @return {number}
    */
-  static byteToSize(byte) {
+  public static byteToSize(byte: string | number): number {
     return bytes.parse(byte)
   }
 
   /**
    * Parses a string to MS format.
-   *
-   * @param {string} value
-   * @return {number}
    */
-  static timeToMs(value) {
+  public static timeToMs(value: string): number {
     return ms(value)
   }
 
   /**
    * Parses an MS number to time format.
-   *
-   * @param {number} value
-   * @param {boolean} long
-   * @return {string}
    */
-  static msToTime(value, long = false) {
+  public static msToTime(value: number, long = false): string {
     return ms(value, { long })
   }
 
   /**
    * Parses the status code number to it reason in string.
-   *
-   * @param {string|number} status
-   * @return {string}
    */
-  static statusCodeToReason(status) {
+  public static statusCodeToReason(status: string | number): string {
     return String.toConstantCase(getReasonPhrase(status))
   }
 
   /**
    * Parses the reason in string to it status code number
-   *
-   * @param {string} reason
-   * @return {number}
    */
-  static reasonToStatusCode(reason) {
+  public static reasonToStatusCode(reason: string): number {
     reason = String.toSentenceCase(reason, true)
 
     if (reason === 'Ok') reason = 'OK'
@@ -207,19 +168,16 @@ export class Parser {
 
   /**
    * Parses the database connection url to connection object.
-   *
-   * @param {string} url
-   * @return {{
-   *   protocol: string,
-   *   user?: string,
-   *   password?: string,
-   *   host: string|string[],
-   *   port?: number,
-   *   database: string,
-   *   options?: any,
-   * }}
    */
-  static dbUrlToConnectionObj(url) {
+  public static dbUrlToConnectionObj(url: string): {
+    protocol: string
+    user?: string
+    password?: string
+    host: string | string[]
+    port?: number
+    database: string
+    options?: any
+  } {
     const urlRegexp =
       /^([^:\\/\s]+):\/\/((.*):(.*)@|)(.*)(:(.*)|)\/(.*)(\?(.+))?/
 
@@ -264,19 +222,16 @@ export class Parser {
 
   /**
    * Parses the database connection object to connection url.
-   *
-   * @param {{
-   *   protocol: string,
-   *   user?: string,
-   *   password?: string,
-   *   host: string|string[],
-   *   port?: number,
-   *   database: string,
-   *   options?: any,
-   * }} object
-   * @return {string}
    */
-  static connectionObjToDbUrl(object) {
+  public static connectionObjToDbUrl(object: {
+    protocol: string
+    user?: string
+    password?: string
+    host: string | string[]
+    port?: number
+    database: string
+    options?: any
+  }): string {
     const { protocol, user, password, host, port, database, options } = object
 
     let url = `${protocol}://`

@@ -17,10 +17,8 @@ export class Path {
   /**
    * Set a default beforePath for all Path methods that
    * use Path.pwd.
-   *
-   * @type {string}
    */
-  static defaultBeforePath = ''
+  public static defaultBeforePath = ''
 
   /**
    * Resolve the environment where the application
@@ -30,12 +28,11 @@ export class Path {
    * defaultBeforePath if IS_TS is true.
    *
    * The beforePath is always set as '/build' by default.
-   *
-   * @param metaUrl {string}
-   * @param beforePath {string}
-   * @return {typeof Path}
    */
-  static resolveEnvironment(metaUrl, beforePath = '') {
+  public static resolveEnvironment(
+    metaUrl: string,
+    beforePath = '',
+  ): typeof Path {
     const isTs = metaUrl.endsWith('.ts') ? 'true' : 'false'
 
     process.env.IS_TS = process.env.IS_TS || isTs
@@ -46,15 +43,11 @@ export class Path {
 
   /**
    * Return js or ts extension depending on IS_TS.
-   *
-   * @return {string}
    */
-  static ext() {
+  public static ext(): string {
     const isTs = !!(
       process.env.IS_TS &&
-      (process.env.IS_TS === true ||
-        process.env.IS_TS === 'true' ||
-        process.env.IS_TS === '(true)')
+      (process.env.IS_TS === 'true' || process.env.IS_TS === '(true)')
     )
 
     if (isTs) {
@@ -66,326 +59,235 @@ export class Path {
 
   /**
    * Return the pwd path of your project.
-   *
-   * @param {string} [subPath]
-   * @return {string}
    */
-  static pwd(subPath = sep) {
+  public static pwd(subPath = sep): string {
     if (Path.defaultBeforePath) {
       subPath = normalize(Path.defaultBeforePath).concat(sep, subPath)
     }
 
     const pwd = normalize(`${process.cwd()}${sep}${normalize(subPath)}`)
 
-    return this.#removeSlashes(pwd)
+    return this.removeSlashes(pwd)
   }
 
   /**
    * Return the app path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static app(subPath = sep) {
+  public static app(subPath = sep): string {
     return this.pwd('app' + sep + normalize(subPath))
   }
 
   /**
    * Return the bootstrap path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static bootstrap(subPath = sep) {
+  public static bootstrap(subPath = sep): string {
     return this.pwd('bootstrap' + sep + normalize(subPath))
   }
 
   /**
    * Return the config path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static config(subPath = sep) {
+  public static config(subPath = sep): string {
     return this.pwd('config' + sep + normalize(subPath))
   }
 
   /**
    * Return the database path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static database(subPath = sep) {
+  public static database(subPath = sep): string {
     return this.pwd('database' + sep + normalize(subPath))
   }
 
   /**
    * Return the lang path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static lang(subPath = sep) {
+  public static lang(subPath = sep): string {
     return this.pwd('lang' + sep + normalize(subPath))
   }
 
   /**
    * Return the node_modules path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static nodeModules(subPath = sep) {
+  public static nodeModules(subPath = sep): string {
     return this.pwd('node_modules' + sep + normalize(subPath))
   }
 
   /**
    * Return the providers' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static providers(subPath = sep) {
+  public static providers(subPath = sep): string {
     return this.pwd('providers' + sep + normalize(subPath))
   }
 
   /**
    * Return the public path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static public(subPath = sep) {
+  public static public(subPath = sep): string {
     return this.pwd('public' + sep + normalize(subPath))
   }
 
   /**
    * Return the resources' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static resources(subPath = sep) {
+  public static resources(subPath = sep): string {
     return this.pwd('resources' + sep + normalize(subPath))
   }
 
   /**
    * Return the routes' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static routes(subPath = sep) {
+  public static routes(subPath = sep): string {
     return this.pwd('routes' + sep + normalize(subPath))
   }
 
   /**
    * Return the storage path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static storage(subPath = sep) {
+  public static storage(subPath = sep): string {
     return this.pwd('storage' + sep + normalize(subPath))
   }
 
   /**
    * Return the tests' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static tests(subPath = sep) {
+  public static tests(subPath = sep): string {
     return this.pwd('tests' + sep + normalize(subPath))
   }
 
   /**
    * Return the logs' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static logs(subPath = sep) {
+  public static logs(subPath = sep): string {
     return this.storage('logs' + sep + normalize(subPath))
   }
 
   /**
    * Return the views' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static views(subPath = sep) {
+  public static views(subPath = sep): string {
     return this.resources('views' + sep + normalize(subPath))
   }
 
   /**
    * Return the assets' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static assets(subPath = sep) {
+  public static assets(subPath = sep): string {
     return this.public('assets' + sep + normalize(subPath))
   }
 
   /**
    * Return the locales' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static locales(subPath = sep) {
+  public static locales(subPath = sep): string {
     return this.resources('locales' + sep + normalize(subPath))
   }
 
   /**
    * Return the facades' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static facades(subPath = sep) {
+  public static facades(subPath = sep): string {
     return this.providers('Facades' + sep + normalize(subPath))
   }
 
   /**
    * Return the stubs' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static stubs(subPath = sep) {
+  public static stubs(subPath = sep): string {
     return this.tests('Stubs' + sep + normalize(subPath))
   }
 
   /**
    * Return the http path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static http(subPath = sep) {
+  public static http(subPath = sep): string {
     return this.app('Http' + sep + normalize(subPath))
   }
 
   /**
    * Return the console path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static console(subPath = sep) {
+  public static console(subPath = sep): string {
     return this.app('Console' + sep + normalize(subPath))
   }
 
   /**
    * Return the services' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static services(subPath = sep) {
+  public static services(subPath = sep): string {
     return this.app('Services' + sep + normalize(subPath))
   }
 
   /**
    * Return the repositories' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static repositories(subPath = sep) {
+  public static repositories(subPath = sep): string {
     return this.app('Repositories' + sep + normalize(subPath))
   }
 
   /**
    * Return the migrations' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static migrations(subPath = sep) {
+  public static migrations(subPath = sep): string {
     return this.database('migrations' + sep + normalize(subPath))
   }
 
   /**
    * Return the seeders' path of your project.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static seeders(subPath = sep) {
+  public static seeders(subPath = sep): string {
     return this.database('seeders' + sep + normalize(subPath))
   }
 
   /**
    * Return the .bin path of your node_modules.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static bin(subPath = sep) {
+  public static bin(subPath = sep): string {
     return this.nodeModules('.bin' + sep + normalize(subPath))
   }
 
   /**
    * Return the tmp path of your vm.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static vmTmp(subPath = sep) {
+  public static vmTmp(subPath = sep): string {
     const osTmpDir = tmpdir()
 
     const tmpDir = osTmpDir.concat(sep, normalize(subPath))
 
-    return this.#removeSlashes(tmpDir)
+    return this.removeSlashes(tmpDir)
   }
 
   /**
    * Return the home path of your vm.
-   *
-   * @param {string} subPath
-   * @return {string}
    */
-  static vmHome(subPath = sep) {
+  public static vmHome(subPath = sep): string {
     const osHomeDir = homedir()
 
     const homeDir = osHomeDir.concat(sep, normalize(subPath))
 
-    return this.#removeSlashes(homeDir)
+    return this.removeSlashes(homeDir)
   }
 
   /**
    * Return the execution path of where this method
    * is being called.
-   *
-   * @param {string} subPath
-   * @param {number} [stackIndex]
-   * @return {string}
    */
-  static this(subPath = sep, stackIndex = 1) {
+  public static this(subPath = sep, stackIndex = 1): string {
     const stack = callSite()
     const requester = dirname(fileURLToPath(stack[stackIndex].getFileName()))
     const execDir = normalize(requester.concat(sep, normalize(subPath)))
 
-    return this.#removeSlashes(execDir)
+    return this.removeSlashes(execDir)
   }
 
   /**
    * Remove additional slashes from path.
-   *
-   * @param {string} path
-   * @return {string}
    */
-  static #removeSlashes(path) {
+  private static removeSlashes(path: string): string {
     if (path.endsWith(sep)) {
       path = path.slice(0, -1)
 
       if (path.endsWith(sep)) {
-        return this.#removeSlashes(path)
+        return this.removeSlashes(path)
       }
     }
 

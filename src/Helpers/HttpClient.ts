@@ -7,44 +7,63 @@
  * file that was distributed with this source code.
  */
 
-import got from 'got'
+import CacheableLookup from 'cacheable-lookup'
+import got, {
+  Request,
+  OptionsInit,
+  Method,
+  PromiseCookieJar,
+  ToughCookieJar,
+  ParseJsonFunction,
+  CacheOptions,
+  DnsLookupIpVersion,
+  Hooks,
+  HttpsOptions,
+  PaginationOptions,
+  CreateConnectionFunction,
+  RetryOptions,
+  StringifyJsonFunction,
+  Delays,
+  Agents,
+  AfterResponseHook,
+  BeforeRetryHook,
+  BeforeErrorHook,
+  BeforeRedirectHook,
+  BeforeRequestHook,
+  InitHook,
+} from 'got'
+
+import { Store } from 'keyv'
 import { Is } from '#src/Helpers/Is'
 import { Json } from '#src/Helpers/Json'
+import { ClientHttp2Session } from 'http2'
+import { Body } from '#src/Types/HttpClient/Body'
+import { Query } from '#src/Types/HttpClient/Query'
+import { Response } from '#src/Types/HttpClient/Response'
+import { RetryStrategyCallback } from '#src/Types/HttpClient/RetryStrategyCallback'
 
 export class HttpClientBuilder {
   /**
    * Got options used to make the request.
-   *
-   * @type {import('got').OptionsInit}
    */
-  #options
+  private options: OptionsInit
 
-  /**
-   * Creates a new instance of HttpClientBuilder.
-   *
-   * @param options {import('got').OptionsInit}
-   */
-  constructor(options = {}) {
-    this.#options = options
+  public constructor(options: OptionsInit = {}) {
+    this.options = options
   }
 
   /**
    * Return the options of the client builder.
-   *
-   * @return {import('got').OptionsInit}
    */
-  getOptions() {
-    return Json.copy(this.#options)
+  public getOptions(): OptionsInit {
+    return Json.copy(this.options)
   }
 
   /**
    * From `http-cache-semantics`
-   *
-   * @param cacheOptions {import('got').CacheOptions}
-   * @return {HttpClientBuilder}
    */
-  cacheOptions(cacheOptions) {
-    this.#options.cacheOptions = cacheOptions
+  public cacheOptions(cacheOptions: CacheOptions): HttpClientBuilder {
+    this.options.cacheOptions = cacheOptions
 
     return this
   }
@@ -89,20 +108,17 @@ export class HttpClientBuilder {
    * // There is no option named `followRedirects` in got, but we correct it
    * // in an `init` hook.
    * ```
-   *
-   * @param initHook {import('got').InitHook}
-   * @return {HttpClientBuilder}
    */
-  setInitHook(initHook) {
-    if (!this.#options.hooks) {
-      this.#options.hooks = {}
+  public setInitHook(initHook: InitHook): HttpClientBuilder {
+    if (!this.options.hooks) {
+      this.options.hooks = {}
     }
 
-    if (!this.#options.hooks.init) {
-      this.#options.hooks.init = []
+    if (!this.options.hooks.init) {
+      this.options.hooks.init = []
     }
 
-    this.#options.hooks.init.push(initHook)
+    this.options.hooks.init.push(initHook)
 
     return this
   }
@@ -127,20 +143,17 @@ export class HttpClientBuilder {
    *    })
    *    .post('https://httpbin.org/anything', { payload: 'old' })
    * ```
-   *
-   * @param beforeRequestHook {import('got').BeforeRequestHook}
-   * @return {HttpClientBuilder}
    */
-  setBeforeRequestHook(beforeRequestHook) {
-    if (!this.#options.hooks) {
-      this.#options.hooks = {}
+  public setBeforeRequestHook(hook: BeforeRequestHook): HttpClientBuilder {
+    if (!this.options.hooks) {
+      this.options.hooks = {}
     }
 
-    if (!this.#options.hooks.beforeRequest) {
-      this.#options.hooks.beforeRequest = []
+    if (!this.options.hooks.beforeRequest) {
+      this.options.hooks.beforeRequest = []
     }
 
-    this.#options.hooks.beforeRequest.push(beforeRequestHook)
+    this.options.hooks.beforeRequest.push(hook)
 
     return this
   }
@@ -161,20 +174,17 @@ export class HttpClientBuilder {
    *    })
    *    .get('https://example.com')
    * ```
-   *
-   * @param beforeRedirectHook {import('got').BeforeRedirectHook}
-   * @return {HttpClientBuilder}
    */
-  setBeforeRedirectHook(beforeRedirectHook) {
-    if (!this.#options.hooks) {
-      this.#options.hooks = {}
+  public setBeforeRedirectHook(hook: BeforeRedirectHook): HttpClientBuilder {
+    if (!this.options.hooks) {
+      this.options.hooks = {}
     }
 
-    if (!this.#options.hooks.beforeRedirect) {
-      this.#options.hooks.beforeRedirect = []
+    if (!this.options.hooks.beforeRedirect) {
+      this.options.hooks.beforeRedirect = []
     }
 
-    this.#options.hooks.beforeRedirect.push(beforeRedirectHook)
+    this.options.hooks.beforeRedirect.push(hook)
 
     return this
   }
@@ -200,20 +210,17 @@ export class HttpClientBuilder {
    *    })
    *    .get('https://api.github.com/repos/AthennaIO/Common/commits')
    * ```
-   *
-   * @param beforeErrorHook {import('got').BeforeErrorHook}
-   * @return {HttpClientBuilder}
    */
-  setBeforeErrorHook(beforeErrorHook) {
-    if (!this.#options.hooks) {
-      this.#options.hooks = {}
+  public setBeforeErrorHook(hook: BeforeErrorHook): HttpClientBuilder {
+    if (!this.options.hooks) {
+      this.options.hooks = {}
     }
 
-    if (!this.#options.hooks.beforeError) {
-      this.#options.hooks.beforeError = []
+    if (!this.options.hooks.beforeError) {
+      this.options.hooks.beforeError = []
     }
 
-    this.#options.hooks.beforeError.push(beforeErrorHook)
+    this.options.hooks.beforeError.push(hook)
 
     return this
   }
@@ -242,20 +249,17 @@ export class HttpClientBuilder {
    *    })
    *    .get('https://httpbin.org/status/500')
    * ```
-   *
-   * @param beforeRetryHook {import('got').BeforeRetryHook}
-   * @return {HttpClientBuilder}
    */
-  setBeforeRetryHook(beforeRetryHook) {
-    if (!this.#options.hooks) {
-      this.#options.hooks = {}
+  public setBeforeRetryHook(hook: BeforeRetryHook): HttpClientBuilder {
+    if (!this.options.hooks) {
+      this.options.hooks = {}
     }
 
-    if (!this.#options.hooks.beforeRetry) {
-      this.#options.hooks.beforeRetry = []
+    if (!this.options.hooks.beforeRetry) {
+      this.options.hooks.beforeRetry = []
     }
 
-    this.#options.hooks.beforeRetry.push(beforeRetryHook)
+    this.options.hooks.beforeRetry.push(hook)
 
     return this
   }
@@ -298,20 +302,17 @@ export class HttpClientBuilder {
    *       return response
    * })
    * ```
-   *
-   * @param afterResponseHook {import('got').AfterResponseHook}
-   * @return {HttpClientBuilder}
    */
-  setAfterResponseHook(afterResponseHook) {
-    if (!this.#options.hooks) {
-      this.#options.hooks = {}
+  public setAfterResponseHook(hook: AfterResponseHook): HttpClientBuilder {
+    if (!this.options.hooks) {
+      this.options.hooks = {}
     }
 
-    if (!this.#options.hooks.afterResponse) {
-      this.#options.hooks.afterResponse = []
+    if (!this.options.hooks.afterResponse) {
+      this.options.hooks.afterResponse = []
     }
 
-    this.#options.hooks.afterResponse.push(afterResponseHook)
+    this.options.hooks.afterResponse.push(hook)
 
     return this
   }
@@ -333,24 +334,18 @@ export class HttpClientBuilder {
    *    .agent({ http: new HttpAgent(), https: new HttpsAgent() }
    *    .get('https://sindresorhus.com')
    * ```
-   *
-   * @param agents {import('got').Agents}
-   * @return {HttpClientBuilder}
    */
-  agent(agents) {
-    this.#options.agent = agents
+  public agent(agents: Agents): HttpClientBuilder {
+    this.options.agent = agents
 
     return this
   }
 
   /**
    * Set the http2 session.
-   *
-   * @param h2session {ClientHttp2Session}
-   * @return {HttpClientBuilder}
    */
-  h2session(h2session) {
-    this.#options.h2session = h2session
+  public h2session(h2session: ClientHttp2Session): HttpClientBuilder {
+    this.options.h2session = h2session
 
     return this
   }
@@ -362,11 +357,9 @@ export class HttpClientBuilder {
    *
    * If this is disabled, a compressed response is returned as a `Buffer`.
    * This may be useful if you want to handle decompression yourself or stream the raw compressed data.
-   *
-   * @param decompress {boolean}
    */
-  decompress(decompress) {
-    this.#options.decompress = decompress
+  public decompress(decompress: boolean): HttpClientBuilder {
+    this.options.decompress = decompress
 
     return this
   }
@@ -386,67 +379,56 @@ export class HttpClientBuilder {
    * - `response` starts when the request has been written to the socket and ends when the response headers are received.
    * - `send` starts when the socket is connected and ends with the request has been written to the socket.
    * - `request` starts when the request is initiated and ends when the response's end event fires.
-   * @param delays {number | Partial<import('got').Delays>}
    */
-  timeout(delays) {
-    if (!this.#options.timeout) {
-      this.#options.timeout = {}
+  public timeout(delays: number | Delays): HttpClientBuilder {
+    if (!this.options.timeout) {
+      this.options.timeout = {}
     }
 
     if (Is.Number(delays)) {
-      this.#options.timeout.request = delays
+      this.options.timeout.request = delays as number
 
       return this
     }
 
-    this.#options.timeout = delays
+    this.options.timeout = delays as Delays
 
     return this
   }
 
   /**
    * Set the request body.
-   *
-   * @param body {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @return {HttpClientBuilder}
    */
-  body(body) {
+  public body(body: Body): HttpClientBuilder {
     if (Is.Object(body)) {
-      this.#options.json = body
+      this.options.json = body
 
       return this
     }
 
-    this.#options.body = body
+    this.options.body = body as any
 
     return this
   }
 
   /**
    * Set the request form.
-   *
-   * @param form {any}
-   * @return {HttpClientBuilder}
    */
-  form(form) {
-    this.#options.form = form
+  public form(form: any | Record<string, any>): HttpClientBuilder {
+    this.options.form = form
 
     return this
   }
 
   /**
    * Set a header at the request.
-   *
-   * @param key {string}
-   * @param value {string}
-   * @return {HttpClientBuilder}
    */
-  header(key, value) {
-    if (!this.#options.headers) {
-      this.#options.headers = {}
+  public header(key: string, value: string): HttpClientBuilder {
+    if (!this.options.headers) {
+      this.options.headers = {}
     }
 
-    this.#options.headers[key] = value
+    this.options.headers[key] = value
 
     return this
   }
@@ -454,41 +436,34 @@ export class HttpClientBuilder {
   /**
    * Set a header at the request only if is not already
    * defined.
-   *
-   * @param key {string}
-   * @param value {string}
-   * @return {HttpClientBuilder}
    */
-  safeHeader(key, value) {
-    if (!this.#options.headers) {
-      this.#options.headers = {}
+  public safeHeader(key: string, value: string): HttpClientBuilder {
+    if (!this.options.headers) {
+      this.options.headers = {}
     }
 
-    if (this.#options.headers[key]) {
+    if (this.options.headers[key]) {
       return this
     }
 
-    this.#options.headers[key] = value
+    this.options.headers[key] = value
 
     return this
   }
 
   /**
    * Remove a header from the request.
-   *
-   * @param key {string}
-   * @return {HttpClientBuilder}
    */
-  removeHeader(key) {
-    if (!this.#options.headers) {
-      this.#options.headers = {}
+  public removeHeader(key: string): HttpClientBuilder {
+    if (!this.options.headers) {
+      this.options.headers = {}
     }
 
-    if (!this.#options.headers[key]) {
+    if (!this.options.headers[key]) {
       return this
     }
 
-    delete this.#options.headers[key]
+    delete this.options.headers[key]
 
     return this
   }
@@ -517,39 +492,37 @@ export class HttpClientBuilder {
    *    .json()
    * //=> 'https://cats.com/unicorn'
    * ```
-   * @param prefixUrl {string}
-   * @return {HttpClientBuilder}
    */
-  prefixUrl(prefixUrl) {
-    this.#options.prefixUrl = prefixUrl
+  public prefixUrl(prefixUrl: string): HttpClientBuilder {
+    this.options.prefixUrl = prefixUrl
 
     return this
   }
 
   /**
    * Set the request method.
-   *
-   * @param method {import('got').Method}
-   * @return {HttpClientBuilder}
    */
-  method(method) {
-    this.#options.method = method
+  public method(method: Method): HttpClientBuilder {
+    this.options.method = method
 
     return this
   }
 
   /**
    * Set the request url.
-   *
-   * @param url {string}
-   * @return {HttpClientBuilder}
    */
-  url(url) {
+  public url(url: string | URL): HttpClientBuilder {
+    if (url instanceof URL) {
+      this.options.url = url
+
+      return this
+    }
+
     if (url.startsWith('/')) {
       url = url.replace('/', '')
     }
 
-    this.#options.url = url
+    this.options.url = url
 
     return this
   }
@@ -558,12 +531,9 @@ export class HttpClientBuilder {
    * Cookie support. You don't have to care about parsing or how to store them.
    *
    * __Note__: If you provide this option, `options.headers.cookie` will be overridden.
-   *
-   * @param jar {import('got').PromiseCookieJar | import('got').ToughCookieJar}
-   * @return {HttpClientBuilder}
    */
-  cookieJar(jar) {
-    this.#options.cookieJar = jar
+  public cookieJar(jar: PromiseCookieJar | ToughCookieJar): HttpClientBuilder {
+    this.options.cookieJar = jar
 
     return this
   }
@@ -585,12 +555,9 @@ export class HttpClientBuilder {
    *     abortController.abort();
    * }, 100);
    * ```
-   *
-   * @param signal {any}
-   * @return {HttpClientBuilder}
    */
-  signal(signal) {
-    this.#options.signal = signal
+  public signal(signal: any): HttpClientBuilder {
+    this.options.signal = signal
 
     return this
   }
@@ -598,12 +565,9 @@ export class HttpClientBuilder {
   /**
    * Ignore invalid cookies instead of throwing an error.
    * Only useful when the `cookieJar` option has been set. Not recommended.
-   *
-   * @param ignore {boolean}
-   * @return {HttpClientBuilder}
    */
-  ignoreInvalidCookies(ignore) {
-    this.#options.ignoreInvalidCookies = ignore
+  public ignoreInvalidCookies(ignore: boolean): HttpClientBuilder {
+    this.options.ignoreInvalidCookies = ignore
 
     return this
   }
@@ -623,34 +587,25 @@ export class HttpClientBuilder {
    * console.log(searchParams.toString());
    * //=> 'key=a&key=b'
    * ```
-   *
-   *  @param value { string | import('got').SearchParameters | URLSearchParams }
-   *  @return {HttpClientBuilder}
    */
-  searchParams(value) {
-    this.#options.searchParams = value
+  public searchParams(value: Query): HttpClientBuilder {
+    this.options.searchParams = value
 
     return this
   }
 
   /**
    * Alias for the searchParams method.
-   *
-   *  @param value { string | import('got').SearchParameters | URLSearchParams }
-   *  @return {HttpClientBuilder}
    */
-  queryParams(value) {
+  public queryParams(value: Query): HttpClientBuilder {
     return this.searchParams(value)
   }
 
   /**
    * Set the dnsLookup parameter.
-   *
-   * @param lookup {import('cacheable-lookup').default.lookup}
-   * @return {HttpClientBuilder}
    */
-  dnsLookup(lookup) {
-    this.#options.dnsLookup = lookup
+  public dnsLookup(lookup: CacheableLookup['lookup']): HttpClientBuilder {
+    this.options.dnsLookup = lookup
 
     return this
   }
@@ -662,12 +617,9 @@ export class HttpClientBuilder {
    * `CacheableLookup` uses `dns.resolver4(..)` and `dns.resolver6(...)` under the hood and fall backs to `dns.lookup(...)` when the first two fail, which may lead to additional delay.
    *
    * __Note__: This should stay disabled when making requests to internal hostnames such as `localhost`, `database.local` etc.
-   *
-   * @param cache {import('cacheable-lookup').default | boolean}
-   * @return {HttpClientBuilder}
    */
-  dnsCache(cache) {
-    this.#options.dnsCache = cache
+  public dnsCache(cache: CacheableLookup | boolean): HttpClientBuilder {
+    this.options.dnsCache = cache
 
     return this
   }
@@ -693,12 +645,9 @@ export class HttpClientBuilder {
    * // Let's see the headers
    * console.log(response.body)
    * ```
-   *
-   * @param context {Record<string, unknown>}
-   * @return {HttpClientBuilder}
    */
-  context(context) {
-    this.#options.context = context
+  public context(context: any | Record<string, unknown>): HttpClientBuilder {
+    this.options.context = context
 
     return this
   }
@@ -706,12 +655,9 @@ export class HttpClientBuilder {
   /**
    * Hooks allow modifications during the request lifecycle.
    * Hook functions may be async and are run serially.
-   *
-   * @param hooks {import('got').Hooks}
-   * @return {HttpClientBuilder}
    */
-  hooks(hooks) {
-    this.#options.hooks = hooks
+  public hooks(hooks: Hooks): HttpClientBuilder {
+    this.options.hooks = hooks
 
     return this
   }
@@ -721,12 +667,9 @@ export class HttpClientBuilder {
    *
    * Note that if a `303` is sent by the server in response to any request type (`POST`, `DELETE`, etc.), Got will automatically request the resource pointed to in the location header via `GET`.
    * This is in accordance with [the spec](https://tools.ietf.org/html/rfc7231#section-6.4.4). You can optionally turn on this behavior also for other redirect codes - see `methodRewriting`.
-   *
-   * @param followRedirect {boolean}
-   * @return {HttpClientBuilder}
    */
-  followRedirect(followRedirect) {
-    this.#options.followRedirect = followRedirect
+  public followRedirect(followRedirect: boolean): HttpClientBuilder {
+    this.options.followRedirect = followRedirect
 
     return this
   }
@@ -736,36 +679,27 @@ export class HttpClientBuilder {
    *
    * Note that if a `303` is sent by the server in response to any request type (`POST`, `DELETE`, etc.), Got will automatically request the resource pointed to in the location header via `GET`.
    * This is in accordance with [the spec](https://tools.ietf.org/html/rfc7231#section-6.4.4). You can optionally turn on this behavior also for other redirect codes - see `methodRewriting`.
-   *
-   * @param followRedirect {boolean}
-   * @return {HttpClientBuilder}
    */
-  followRedirects(followRedirect) {
-    this.#options.followRedirect = followRedirect
+  public followRedirects(followRedirect: boolean): HttpClientBuilder {
+    this.options.followRedirect = followRedirect
 
     return this
   }
 
   /**
    * If exceeded, the request will be aborted and a `MaxRedirectsError` will be thrown.
-   *
-   * @param maxRedirects {number}
-   * @return {HttpClientBuilder}
    */
-  maxRedirects(maxRedirects) {
-    this.#options.maxRedirects = maxRedirects
+  public maxRedirects(maxRedirects: number): HttpClientBuilder {
+    this.options.maxRedirects = maxRedirects
 
     return this
   }
 
   /**
    * A cache adapter instance for storing cached response data.
-   *
-   * @param cache {string | import('keyv').Store<any> | boolean }
-   * @return {HttpClientBuilder}
    */
-  cache(cache) {
-    this.#options.cache = cache
+  public cache(cache: string | Store<any> | boolean): HttpClientBuilder {
+    this.options.cache = cache
 
     return this
   }
@@ -775,34 +709,27 @@ export class HttpClientBuilder {
    *
    * If this is disabled, requests that encounter an error status code will be resolved with the `response` instead of throwing.
    * This may be useful if you are checking for resource availability and are expecting error responses.
-   *
-   * @param throwHttpErrors {boolean}
-   * @return {HttpClientBuilder}
    */
-  throwHttpErrors(throwHttpErrors) {
-    this.#options.throwHttpErrors = throwHttpErrors
+  public throwHttpErrors(throwHttpErrors: boolean): HttpClientBuilder {
+    this.options.throwHttpErrors = throwHttpErrors
 
     return this
   }
 
   /**
    * Set the username.
-   *
-   * @param value {string}
    */
-  username(value) {
-    this.#options.username = value
+  public username(value: string): HttpClientBuilder {
+    this.options.username = value
 
     return this
   }
 
   /**
    * Set the password.
-   *
-   * @param value {string}
    */
-  password(value) {
-    this.#options.password = value
+  public password(value: string): HttpClientBuilder {
+    this.options.password = value
 
     return this
   }
@@ -825,12 +752,9 @@ export class HttpClientBuilder {
    * console.log(headers.via)
    * //=> '2 nghttpx'
    * ```
-   *
-   * @param value {boolean}
-   * @return {HttpClientBuilder}
    */
-  http2(value) {
-    this.#options.http2 = value
+  public http2(value: boolean): HttpClientBuilder {
+    this.options.http2 = value
 
     return this
   }
@@ -841,12 +765,9 @@ export class HttpClientBuilder {
    * This option is only meant to interact with non-compliant servers when you have no other choice.
    *
    * __Note__: The [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1) doesn't specify any particular behavior for the GET method having a payload, therefore __it's considered an [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern)__.
-   *
-   * @param value {boolean}
-   * @return {HttpClientBuilder}
    */
-  allowGetBody(value) {
-    this.#options.allowGetBody = value
+  public allowGetBody(value: boolean): HttpClientBuilder {
+    this.options.allowGetBody = value
 
     return this
   }
@@ -858,12 +779,9 @@ export class HttpClientBuilder {
    * Setting `methodRewriting` to `true` will also rewrite `301` and `302` responses, as allowed by the spec. This is the behavior followed by `curl` and browsers.
    *
    * __Note__: Got never performs method rewriting on `307` and `308` responses, as this is [explicitly prohibited by the specification](https://www.rfc-editor.org/rfc/rfc7231#section-6.4.7).
-   *
-   * @param value {boolean}
-   * @return {HttpClientBuilder}
    */
-  methodRewriting(value) {
-    this.#options.methodRewriting = value
+  public methodRewriting(value: boolean): HttpClientBuilder {
+    this.options.methodRewriting = value
 
     return this
   }
@@ -875,12 +793,9 @@ export class HttpClientBuilder {
    * - `undefined`: IPv4 (if present) or IPv6
    * - `4`: Only IPv4
    * - `6`: Only IPv6
-   *
-   * @param dnsLookupIpVersion {import('got').DnsLookupIpVersion}
-   * @return {HttpClientBuilder}
    */
-  dnsLookupIpVersion(dnsLookupIpVersion) {
-    this.#options.dnsLookupIpVersion = dnsLookupIpVersion
+  public dnsLookupIpVersion(dns: DnsLookupIpVersion): HttpClientBuilder {
+    this.options.dnsLookupIpVersion = dns
 
     return this
   }
@@ -900,12 +815,9 @@ export class HttpClientBuilder {
    *
    * console.log(parsed)
    * ```
-   *
-   * @param fn {import('got').ParseJsonFunction}
-   * @return {HttpClientBuilder}
    */
-  parseJson(fn) {
-    this.#options.parseJson = fn
+  public parseJson(fn: ParseJsonFunction): HttpClientBuilder {
+    this.options.parseJson = fn
 
     return this
   }
@@ -928,12 +840,9 @@ export class HttpClientBuilder {
    *  }))
    *  .request()
    * ```
-   *
-   * @param fn {import('got').StringifyJsonFunction}
-   * @return {HttpClientBuilder}
    */
-  stringifyJson(fn) {
-    this.#options.stringifyJson = fn
+  public stringifyJson(fn: StringifyJsonFunction): HttpClientBuilder {
+    this.options.stringifyJson = fn
 
     return this
   }
@@ -959,12 +868,9 @@ export class HttpClientBuilder {
    *
    * __Note__: If `maxRetryAfter` is set to `undefined`, it will use `options.timeout`.
    * __Note__: If [`Retry-After`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After) header is greater than `maxRetryAfter`, it will cancel the request.
-   *
-   * @param retry {Partial<import('got').RetryOptions>}
-   * @return {HttpClientBuilder}
    */
-  retry(retry) {
-    this.#options.retry = retry
+  public retry(retry: Partial<RetryOptions>): HttpClientBuilder {
+    this.options.retry = retry
 
     return this
   }
@@ -974,16 +880,13 @@ export class HttpClientBuilder {
    *
    * The strategy function needs to return the delay between the execution count
    * of each request, if the strategy function returns 0, the retry is canceled.
-   *
-   * @param strategy {(response: import('got').RequestError, execCount: number, retryObject: import('got').RetryObject) => number | Promise<number>}
-   * @return {HttpClientBuilder}
    */
-  retryStrategy(strategy) {
-    if (!this.#options.retry) {
-      this.#options.retry = {}
+  public retryStrategy(strategy: RetryStrategyCallback): HttpClientBuilder {
+    if (!this.options.retry) {
+      this.options.retry = {}
     }
 
-    this.#options.retry.calculateDelay = ({
+    this.options.retry.calculateDelay = ({
       error,
       retryAfter,
       attemptCount,
@@ -1006,36 +909,27 @@ export class HttpClientBuilder {
    * From `http.RequestOptions`.
    *
    * The IP address used to send the request from.
-   *
-   * @param localAddress {string}
-   * @return {HttpClientBuilder}
    */
-  localAddress(localAddress) {
-    this.#options.localAddress = localAddress
+  public localAddress(localAddress: string): HttpClientBuilder {
+    this.options.localAddress = localAddress
 
     return this
   }
 
   /**
    * Set the createConnection options.
-   *
-   * @param value {import('got').CreateConnectionFunction}
-   * @return {HttpClientBuilder}
    */
-  createConnection(value) {
-    this.#options.createConnection = value
+  public createConnection(value: CreateConnectionFunction): HttpClientBuilder {
+    this.options.createConnection = value
 
     return this
   }
 
   /**
    * Options for the advanced HTTPS API.
-   *
-   * @param https {import('got').HttpsOptions}
-   * @return {HttpClientBuilder}
    */
-  https(https) {
-    this.#options.https = https
+  public https(https: HttpsOptions): HttpClientBuilder {
+    this.options.https = https
 
     return this
   }
@@ -1047,12 +941,9 @@ export class HttpClientBuilder {
    * Don't set this option to `null`.
    *
    * __Note__: This doesn't affect streams! Instead, you need to do `got.stream(...).setEncoding(encoding)`.
-   *
-   * @param encoding {BufferEncoding}
-   * @return {HttpClientBuilder}
    */
-  encoding(encoding) {
-    this.#options.encoding = encoding
+  public encoding(encoding: BufferEncoding): HttpClientBuilder {
+    this.options.encoding = encoding
 
     return this
   }
@@ -1060,12 +951,9 @@ export class HttpClientBuilder {
   /**
    *  When set to `true` the promise will return the
    *  Response body instead of the Response object.
-   *
-   * @param resolveBodyOnly {boolean}
-   * @return {HttpClientBuilder}
    */
-  resolveBodyOnly(resolveBodyOnly) {
-    this.#options.resolveBodyOnly = resolveBodyOnly
+  public resolveBodyOnly(resolveBodyOnly: boolean): HttpClientBuilder {
+    this.options.resolveBodyOnly = resolveBodyOnly
 
     return this
   }
@@ -1073,12 +961,9 @@ export class HttpClientBuilder {
   /**
    * Returns a `Stream` instead of a `Promise`.
    * This is equivalent to calling `got.stream(url, options?)`.
-   *
-   * @param value {boolean}
-   * @return {HttpClientBuilder}
    */
-  isStream(value) {
-    this.#options.isStream = value
+  public isStream(value: boolean): HttpClientBuilder {
+    this.options.isStream = value
 
     return this
   }
@@ -1112,128 +997,91 @@ export class HttpClientBuilder {
    * // is semantically the same as this
    * const body = await HttpClient.get(url, { responseType: 'json', resolveBodyOnly: true })
    * ```
-   *
-   * @param type {import('got').ResponseType}
-   * @return {HttpClientBuilder}
    */
-  responseType(type) {
-    this.#options.responseType = type
+  public responseType(type: ResponseType): HttpClientBuilder {
+    this.options.responseType = type as any
 
     return this
   }
 
   /**
    * Set pagination options.
-   *
-   * @param options {import('got').PaginationOptions}
-   * @return {HttpClientBuilder}
    */
-  pagination(options) {
-    this.#options.pagination = options
-
-    return this
-  }
-
-  /**
-   * Set the auth option.
-   *
-   * @param value {any}
-   * @return {HttpClientBuilder}
-   */
-  auth(value) {
-    this.#options.auth = value
+  public pagination<ElementType = any, BodyType = any>(
+    options: PaginationOptions<ElementType, BodyType>,
+  ): HttpClientBuilder {
+    this.options.pagination = options
 
     return this
   }
 
   /**
    * Set the host option.
-   *
-   * @param value {boolean}
-   * @return {HttpClientBuilder}
    */
-  setHost(value) {
-    this.#options.setHost = value
+  public setHost(value: boolean): HttpClientBuilder {
+    this.options.setHost = value
 
     return this
   }
 
   /**
    * Set the maxHeaderSize option.
-   *
-   * @param maxHeaderSize {number}
-   * @return {HttpClientBuilder}
    */
-  maxHeaderSize(maxHeaderSize) {
-    this.#options.maxHeaderSize = maxHeaderSize
+  public maxHeaderSize(maxHeaderSize: number): HttpClientBuilder {
+    this.options.maxHeaderSize = maxHeaderSize
 
     return this
   }
 
   /**
    * Set the enableUnixSockets option.
-   *
-   * @param enableUnixSockets {boolean}
-   * @return {HttpClientBuilder}
    */
-  enableUnixSockets(enableUnixSockets) {
-    this.#options.enableUnixSockets = enableUnixSockets
+  public enableUnixSockets(enableUnixSockets: boolean): HttpClientBuilder {
+    this.options.enableUnixSockets = enableUnixSockets
 
     return this
   }
 
   /**
    * Set the merge options.
-   *
-   * @param options {import('got').OptionsInit}
-   * @return {HttpClientBuilder}
    */
-  mergeOptions(options) {
-    this.#options = { ...this.#options, ...options }
+  public mergeOptions(options: OptionsInit): HttpClientBuilder {
+    this.options = { ...this.options, ...options }
+
     return this
   }
 
   /**
    * Execute the request and return as stream.
-   *
-   * @param [options] {import('got').OptionsInit}
-   * @return {Request}
    */
-  stream(options) {
-    return got.stream({ ...this.#options, ...options })
+  public stream(options: OptionsInit = {}): Request {
+    return got.stream({ ...this.options, ...options } as any)
   }
 
   /**
    * Execute the request and return paginated data.
-   *
-   * @param [options] {import('got').OptionsInit}
-   * @return {AsyncIterableIterator<any>}
    */
-  paginate(options) {
-    return got.paginate({ ...this.#options, ...options })
+  public paginate(options: OptionsInit = {}): AsyncIterableIterator<any> {
+    return got.paginate({ ...this.options, ...options })
   }
 
   /**
    * Execute the request using all the options defined.
-   *
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  request(options = {}) {
-    return got({ ...this.#options, ...options })
+  public request<T = any>(options: OptionsInit = {}): Response<T> {
+    return got({ ...this.options, ...options })
   }
 
   /**
    * Make a GET request.
-   *
-   * @param [url] {string}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  get(url, options = {}) {
-    this.method('GET').url(url || options.url || this.#options.url)
+  public get<T = any>(
+    url?: string | URL,
+    options: OptionsInit = {},
+  ): Response<T> {
+    this.method('GET').url(url || options.url || this.options.url)
 
-    if (this.#options.isStream) {
+    if (this.options.isStream) {
       return this.stream(options)
     }
 
@@ -1242,18 +1090,17 @@ export class HttpClientBuilder {
 
   /**
    * Make a POST request.
-   *
-   * @param [url] {string}
-   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  post(url, body, options = {}) {
+  public post<T = any>(
+    url?: string | URL,
+    body?: Body,
+    options: OptionsInit = {},
+  ): Response<T> {
     this.method('POST')
-      .url(url || options.url || this.#options.url)
-      .body(body || options.body || this.#options.body || {})
+      .url(url || options.url || this.options.url)
+      .body(body || options.body || this.options.body || {})
 
-    if (this.#options.isStream) {
+    if (this.options.isStream) {
       return this.stream(options)
     }
 
@@ -1262,18 +1109,17 @@ export class HttpClientBuilder {
 
   /**
    * Make a PUT request.
-   *
-   * @param [url] {string}
-   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  put(url, body, options = {}) {
+  public put<T = any>(
+    url?: string | URL,
+    body?: Body,
+    options: OptionsInit = {},
+  ): Response<T> {
     this.method('PUT')
-      .url(url || options.url || this.#options.url)
-      .body(body || options.body || this.#options.body || {})
+      .url(url || options.url || this.options.url)
+      .body(body || options.body || this.options.body || {})
 
-    if (this.#options.isStream) {
+    if (this.options.isStream) {
       return this.stream(options)
     }
 
@@ -1282,18 +1128,17 @@ export class HttpClientBuilder {
 
   /**
    * Make a PATCH request.
-   *
-   * @param [url] {string}
-   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  patch(url, body, options = {}) {
+  public patch<T = any>(
+    url?: string | URL,
+    body?: Response,
+    options: OptionsInit = {},
+  ): Response<T> {
     this.method('PATCH')
-      .url(url || options.url || this.#options.url)
-      .body(body || options.body || this.#options.body || {})
+      .url(url || options.url || this.options.url)
+      .body(body || options.body || this.options.body || {})
 
-    if (this.#options.isStream) {
+    if (this.options.isStream) {
       return this.stream(options)
     }
 
@@ -1302,15 +1147,14 @@ export class HttpClientBuilder {
 
   /**
    * Make a DELETE request.
-   *
-   * @param [url] {string}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  delete(url, options = {}) {
-    this.method('DELETE').url(url || options.url || this.#options.url)
+  public delete<T = any>(
+    url?: string | URL,
+    options: OptionsInit = {},
+  ): Response<T> {
+    this.method('DELETE').url(url || options.url || this.options.url)
 
-    if (this.#options.isStream) {
+    if (this.options.isStream) {
       return this.stream(options)
     }
 
@@ -1319,15 +1163,14 @@ export class HttpClientBuilder {
 
   /**
    * Make a HEAD request.
-   *
-   * @param [url] {string}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  head(url, options = {}) {
-    this.method('HEAD').url(url || options.url || this.#options.url)
+  public head<T = any>(
+    url?: string | URL,
+    options: OptionsInit = {},
+  ): Response<T> {
+    this.method('HEAD').url(url || options.url || this.options.url)
 
-    if (this.#options.isStream) {
+    if (this.options.isStream) {
       return this.stream(options)
     }
 
@@ -1338,19 +1181,14 @@ export class HttpClientBuilder {
 export class HttpClient {
   /**
    * The global builder used in all HttpClient static requests.
-   *
-   * @type {HttpClientBuilder}
    */
-  static #builder = new HttpClientBuilder()
+  private static _builder = new HttpClientBuilder()
 
   /**
    * Set the global builder for HttpClient.
-   *
-   * @param builder {HttpClientBuilder}
-   * @return {typeof HttpClient}
    */
-  static setBuilder(builder) {
-    this.#builder = builder
+  public static setBuilder(builder: HttpClientBuilder): typeof HttpClient {
+    this._builder = builder
 
     return this
   }
@@ -1358,84 +1196,75 @@ export class HttpClient {
   /**
    * Uses the instance of HttpClientBuilder or creates
    * a new one.
-   *
-   * @param [newBuilder] {boolean}
-   * @return {HttpClientBuilder}
    */
-  static builder(newBuilder = false) {
+  public static builder(newBuilder = false): HttpClientBuilder {
     if (newBuilder) {
       return new HttpClientBuilder()
     }
 
-    return new HttpClientBuilder(this.#builder.getOptions())
+    return new HttpClientBuilder(this._builder.getOptions())
   }
 
   /**
    * Make a GET request.
-   *
-   * @param [url] {string}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  static get(url, options) {
-    return this.#builder.get(url, options)
+  public static get<T = any>(
+    url?: string | URL,
+    options?: OptionsInit,
+  ): Response<T> {
+    return this._builder.get(url, options)
   }
 
   /**
    * Make a POST request.
-   *
-   * @param [url] {string}
-   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  static post(url, body, options) {
-    return this.#builder.post(url, body, options)
+  public static post<T = any>(
+    url?: string | URL,
+    body?: Body,
+    options?: OptionsInit,
+  ): Response<T> {
+    return this._builder.post(url, body, options)
   }
 
   /**
    * Make a PUT request.
-   *
-   * @param [url] {string}
-   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  static put(url, body, options) {
-    return this.#builder.put(url, body, options)
+  public static put<T = any>(
+    url?: string | URL,
+    body?: Body,
+    options?: OptionsInit,
+  ): Response<T> {
+    return this._builder.put(url, body, options)
   }
 
   /**
    * Make a PATCH request.
-   *
-   * @param [url] {string}
-   * @param [body] {Record<string, any> | string | ReadableStream | Generator | AsyncGenerator | import('form-data-encoder').FormDataLike}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  static patch(url, body, options) {
-    return this.#builder.patch(url, body, options)
+  static patch<T = any>(
+    url?: string | URL,
+    body?: Body,
+    options?: OptionsInit,
+  ): Response<T> {
+    return this._builder.patch(url, body, options)
   }
 
   /**
    * Make a DELETE request.
-   *
-   * @param [url] {string}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  static delete(url, options) {
-    return this.#builder.delete(url, options)
+  public static delete<T = any>(
+    url?: string | URL,
+    options?: OptionsInit,
+  ): Response<T> {
+    return this._builder.delete(url, options)
   }
 
   /**
    * Make a HEAD request.
-   *
-   * @param [url] {string}
-   * @param [options] {import('got').OptionsInit}
-   * @return {import('got').CancelableRequest<import('got').Response<any>> | import('got').CancelableRequest<any> | Request}
    */
-  static head(url, options) {
-    return this.#builder.head(url, options)
+  public static head<T = any>(
+    url?: string | URL,
+    options?: OptionsInit,
+  ): Response<T> {
+    return this._builder.head(url, options)
   }
 }

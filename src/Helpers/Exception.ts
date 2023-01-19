@@ -10,36 +10,10 @@
 
 import Youch from 'youch'
 import chalk from 'chalk'
+import changeCase from 'change-case'
 import YouchTerminal from 'youch-terminal'
 
-import { String } from '#src/Helpers/String'
 import { Options } from '#src/Helpers/Options'
-
-declare global {
-  interface Error {
-    /**
-     * Transform your error to an instance of
-     * the Athenna exception.
-     */
-    toAthennaException(options?: ExceptionJSON): Exception
-  }
-}
-
-Error.prototype.toAthennaException = function (options: ExceptionJSON) {
-  const { content, status, code, help, stack } = Options.create(options, {
-    content: this.message,
-    status: 0,
-    code: this.name,
-    help: undefined,
-    stack: this.stack,
-  })
-
-  const exception = new Exception(content, status, code, help)
-
-  exception.stack = stack
-
-  return exception
-}
 
 export interface ExceptionJSON {
   code?: string
@@ -56,18 +30,21 @@ export class Exception extends Error {
   public content: string
   public help?: string
 
-
   /**
    * Creates a new instance of Exception.
    */
-  constructor(content: string, status = 500, code?: string, help?: string) {
+  public constructor(
+    content: string,
+    status = 500,
+    code?: string,
+    help?: string,
+  ) {
     super(content)
 
     this.name = this.constructor.name
     this.status = status
-    this.code = code || String.toConstantCase(this.constructor.name)
+    this.code = code || changeCase.constantCase(this.name)
     this.content = content
-
 
     if (help) {
       this.help = help
@@ -79,7 +56,7 @@ export class Exception extends Error {
   /**
    * Transform the exception to a valid JSON Object.
    */
-  toJSON(stack = true): ExceptionJSON {
+  public toJSON(stack = true): ExceptionJSON {
     const json: ExceptionJSON = {}
 
     json.code = this.code
@@ -96,7 +73,7 @@ export class Exception extends Error {
   /**
    * Prettify the error using Youch API.
    */
-  async prettify(options?: {
+  public async prettify(options?: {
     prefix?: string
     hideMessage?: boolean
     hideErrorTitle?: boolean

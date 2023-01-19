@@ -13,11 +13,8 @@ import { RouteMatchException } from '#src/Exceptions/RouteMatchException'
 export class Route {
   /**
    * Get the query string in form data format.
-   *
-   * @param {string} route
-   * @return {string}
    */
-  static getQueryString(route) {
+  public static getQueryString(route: string): string {
     const queryIndex = route.search(/\?(.*)/)
 
     if (queryIndex === -1) return null
@@ -27,11 +24,8 @@ export class Route {
 
   /**
    * Remove query params from the route.
-   *
-   * @param {string} route
-   * @return {string}
    */
-  static removeQueryParams(route) {
+  public static removeQueryParams(route: string): string {
     const queryString = this.getQueryString(route)
 
     if (!queryString) return route
@@ -41,11 +35,8 @@ export class Route {
 
   /**
    * Get object with ?&queryParams values from route.
-   *
-   * @param {string} route
-   * @return {any}
    */
-  static getQueryParamsValue(route) {
+  public static getQueryParamsValue(route: string): any {
     const queryString = this.getQueryString(route)
 
     if (!queryString) return {}
@@ -59,7 +50,7 @@ export class Route {
    * @param {string} route
    * @return {string[]}
    */
-  static getQueryParamsName(route) {
+  public static getQueryParamsName(route: string): string[] {
     const queryNames = []
     let queryString = this.getQueryString(route)
 
@@ -78,12 +69,11 @@ export class Route {
 
   /**
    * Get object with :params values from route.
-   *
-   * @param {string} routeWithParams
-   * @param {string} routeWithValues
-   * @return {any}
    */
-  static getParamsValue(routeWithParams, routeWithValues) {
+  public static getParamsValue(
+    routeWithParams: string,
+    routeWithValues: string,
+  ): any {
     routeWithParams = this.removeQueryParams(routeWithParams)
     routeWithValues = this.removeQueryParams(routeWithValues)
 
@@ -109,11 +99,8 @@ export class Route {
 
   /**
    * Get array with :params name from route.
-   *
-   * @param {string} route
-   * @return {string[]}
    */
-  static getParamsName(route) {
+  public static getParamsName(route: string): string[] {
     route = this.removeQueryParams(route)
 
     const replaceDots = value => decodeURIComponent(value.replace(':', ''))
@@ -129,11 +116,8 @@ export class Route {
 
   /**
    * Create a matcher RegExp for any route.
-   *
-   * @param {string} route
-   * @return {RegExp}
    */
-  static createMatcher(route) {
+  public static createMatcher(route: string): RegExp {
     route = this.removeQueryParams(route)
 
     const routeArray = route.split('/')
