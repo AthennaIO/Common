@@ -9,6 +9,7 @@
 
 import callSite from 'callsite'
 
+import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
 import { dirname, normalize, sep } from 'node:path'
 
@@ -367,11 +368,7 @@ export class Path {
    */
   static this(subPath = sep, stackIndex = 1) {
     const stack = callSite()
-    const requester = dirname(stack[stackIndex].getFileName()).replace(
-      'file://',
-      '',
-    )
-
+    const requester = dirname(fileURLToPath(stack[stackIndex].getFileName()))
     const execDir = normalize(requester.concat(sep, normalize(subPath)))
 
     return this.#removeSlashes(execDir)

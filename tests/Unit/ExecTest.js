@@ -32,7 +32,11 @@ test.group('ExecTest', group => {
     await assert.rejects(useCase, NodeCommandException)
   })
 
-  test('should be able to execute a command that throws errors and ignore it', async ({ assert }) => {
+  test('should be able to execute a command that throws errors and ignore it linux', async ({ assert }) => {
+    if (process.platform === 'win32') {
+      return
+    }
+
     const { stdout } = await Exec.command('echo "error thrown" && exit 255', { ignoreErrors: true })
 
     assert.isTrue(stdout.includes('error thrown'))

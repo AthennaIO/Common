@@ -51,6 +51,7 @@
     "fastify": "^4.11.0",
     "got": "^12.5.3",
     "http-status-codes": "^2.2.0",
+    "is-wsl": "^2.2.0",
     "kind-of": "^6.0.3",
     "lodash": "^4.17.21",
     "mime-types": "^2.1.35",

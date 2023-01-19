@@ -14,6 +14,7 @@ import { request as requestHttps } from 'node:https'
 import { exec as childProcessExec } from 'node:child_process'
 
 import { File } from '#src/Helpers/File'
+import { Uuid } from '#src/Helpers/Uuid'
 import { Options } from '#src/Helpers/Options'
 import { NodeCommandException } from '#src/Exceptions/NodeCommandException'
 
@@ -48,8 +49,14 @@ export class Exec {
     })
 
     try {
+      const execOptions = {}
+
+      if (process.platform === 'win32' && Uuid.verify(process.env.WT_SESSION)) {
+        execOptions.shell = 'powershell'
+      }
+
       // Needs to await explicit because of try catch
-      return await exec(command)
+      return await exec(command, execOptions)
     } catch (error) {
       if (options.ignoreErrors) {
         return { stdout: error.stdout, stderr: error.stderr }
