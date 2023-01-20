@@ -7,8 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import { Config } from '#src/Helpers/Config'
+import { Path as PathImpl } from '#src/Helpers/Path'
 
-export default {
-  value: Config.get('recursiveTwo.value'),
+declare global {
+  export class Path extends PathImpl {}
+}
+
+const __global: any = global
+
+if (!__global.Path) {
+  __global.Path = PathImpl
 }

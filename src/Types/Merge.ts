@@ -7,8 +7,10 @@
  * file that was distributed with this source code.
  */
 
-import { Config } from '#src/Helpers/Config'
+import { Except } from '#src/Types/Except'
 
-export default {
-  value: Config.get('recursiveOne.value'),
-}
+export type Merge<FirstType, SecondType> = Except<
+  FirstType,
+  Extract<keyof FirstType, keyof SecondType>
+> &
+  SecondType

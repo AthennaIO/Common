@@ -48,7 +48,7 @@ export class Debug {
   /**
    * Format and throw the message in the stdout accordingly to the namespace.
    */
-  public static log(message: string, namespace = 'api:main'): void {
+  public static log(message: any, namespace = 'api:main'): void {
     debug(namespace)(Debug.format(message))
   }
 }

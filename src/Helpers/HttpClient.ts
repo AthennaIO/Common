@@ -9,28 +9,28 @@
 
 import CacheableLookup from 'cacheable-lookup'
 import got, {
-  Request,
-  OptionsInit,
-  Method,
-  PromiseCookieJar,
-  ToughCookieJar,
-  ParseJsonFunction,
-  CacheOptions,
-  DnsLookupIpVersion,
   Hooks,
-  HttpsOptions,
-  PaginationOptions,
-  CreateConnectionFunction,
-  RetryOptions,
-  StringifyJsonFunction,
   Delays,
   Agents,
-  AfterResponseHook,
+  Method,
+  Request,
+  InitHook,
+  RetryOptions,
+  ResponseType,
+  HttpsOptions,
+  CacheOptions,
+  ToughCookieJar,
   BeforeRetryHook,
   BeforeErrorHook,
-  BeforeRedirectHook,
+  PromiseCookieJar,
+  PaginationOptions,
+  AfterResponseHook,
   BeforeRequestHook,
-  InitHook,
+  ParseJsonFunction,
+  DnsLookupIpVersion,
+  BeforeRedirectHook,
+  StringifyJsonFunction,
+  CreateConnectionFunction,
 } from 'got'
 
 import { Store } from 'keyv'
@@ -39,23 +39,23 @@ import { Json } from '#src/Helpers/Json'
 import { ClientHttp2Session } from 'http2'
 import { Body } from '#src/Types/HttpClient/Body'
 import { Query } from '#src/Types/HttpClient/Query'
-import { Response } from '#src/Types/HttpClient/Response'
+import { ReqOptions } from '#src/Types/HttpClient/ReqOptions'
 import { RetryStrategyCallback } from '#src/Types/HttpClient/RetryStrategyCallback'
 
 export class HttpClientBuilder {
   /**
    * Got options used to make the request.
    */
-  private options: OptionsInit
+  private options: ReqOptions
 
-  public constructor(options: OptionsInit = {}) {
+  public constructor(options: ReqOptions = {}) {
     this.options = options
   }
 
   /**
    * Return the options of the client builder.
    */
-  public getOptions(): OptionsInit {
+  public getOptions(): ReqOptions {
     return Json.copy(this.options)
   }
 
@@ -959,16 +959,6 @@ export class HttpClientBuilder {
   }
 
   /**
-   * Returns a `Stream` instead of a `Promise`.
-   * This is equivalent to calling `got.stream(url, options?)`.
-   */
-  public isStream(value: boolean): HttpClientBuilder {
-    this.options.isStream = value
-
-    return this
-  }
-
-  /**
    * The parsing method.
    *
    * The promise also has `.text()`, `.json()` and `.buffer()` methods which return another Got promise for the parsed body.
@@ -1045,7 +1035,7 @@ export class HttpClientBuilder {
   /**
    * Set the merge options.
    */
-  public mergeOptions(options: OptionsInit): HttpClientBuilder {
+  public mergeOptions(options: ReqOptions): HttpClientBuilder {
     this.options = { ...this.options, ...options }
 
     return this
@@ -1054,38 +1044,31 @@ export class HttpClientBuilder {
   /**
    * Execute the request and return as stream.
    */
-  public stream(options: OptionsInit = {}): Request {
+  public stream(options: ReqOptions = {}): Request {
     return got.stream({ ...this.options, ...options } as any)
   }
 
   /**
    * Execute the request and return paginated data.
    */
-  public paginate(options: OptionsInit = {}): AsyncIterableIterator<any> {
-    return got.paginate({ ...this.options, ...options })
+  public paginate<T = any>(options: ReqOptions = {}): AsyncIterableIterator<T> {
+    return got.paginate({ ...this.options, ...options } as any)
   }
 
   /**
    * Execute the request using all the options defined.
    */
-  public request<T = any>(options: OptionsInit = {}): Response<T> {
-    return got({ ...this.options, ...options })
+  public request<T = any>(options: ReqOptions = {}) {
+    return got<T>({ ...this.options, ...options } as any)
   }
 
   /**
    * Make a GET request.
    */
-  public get<T = any>(
-    url?: string | URL,
-    options: OptionsInit = {},
-  ): Response<T> {
-    this.method('GET').url(url || options.url || this.options.url)
-
-    if (this.options.isStream) {
-      return this.stream(options)
-    }
-
-    return this.request(options)
+  public get<T = any>(url?: string | URL, options: ReqOptions = {}) {
+    return this.method('GET')
+      .url(url || options.url || this.options.url)
+      .request<T>(options)
   }
 
   /**
@@ -1094,17 +1077,12 @@ export class HttpClientBuilder {
   public post<T = any>(
     url?: string | URL,
     body?: Body,
-    options: OptionsInit = {},
-  ): Response<T> {
-    this.method('POST')
+    options: ReqOptions = {},
+  ) {
+    return this.method('POST')
       .url(url || options.url || this.options.url)
       .body(body || options.body || this.options.body || {})
-
-    if (this.options.isStream) {
-      return this.stream(options)
-    }
-
-    return this.request(options)
+      .request<T>(options)
   }
 
   /**
@@ -1113,17 +1091,12 @@ export class HttpClientBuilder {
   public put<T = any>(
     url?: string | URL,
     body?: Body,
-    options: OptionsInit = {},
-  ): Response<T> {
-    this.method('PUT')
+    options: ReqOptions = {},
+  ) {
+    return this.method('PUT')
       .url(url || options.url || this.options.url)
       .body(body || options.body || this.options.body || {})
-
-    if (this.options.isStream) {
-      return this.stream(options)
-    }
-
-    return this.request(options)
+      .request<T>(options)
   }
 
   /**
@@ -1132,49 +1105,30 @@ export class HttpClientBuilder {
   public patch<T = any>(
     url?: string | URL,
     body?: Response,
-    options: OptionsInit = {},
-  ): Response<T> {
-    this.method('PATCH')
+    options: ReqOptions = {},
+  ) {
+    return this.method('PATCH')
       .url(url || options.url || this.options.url)
       .body(body || options.body || this.options.body || {})
-
-    if (this.options.isStream) {
-      return this.stream(options)
-    }
-
-    return this.request(options)
+      .request<T>(options)
   }
 
   /**
    * Make a DELETE request.
    */
-  public delete<T = any>(
-    url?: string | URL,
-    options: OptionsInit = {},
-  ): Response<T> {
-    this.method('DELETE').url(url || options.url || this.options.url)
-
-    if (this.options.isStream) {
-      return this.stream(options)
-    }
-
-    return this.request(options)
+  public delete<T = any>(url?: string | URL, options: ReqOptions = {}) {
+    return this.method('DELETE')
+      .url(url || options.url || this.options.url)
+      .request<T>(options)
   }
 
   /**
    * Make a HEAD request.
    */
-  public head<T = any>(
-    url?: string | URL,
-    options: OptionsInit = {},
-  ): Response<T> {
-    this.method('HEAD').url(url || options.url || this.options.url)
-
-    if (this.options.isStream) {
-      return this.stream(options)
-    }
-
-    return this.request(options)
+  public head<T = any>(url?: string | URL, options: ReqOptions = {}) {
+    return this.method('HEAD')
+      .url(url || options.url || this.options.url)
+      .request<T>(options)
   }
 }
 
@@ -1208,11 +1162,8 @@ export class HttpClient {
   /**
    * Make a GET request.
    */
-  public static get<T = any>(
-    url?: string | URL,
-    options?: OptionsInit,
-  ): Response<T> {
-    return this._builder.get(url, options)
+  public static get<T = any>(url?: string | URL, options?: ReqOptions) {
+    return this._builder.get<T>(url, options)
   }
 
   /**
@@ -1221,9 +1172,9 @@ export class HttpClient {
   public static post<T = any>(
     url?: string | URL,
     body?: Body,
-    options?: OptionsInit,
-  ): Response<T> {
-    return this._builder.post(url, body, options)
+    options?: ReqOptions,
+  ) {
+    return this._builder.post<T>(url, body, options)
   }
 
   /**
@@ -1232,39 +1183,29 @@ export class HttpClient {
   public static put<T = any>(
     url?: string | URL,
     body?: Body,
-    options?: OptionsInit,
-  ): Response<T> {
-    return this._builder.put(url, body, options)
+    options?: ReqOptions,
+  ) {
+    return this._builder.put<T>(url, body, options)
   }
 
   /**
    * Make a PATCH request.
    */
-  static patch<T = any>(
-    url?: string | URL,
-    body?: Body,
-    options?: OptionsInit,
-  ): Response<T> {
-    return this._builder.patch(url, body, options)
+  static patch<T = any>(url?: string | URL, body?: Body, options?: ReqOptions) {
+    return this._builder.patch<T>(url, body, options)
   }
 
   /**
    * Make a DELETE request.
    */
-  public static delete<T = any>(
-    url?: string | URL,
-    options?: OptionsInit,
-  ): Response<T> {
-    return this._builder.delete(url, options)
+  public static delete<T = any>(url?: string | URL, options?: ReqOptions) {
+    return this._builder.delete<T>(url, options)
   }
 
   /**
    * Make a HEAD request.
    */
-  public static head<T = any>(
-    url?: string | URL,
-    options?: OptionsInit,
-  ): Response<T> {
-    return this._builder.head(url, options)
+  public static head<T = any>(url?: string | URL, options?: ReqOptions) {
+    return this._builder.head<T>(url, options)
   }
 }

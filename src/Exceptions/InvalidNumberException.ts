@@ -11,13 +11,10 @@ import { Exception } from '#src/Helpers/Exception'
 
 export class InvalidNumberException extends Exception {
   constructor(number: string) {
-    const content = `The number ${number} is not a valid string number.`
-
-    super(
-      content,
-      500,
-      'E_INVALID_NUMBER',
-      'Use a valid string number instead.',
-    )
+    super({
+      code: 'E_INVALID_NUMBER',
+      help: 'Use a valid string number instead.',
+      message: `The number ${number} is not a valid string number.`,
+    })
   }
 }

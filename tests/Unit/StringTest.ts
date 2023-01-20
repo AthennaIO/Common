@@ -11,7 +11,7 @@ import { test } from '@japa/runner'
 import { String } from '#src/index'
 import { OrdinalNanException } from '#src/Exceptions/OrdinalNanException'
 
-test.group('\n StringTest', () => {
+test.group('StringTest', () => {
   test('should generate random strings by size', async ({ assert }) => {
     assert.lengthOf(String.generateRandom(10), 10)
     assert.lengthOf(String.generateRandom(20), 20)
@@ -60,6 +60,6 @@ test.group('\n StringTest', () => {
 
     const useCase = () => String.ordinalize(Number.NaN)
 
-    assert.throws(useCase, OrdinalNanException)
+    assert.throws(useCase, OrdinalNanException.erc())
   })
 })

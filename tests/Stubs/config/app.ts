@@ -8,6 +8,5 @@
  */
 
 export default {
-  name: 'SecJS',
-  env: process.env.NODE_ENV,
+  name: 'Athenna',
 }

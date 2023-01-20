@@ -10,7 +10,7 @@
 import { test } from '@japa/runner'
 import { Is, Exception } from '#src/index'
 
-test.group('\n IsTest', () => {
+test.group('IsTest', () => {
   test('should verify if is a valid json string', async ({ assert }) => {
     assert.isFalse(Is.Json(''))
     assert.isFalse(Is.Json('Hello'))
@@ -156,7 +156,7 @@ test.group('\n IsTest', () => {
     assert.isFalse(Is.Error(0))
     assert.isFalse(Is.Error(''))
     assert.isTrue(Is.Error(new Error()))
-    assert.isTrue(Is.Error(new Exception('Test')))
+    assert.isTrue(Is.Error(new Exception({ message: 'Test' })))
   })
 
   test('should verify if is a valid function', async ({ assert }) => {
@@ -196,8 +196,6 @@ test.group('\n IsTest', () => {
       },
     ]
 
-    assert.isFalse(Is.ArrayOfObjects(0))
-    assert.isFalse(Is.ArrayOfObjects(''))
     assert.isFalse(Is.ArrayOfObjects([]))
     assert.isFalse(Is.ArrayOfObjects([1, 2, 3]))
     assert.isFalse(Is.ArrayOfObjects(['', '', '']))

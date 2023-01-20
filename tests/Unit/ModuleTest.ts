@@ -10,11 +10,11 @@
 import { test } from '@japa/runner'
 import { Module, Path } from '#src/index'
 
-test.group('ExecTest', group => {
+test.group('ModuleTest', () => {
   test('should be able to get the module first export match or default', async ({ assert }) => {
     const moduleDefault = await Module.get(import('../Stubs/config/app.js'))
 
-    assert.equal(moduleDefault.name, 'SecJS')
+    assert.equal(moduleDefault.name, 'Athenna')
 
     const moduleFirstExport = await Module.get(import('#src/Helpers/Options'))
 
@@ -26,7 +26,7 @@ test.group('ExecTest', group => {
 
     const modulesResolved = await Module.getAll(modules)
 
-    assert.equal(modulesResolved[0].name, 'SecJS')
+    assert.equal(modulesResolved[0].name, 'Athenna')
     assert.equal(modulesResolved[1].name, 'Options')
   })
 
@@ -43,11 +43,11 @@ test.group('ExecTest', group => {
   })
 
   test('should be able to get the module first export match or default from any path', async ({ assert }) => {
-    const moduleDefault = await Module.getFrom(Path.stubs('config/app.js'))
+    const moduleDefault = await Module.getFrom(Path.stubs('config/app.ts'))
 
-    assert.equal(moduleDefault.name, 'SecJS')
+    assert.equal(moduleDefault.name, 'Athenna')
 
-    const moduleFirstExport = await Module.getFrom(Path.pwd('src/Helpers/Options.js'))
+    const moduleFirstExport = await Module.getFrom(Path.pwd('src/Helpers/Options.ts'))
 
     assert.equal(moduleFirstExport.name, 'Options')
   })
@@ -72,7 +72,7 @@ test.group('ExecTest', group => {
   test('should be able to create __filename property inside node global', async ({ assert }) => {
     Module.createFilename(import.meta.url, true)
 
-    assert.isTrue(__filename.includes('ModuleTest.js'))
+    assert.isTrue(__filename.includes('ModuleTest.ts'))
   })
 
   test('should be able to create __dirname property inside node global', async ({ assert }) => {

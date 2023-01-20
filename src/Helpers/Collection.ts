@@ -9,31 +9,6 @@
 
 import { Collection as CollectJS } from 'collect.js'
 
-declare global {
-  interface Array<T> {
-    /**
-     * Call the toResource method of each item
-     * inside the array.
-     */
-    toResource(): T[]
-
-    /**
-     * Transform the array to an Athenna collection.
-     */
-    toCollection(): Collection<T>
-  }
-}
-
-// eslint-disable-next-line no-extend-native
-Array.prototype.toResource = function (criterias = {}) {
-  return this.map(model => model.toResource(criterias))
-}
-
-// eslint-disable-next-line no-extend-native
-Array.prototype.toCollection = function () {
-  return new Collection(this)
-}
-
 export class Collection<T = any> extends CollectJS<T> {
   /**
    * An alias for macro instance method:

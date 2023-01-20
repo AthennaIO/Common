@@ -7,7 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import { Path as PathImpl } from './Helpers/Path.js'
+import('./Globals/Path.js')
+import('./Globals/Array.js')
+import('./Globals/Error.js')
 
 export * from './Helpers/Exception.js'
 export * from './Helpers/Clean.js'
@@ -29,12 +31,9 @@ export * from './Helpers/Route.js'
 export * from './Helpers/String.js'
 export * from './Helpers/Uuid.js'
 
-declare global {
-  export class Path extends PathImpl {}
-}
-
-const __global: any = global
-
-if (!__global.Path) {
-  __global.Path = PathImpl
-}
+export * from './Types/Merge.js'
+export * from './Types/Except.js'
+export * from './Types/HttpClient/Body.js'
+export * from './Types/HttpClient/Query.js'
+export * from './Types/HttpClient/ReqOptions.js'
+export * from './Types/HttpClient/RetryStrategyCallback.js'

@@ -688,7 +688,7 @@ export class Folder {
   /**
    * Get all the folders of folder using glob pattern.
    */
-  public getFoldersByPattern(pattern: string, recursive = false): Folder[] {
+  public getFoldersByPattern(pattern?: string, recursive = false): Folder[] {
     this.loadSync({ withSub: true, isInternalLoad: true })
 
     if (pattern) {

@@ -7,8 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Config } from '#src/Helpers/Config'
-
-export default {
-  username: Config.get('app.name'),
-}
+export type Except<ObjectType, KeysType extends keyof ObjectType> = Pick<
+  ObjectType,
+  Exclude<keyof ObjectType, KeysType>
+>

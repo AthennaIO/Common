@@ -9,13 +9,12 @@
 
 import { promisify } from 'node:util'
 import { Transform } from 'node:stream'
-import { request as requestHttp } from 'node:http'
-import { request as requestHttps } from 'node:https'
-import { exec as childProcessExec, ExecOptions } from 'node:child_process'
-
 import { File } from '#src/Helpers/File'
 import { Uuid } from '#src/Helpers/Uuid'
 import { Options } from '#src/Helpers/Options'
+import { request as requestHttp } from 'node:http'
+import { request as requestHttps } from 'node:https'
+import { exec as childProcessExec, ExecOptions } from 'node:child_process'
 import { NodeCommandException } from '#src/Exceptions/NodeCommandException'
 
 const exec = promisify(childProcessExec)
@@ -60,8 +59,7 @@ export class Exec {
     options?: { ignoreErrors?: boolean },
   ): Promise<{ stdout: string; stderr: string }> {
     options = Options.create(options, {
-      withContent: true,
-      mockedValues: false,
+      ignoreErrors: false,
     })
 
     try {

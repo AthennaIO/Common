@@ -9,6 +9,7 @@
 
 import stream from 'node:stream'
 
+import { Response } from 'got'
 import { test } from '@japa/runner'
 import { promisify } from 'node:util'
 import { File } from '#src/Helpers/File'
@@ -30,7 +31,6 @@ test.group('HttpClientTest', group => {
     builder
       .http2(false)
       .setHost(true)
-      .isStream(false)
       .timeout(10000)
       .dnsCache(false)
       .prefixUrl(FAKE_API_URL)
@@ -47,7 +47,7 @@ test.group('HttpClientTest', group => {
       .throwHttpErrors(true)
       .resolveBodyOnly(false)
       .enableUnixSockets(true)
-      .retryStrategy((response, execCount) => {
+      .retryStrategy((_response, execCount) => {
         if (execCount === 3) {
           return 0
         }
@@ -227,7 +227,7 @@ test.group('HttpClientTest', group => {
 
   test('should be able to setup init hooks for requests', async ({ assert }) => {
     const builder = HttpClient.builder()
-      .setInitHook(plain => {
+      .setInitHook((plain: any) => {
         assert.isTrue('followRedirects' in plain)
 
         if ('followRedirects' in plain) {
@@ -236,14 +236,16 @@ test.group('HttpClientTest', group => {
           delete plain.followRedirects
         }
       })
-      .mergeOptions({ followRedirects: true })
+      .mergeOptions({ followRedirects: true } as any)
 
     await builder.get('/users').json()
   })
 
   test('should be able to setup before request hooks for requests', async ({ assert }) => {
     const builder = HttpClient.builder().setBeforeRequestHook(options => {
-      assert.isTrue(options.body.includes('payload'))
+      const body = options.body as string
+
+      assert.isTrue(body.includes('payload'))
 
       options.body = JSON.stringify({ payload: 'new' })
       options.headers['content-length'] = options.body.length.toString()
@@ -254,7 +256,7 @@ test.group('HttpClientTest', group => {
   })
 
   test('should be able to setup before redirect hooks for requests', async ({ assert }) => {
-    const builder = HttpClient.builder().setBeforeRedirectHook((options, response) => {
+    const builder = HttpClient.builder().setBeforeRedirectHook((options: any, _response) => {
       assert.deepEqual(options.hostname, 'deadSite')
 
       if (options.hostname === 'deadSite') {
@@ -269,7 +271,7 @@ test.group('HttpClientTest', group => {
     const builder = HttpClient.builder(true)
       .responseType('json')
       .setBeforeErrorHook(error => {
-        const { response } = error
+        const response: Response<{ message?: string }> = error.response
 
         if (response && response.body) {
           error.name = 'GitHubError'
@@ -288,7 +290,7 @@ test.group('HttpClientTest', group => {
   })
 
   test('should be able to setup before retry hooks for requests', async ({ assert }) => {
-    const builder = HttpClient.builder().setBeforeRetryHook((error, retryCount) =>
+    const builder = HttpClient.builder().setBeforeRetryHook((error, _retryCount) =>
       assert.deepEqual(error.name, 'ERR_NON_2XX_3XX_RESPONSE'),
     )
 
@@ -313,7 +315,7 @@ test.group('HttpClientTest', group => {
   })
 
   test('should be able to make a get request and get the response as stream', async ({ assert }) => {
-    const requestStream = HttpClient.builder().isStream(true).get('users')
+    const requestStream = HttpClient.builder().url('users').stream()
     const file = new File(Path.stubs('streamed.json'), Buffer.from(''))
 
     await pipeline(requestStream, file.createWriteStream())

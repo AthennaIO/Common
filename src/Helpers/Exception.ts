@@ -1,4 +1,3 @@
-/* eslint-disable no-extend-native */
 /**
  * @athenna/common
  *
@@ -19,38 +18,59 @@ export interface ExceptionJSON {
   code?: string
   name?: string
   status?: number
-  content?: string
-  help?: string
-  stack?: any
+  message?: string
+  help?: any
+  stack?: string
 }
 
 export class Exception extends Error {
-  public code: string
-  public status: number
-  public content: string
-  public help?: string
+  /**
+   * This method returns the Exception as
+   * an ErrorConstructor class. This method
+   * is very usefull when doing assertions.
+   *
+   * @example
+   *  assert.throws(() => throw new Exception(), Exception.erc())
+   */
+  public static erc(): ErrorConstructor {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this
+  }
+
+  public code?: string
+  public help?: any
+  public status?: number
 
   /**
    * Creates a new instance of Exception.
    */
-  public constructor(
-    content: string,
-    status = 500,
-    code?: string,
-    help?: string,
-  ) {
-    super(content)
+  public constructor(options?: ExceptionJSON) {
+    super(options?.message || '')
 
-    this.name = this.constructor.name
-    this.status = status
-    this.code = code || changeCase.constantCase(this.name)
-    this.content = content
+    options = Options.create(options, {
+      message: '',
+      status: 500,
+      help: null,
+      stack: null,
+      name: this.constructor.name,
+      code: changeCase.constantCase(this.constructor.name),
+    })
 
-    if (help) {
-      this.help = help
+    this.name = options.name
+    this.code = options.code
+    this.status = options.status
+    this.message = options.message
+
+    if (options.help) {
+      this.help = options.help
     }
 
-    Error.captureStackTrace(this, this.constructor)
+    if (options.stack) {
+      this.stack = options.stack
+    } else {
+      Exception.captureStackTrace(this, this.constructor)
+    }
   }
 
   /**
@@ -62,7 +82,7 @@ export class Exception extends Error {
     json.code = this.code
     json.name = this.name
     json.status = this.status
-    json.content = this.content
+    json.message = this.message
 
     if (this.help) json.help = this.help
     if (stack) json.stack = this.stack

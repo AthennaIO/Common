@@ -13,15 +13,9 @@ import { test } from '@japa/runner'
 test.group('PathTest', () => {
   test('should be able to resolve the environment where the app will run', async ({ assert }) => {
     const metaUrl = import.meta.url
-    const metaUrlTs = metaUrl.replace('.js', '.ts')
+    const metaUrlJs = metaUrl.replace('.ts', '.js')
 
-    Path.resolveEnvironment(metaUrlTs)
-
-    assert.equal(process.env.IS_TS, 'true')
-    assert.equal(Path.defaultBeforePath, '')
-
-    delete process.env.IS_TS
-    Path.resolveEnvironment(metaUrlTs, '/build')
+    Path.resolveEnvironment(metaUrl)
 
     assert.equal(process.env.IS_TS, 'true')
     assert.equal(Path.defaultBeforePath, '')
@@ -29,35 +23,40 @@ test.group('PathTest', () => {
     delete process.env.IS_TS
     Path.resolveEnvironment(metaUrl, '/build')
 
+    assert.equal(process.env.IS_TS, 'true')
+    assert.equal(Path.defaultBeforePath, '')
+
+    delete process.env.IS_TS
+    Path.resolveEnvironment(metaUrlJs, '/build')
+
     assert.equal(process.env.IS_TS, 'false')
     assert.equal(Path.defaultBeforePath, '/build')
 
     delete process.env.IS_TS
-    Path.resolveEnvironment(metaUrl)
+    Path.resolveEnvironment(metaUrlJs)
 
     assert.equal(process.env.IS_TS, 'false')
     assert.equal(Path.defaultBeforePath, '')
+
+    process.env.IS_TS = 'true'
   })
 
   test('should get the extension js and ts', async ({ assert }) => {
-    assert.equal(Path.ext(), 'js')
-
-    process.env.IS_TS = true
-    assert.equal(Path.ext(), 'ts')
-
-    process.env.IS_TS = 'true'
-    assert.equal(Path.ext(), 'ts')
-
-    process.env.IS_TS = '(true)'
     assert.equal(Path.ext(), 'ts')
 
     process.env.IS_TS = 'false'
+    assert.equal(Path.ext(), 'js')
+
+    process.env.IS_TS = '(false)'
+    assert.equal(Path.ext(), 'js')
+
+    process.env.IS_TS = 'false'
     Path.defaultBeforePath = 'build'
-    console.log(Path.pwd(`artisan.${Path.ext()}`))
 
     assert.isTrue(Path.pwd(`artisan.${Path.ext()}`).includes(`build${sep}artisan.js`))
 
     Path.defaultBeforePath = ''
+    process.env.IS_TS = 'true'
   })
 
   test('should get pwd path', async ({ assert }) => {

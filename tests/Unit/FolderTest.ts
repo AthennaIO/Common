@@ -124,13 +124,13 @@ test.group('FolderTest', group => {
 
     const useCase = async () => await bigFolder.remove()
 
-    await assert.rejects(useCase, NotFoundFolderException)
+    await assert.rejects(useCase, NotFoundFolderException.erc())
   })
 
   test('should throw an not found exception when trying to remove nonExistentFolder', async ({ assert }) => {
     const useCase = () => nonexistentFolder.removeSync()
 
-    assert.throws(useCase, NotFoundFolderException)
+    assert.throws(useCase, NotFoundFolderException.erc())
   })
 
   test('should be able to make a copy of the folder', async ({ assert }) => {

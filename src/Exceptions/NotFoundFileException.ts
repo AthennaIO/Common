@@ -11,13 +11,10 @@ import { Exception } from '#src/Helpers/Exception'
 
 export class NotFoundFileException extends Exception {
   constructor(filePath: string) {
-    const content = `The file ${filePath} doesnt exist.`
-
-    super(
-      content,
-      500,
-      'E_NOT_FOUND_FILE',
-      'Try using File.create method to create the file.',
-    )
+    super({
+      code: 'E_NOT_FOUND_FILE',
+      message: `The file ${filePath} doesnt exist.`,
+      help: 'Try using File.create method to create the file.',
+    })
   }
 }

@@ -61,7 +61,7 @@ test.group('FileTest', group => {
   test('should throw an error when trying to create an instance of a file that doesnt exist', async ({ assert }) => {
     const useCase = () => new File(Path.pwd('not-found.txt'))
 
-    assert.throws(useCase, NotFoundFileException)
+    assert.throws(useCase, NotFoundFileException.erc())
   })
 
   test('should be able to generate instance of files using relative paths', async ({ assert }) => {
@@ -129,13 +129,13 @@ test.group('FileTest', group => {
 
     const useCase = async () => await bigFile.remove()
 
-    await assert.rejects(useCase, NotFoundFileException)
+    await assert.rejects(useCase, NotFoundFileException.erc())
   })
 
   test('should throw an not found exception when trying to remove nonExistentFile', async ({ assert }) => {
     const useCase = () => nonexistentFile.removeSync()
 
-    assert.throws(useCase, NotFoundFileException)
+    assert.throws(useCase, NotFoundFileException.erc())
   })
 
   test('should be able to make a copy of the file', async ({ assert }) => {

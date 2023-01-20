@@ -11,13 +11,10 @@ import { Exception } from '#src/Helpers/Exception'
 
 export class OrdinalNanException extends Exception {
   constructor() {
-    const content = 'Cannot ordinal NaN or infinite numbers.'
-
-    super(
-      content,
-      500,
-      'E_ORDINAL_NAN',
-      'Use a valid number instead of NaN or infinite.',
-    )
+    super({
+      code: 'E_ORDINAL_NAN',
+      message: 'Cannot ordinal NaN or infinite numbers.',
+      help: 'Use a valid number instead of NaN or infinite.',
+    })
   }
 }

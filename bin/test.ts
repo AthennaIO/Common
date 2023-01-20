@@ -26,6 +26,8 @@ import { processCliArgs, configure, run } from '@japa/runner'
 | Please consult japa.dev/runner-config for the config docs.
 */
 
+process.env.IS_TS = 'true'
+
 configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{

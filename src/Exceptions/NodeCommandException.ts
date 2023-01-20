@@ -11,8 +11,6 @@ import { Exception } from '#src/Helpers/Exception'
 
 export class NodeCommandException extends Exception {
   constructor(command: string, error: any) {
-    const content = `Error has occurred when executing the command "${command}"`
-
     let help = ''
 
     if (error.stdout) {
@@ -27,6 +25,10 @@ export class NodeCommandException extends Exception {
       help = `Command error:\n\n${JSON.stringify(error)}\n\n`
     }
 
-    super(content, 500, 'E_NODE_EXEC', help)
+    super({
+      help,
+      code: 'E_NODE_EXEC',
+      message: `Error has occurred when executing the command "${command}"`,
+    })
   }
 }

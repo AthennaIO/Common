@@ -12,18 +12,19 @@ import { Exception } from '#src/index'
 
 test.group('ExceptionTest', () => {
   test('should be able to create a new exception', async ({ assert }) => {
-    const exception = new Exception('My custom instance error', 500)
+    const exception = new Exception({ message: 'My custom instance error' })
 
     const errorJson = exception.toJSON()
 
     assert.equal(errorJson.status, 500)
     assert.equal(errorJson.code, 'EXCEPTION')
     assert.equal(errorJson.name, 'Exception')
-    assert.equal(errorJson.content, 'My custom instance error')
+    assert.equal(errorJson.message, 'My custom instance error')
   })
 
   test('should be able to create a new exception from vanilla errors', async ({ assert }) => {
     const exception = new Error('My custom instance error').toAthennaException({
+      status: 0,
       code: 'EXCEPTION',
       name: 'Exception',
     })
@@ -33,13 +34,13 @@ test.group('ExceptionTest', () => {
     assert.equal(errorJson.status, 0)
     assert.equal(errorJson.code, 'EXCEPTION')
     assert.equal(errorJson.name, 'Exception')
-    assert.equal(errorJson.content, 'My custom instance error')
+    assert.equal(errorJson.message, 'My custom instance error')
   })
 
   test('should be able to extend exception class to create a new exception', async ({ assert }) => {
     class InternalServerException extends Exception {
       constructor(content = 'Internal Server Error', status = 500) {
-        super(content, status, 'E_RUNTIME_EXCEPTION', 'Restart computer.')
+        super({ message: content, status, code: 'E_RUNTIME_EXCEPTION', help: 'Restart computer.' })
       }
     }
 
@@ -51,13 +52,18 @@ test.group('ExceptionTest', () => {
     assert.equal(errorJson.status, 500)
     assert.equal(errorJson.code, 'E_RUNTIME_EXCEPTION')
     assert.equal(errorJson.name, 'InternalServerException')
-    assert.equal(errorJson.content, 'Internal Server Error')
+    assert.equal(errorJson.message, 'Internal Server Error')
   })
 
   test('should be able to pretiffy the exception', async ({ assert }) => {
     class InternalServerException extends Exception {
       constructor(content = 'Internal Server Error.', status = 500) {
-        super(content, status, 'E_RUNTIME_EXCEPTION', 'Restart your computer, works always. 👍')
+        super({
+          status,
+          message: content,
+          code: 'E_RUNTIME_EXCEPTION',
+          help: 'Restart your computer, works always. 👍',
+        })
       }
     }
 

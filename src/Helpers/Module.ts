@@ -9,9 +9,8 @@
 
 import { dirname } from 'node:path'
 import { createRequire } from 'node:module'
-import { fileURLToPath, pathToFileURL } from 'node:url'
-
 import { Path, File, Folder } from '#src/index'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 export class Module {
   /**
@@ -197,7 +196,7 @@ export class Module {
   public static createRequire(
     url = import.meta.url,
     setInGlobal = false,
-  ): typeof require {
+  ): NodeRequire {
     const require = createRequire(url)
 
     if (setInGlobal) {

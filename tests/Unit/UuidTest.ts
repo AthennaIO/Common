@@ -50,7 +50,7 @@ test.group('UuidTest', () => {
 
     const useCase = () => Uuid.injectPrefix('tkn', 'not-valid-uuid')
 
-    assert.throws(useCase, InvalidUuidException)
+    assert.throws(useCase, InvalidUuidException.erc())
   })
 
   test('should change or generate a new token', async ({ assert }) => {
@@ -62,6 +62,6 @@ test.group('UuidTest', () => {
 
     const useCase = () => Uuid.changePrefix('tkn', 'not-valid-uuid')
 
-    assert.throws(useCase, InvalidUuidException)
+    assert.throws(useCase, InvalidUuidException.erc())
   })
 })
