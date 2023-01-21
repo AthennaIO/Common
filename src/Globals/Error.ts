@@ -9,6 +9,8 @@
 
 import { Exception, ExceptionJSON } from '#src/Helpers/Exception'
 
+export {}
+
 declare global {
   interface Error {
     /**

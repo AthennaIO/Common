@@ -9,6 +9,8 @@
 
 import { Collection } from '#src/Helpers/Collection'
 
+export {}
+
 declare global {
   interface Array<T> {
     /**

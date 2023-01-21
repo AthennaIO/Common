@@ -31,7 +31,7 @@ test.group('ExecTest', group => {
       await Exec.command('echo "error thrown" && exit 255')
     }
 
-    await assert.rejects(useCase, NodeCommandException.erc())
+    await assert.rejects(useCase, NodeCommandException)
   })
 
   test('should be able to execute a command that throws errors and ignore it linux', async ({ assert }) => {

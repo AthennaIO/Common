@@ -9,6 +9,8 @@
 
 import { Path as PathImpl } from '#src/Helpers/Path'
 
+export {}
+
 declare global {
   export class Path extends PathImpl {}
 }

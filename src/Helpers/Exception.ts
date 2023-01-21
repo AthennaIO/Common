@@ -24,20 +24,6 @@ export interface ExceptionJSON {
 }
 
 export class Exception extends Error {
-  /**
-   * This method returns the Exception as
-   * an ErrorConstructor class. This method
-   * is very usefull when doing assertions.
-   *
-   * @example
-   *  assert.throws(() => throw new Exception(), Exception.erc())
-   */
-  public static erc(): ErrorConstructor {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return this
-  }
-
   public code?: string
   public help?: any
   public status?: number

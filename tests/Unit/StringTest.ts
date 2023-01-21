@@ -60,6 +60,6 @@ test.group('StringTest', () => {
 
     const useCase = () => String.ordinalize(Number.NaN)
 
-    assert.throws(useCase, OrdinalNanException.erc())
+    assert.throws(useCase, OrdinalNanException)
   })
 })

@@ -25,7 +25,7 @@ test.group('ParserTest', () => {
 
     const useCase = () => Parser.stringToNumber('not-a-number')
 
-    assert.throws(useCase, InvalidNumberException.erc())
+    assert.throws(useCase, InvalidNumberException)
   })
 
   test('should parse array to string based on options', async ({ assert }) => {

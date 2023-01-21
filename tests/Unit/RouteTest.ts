@@ -64,7 +64,7 @@ test.group('RouteTest', () => {
 
     const useCase = () => Route.getParamsValue(pathWithParams, pathWithValues)
 
-    assert.throws(useCase, RouteMatchException.erc())
+    assert.throws(useCase, RouteMatchException)
   })
 
   test('should get params names from any route', async ({ assert }) => {

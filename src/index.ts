@@ -10,6 +10,7 @@
 import('./Globals/Path.js')
 import('./Globals/Array.js')
 import('./Globals/Error.js')
+import('./Globals/Assert.js')
 
 export * from './Helpers/Exception.js'
 export * from './Helpers/Clean.js'
