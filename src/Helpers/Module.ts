@@ -163,7 +163,7 @@ export class Module {
    * module does not exist, catching the error throw from bad
    * import.
    */
-  public static async safeImport(path: string): Promise<any> {
+  public static async safeImport(path: string): Promise<any | null> {
     try {
       return await import(path)
     } catch (err) {
