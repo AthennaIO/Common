@@ -159,6 +159,19 @@ export class Module {
   }
 
   /**
+   * Same as import method, but safeImport return null if the
+   * module does not exist, catching the error throw from bad
+   * import.
+   */
+  public static async safeImport(path: string): Promise<any> {
+    try {
+      return await import(path)
+    } catch (err) {
+      return null
+    }
+  }
+
+  /**
    * Create the __dirname property. Set in global if necessary.
    */
   public static createDirname(
