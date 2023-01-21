@@ -45,7 +45,7 @@ export interface FileJSON {
   createdAt: Date
   accessedAt: Date
   modifiedAt: Date
-  fileSize: number
+  fileSize: string
   extension: string
   isCopy: boolean
   originalDir: string
@@ -110,7 +110,7 @@ export class File {
   /**
    * The file size.
    */
-  public fileSize: number
+  public fileSize: string
 
   /**
    * The file extension.

@@ -39,7 +39,7 @@ export interface FolderJSON {
   createdAt: Date
   accessedAt: Date
   modifiedAt: Date
-  folderSize: number
+  folderSize: string
   isCopy: boolean
   originalDir: string
   originalName: string
@@ -102,7 +102,7 @@ export class Folder {
   /**
    * The folder size.
    */
-  public folderSize: number
+  public folderSize: string
 
   /**
    * Set if folder is a copy or not.
