@@ -39,6 +39,18 @@ export class Is {
   }
 
   /**
+   * Verify if the value is defined, even
+   * with falsy values like false and ''.
+   */
+  public static Defined(value: any): boolean {
+    if (value === undefined || value === null) {
+      return false
+    }
+
+    return true
+  }
+
+  /**
    * Verify if is valid Json.
    */
   public static Json(value: string): boolean {
