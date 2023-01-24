@@ -224,4 +224,22 @@ test.group('Json Class', () => {
     assert.isFalse(builder.isNot('details.car.name', ['FAKE1', 'FAKE2', 'BMW E46 M3']))
     assert.isTrue(builder.isNot('details.car.name', ['FAKE1', 'FAKE2', 'FAKE3']))
   })
+
+  test('should be able to set not referenced values in ObjectBuilder', async ({ assert }) => {
+    const user = { name: 'Victor' }
+    const builder = Json.builder({ referencedValues: false }).set('user', user)
+
+    assert.equal(builder.get('user.name'), 'Victor')
+    user.name = 'João'
+    assert.equal(builder.get('user.name'), 'Victor')
+  })
+
+  test('should be able to set referenced values in ObjectBuilder', async ({ assert }) => {
+    const user = { name: 'Victor' }
+    const builder = Json.builder({ referencedValues: true }).set('user', user)
+
+    assert.equal(builder.get('user.name'), 'Victor')
+    user.name = 'João'
+    assert.equal(builder.get('user.name'), 'João')
+  })
 })

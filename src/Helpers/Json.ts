@@ -14,6 +14,39 @@ import { Options } from './Options.js'
 
 export type ObjectBuilderOptions = {
   /**
+   * If referenced values is false (by default is false),
+   * Athenna will make a copy of the value that you are
+   * setting or getting of the ObjectBuilder object.
+   * Check the example:
+   *
+   * @default false
+   * @example
+   *  const user = { name: 'Victor' }
+   *  const builder = Json.builder({ referencedValues: false })
+   *    .set('user', user)
+   *
+   *  console.log(builder.get('user.name')) // 'Victor'
+   *
+   *  user.name = 'João'
+   *
+   *  console.log(builder.get('user.name')) // 'Victor'
+   *
+   * Now let's check the example with referencedValues as true:
+   *
+   * @example
+   * const user = { name: 'Victor' }
+   *  const builder = Json.builder({ referencedValues: true })
+   *    .set('user', user)
+   *
+   *  console.log(builder.get('user.name')) // 'Victor'
+   *
+   *  user.name = 'João'
+   *
+   *  console.log(builder.get('user.name')) // 'João'
+   */
+  referencedValues?: any
+
+  /**
    * The global default value that is going
    * to be used if the value that is being set
    * is undefined or null.
@@ -58,6 +91,7 @@ export class ObjectBuilder {
       ignoreNull: false,
       ignoreUndefined: true,
       defaultValue: null,
+      referencedValues: false,
     })
 
     this.object = {}
@@ -75,11 +109,7 @@ export class ObjectBuilder {
    */
   public set(key: string, value: any, defaultValue?: any): this {
     if (this.isDefinedDefaultValue(defaultValue) && !Is.Defined(value)) {
-      lodash.set(
-        this.object,
-        key.split('.'),
-        Json.copy(defaultValue || this.options.defaultValue),
-      )
+      lodash.set(this.object, key.split('.'), this.getValue(defaultValue))
 
       return this
     }
@@ -92,7 +122,7 @@ export class ObjectBuilder {
       return this
     }
 
-    lodash.set(this.object, key.split('.'), Json.copy(value))
+    lodash.set(this.object, key.split('.'), this.getValue(value))
 
     return this
   }
@@ -125,10 +155,12 @@ export class ObjectBuilder {
    */
   public get<T = any>(key?: string, defaultValue?: any): T {
     if (key === undefined) {
-      return this.object
+      return this.getValue(this.object)
     }
 
-    return Json.get(this.object, key, defaultValue)
+    const value = Json.get(this.object, key, defaultValue)
+
+    return this.getValue(value)
   }
 
   /**
@@ -200,6 +232,19 @@ export class ObjectBuilder {
    */
   private isDefinedDefaultValue(defaultValue: string): boolean {
     return Is.Defined(defaultValue) || Is.Defined(this.options.defaultValue)
+  }
+
+  /**
+   * Get the value referenced or not depending on
+   * "options.referecendValues". Also will auto set
+   * the "options.defaultValue" if any value is set.
+   */
+  private getValue(value: any, defaultValue = this.options.defaultValue): any {
+    if (this.options.referencedValues) {
+      return Is.Defined(value) ? value : defaultValue
+    }
+
+    return Json.copy(Is.Defined(value) ? value : defaultValue)
   }
 }
 
