@@ -7,8 +7,6 @@
  * file that was distributed with this source code.
  */
 
-export {}
-
 declare module '@japa/assert' {
   export interface Assert {
     throws(fn: () => void, errType: any, message?: string): void

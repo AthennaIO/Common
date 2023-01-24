@@ -12,6 +12,8 @@ import { assert } from '@japa/assert'
 import { specReporter } from '@japa/spec-reporter'
 import { processCliArgs, configure, run } from '@japa/runner'
 
+import('./japaTypes.js')
+
 /*
 |--------------------------------------------------------------------------
 | Configure tests
