@@ -74,13 +74,11 @@ export class ObjectBuilder {
    *  console.log(object.hello.world)
    */
   public set(key: string, value: any, defaultValue?: any): this {
-    const [mainKey, ...keys] = key.split('.')
-
-    if (Is.Defined(defaultValue) && !Is.Defined(value)) {
-      this.object[mainKey] = lodash.set(
-        {},
-        keys.join('.'),
-        Json.copy(defaultValue),
+    if (this.isDefinedDefaultValue(defaultValue) && !Is.Defined(value)) {
+      lodash.set(
+        this.object,
+        key.split('.'),
+        Json.copy(defaultValue || this.options.defaultValue),
       )
 
       return this
@@ -94,9 +92,114 @@ export class ObjectBuilder {
       return this
     }
 
-    this.object[key] = lodash.set({}, keys.join('.'), Json.copy(value))
+    lodash.set(this.object, key.split('.'), Json.copy(value))
 
     return this
+  }
+
+  /**
+   * Delete the configuration key.
+   */
+  public delete(key: string): this {
+    if (this.notExists(key)) {
+      return this
+    }
+
+    const [mainKey, ...keys] = key.split('.')
+
+    if (key === mainKey) {
+      delete this.object[key]
+
+      return this
+    }
+
+    const object = this.object[mainKey]
+    lodash.unset(object, keys.join('.'))
+    object[mainKey] = object
+
+    return this
+  }
+
+  /**
+   * Get the value builded.
+   */
+  public get<T = any>(key?: string, defaultValue?: any): T {
+    if (key === undefined) {
+      return this.object
+    }
+
+    return Json.get(this.object, key, defaultValue)
+  }
+
+  /**
+   * Verify if the object key path has the same value.
+   */
+  public is(key: string, ...values: any | any[]): boolean {
+    let is = false
+    values = Is.Array(values[0]) ? values[0] : values
+
+    for (const value of values) {
+      if (this.get(key) === value) {
+        is = true
+        break
+      }
+    }
+
+    return is
+  }
+
+  /**
+   * Verify if the object key path does not have the same value.
+   */
+  public isNot(key: string, ...values: any | any[]): boolean {
+    return !this.is(key, ...values)
+  }
+
+  /**
+   * Verify if key path exists in object.
+   */
+  public exists(key: string): boolean {
+    return !!this.get(key)
+  }
+
+  /**
+   * Verify if key path does not exists in object.
+   */
+  public notExists(key: string): boolean {
+    return !this.exists(key)
+  }
+
+  /**
+   * Verify if all the object keys exists.
+   */
+  public existsAll(...keys: string[]): boolean {
+    let existsAll = true
+    keys = Is.Array(keys[0]) ? keys[0] : keys
+
+    for (const key of keys) {
+      if (this.notExists(key)) {
+        existsAll = false
+
+        break
+      }
+    }
+
+    return existsAll
+  }
+
+  /**
+   * Verify if all the object keys does not exist.
+   */
+  public notExistsAll(...keys: string[]): boolean {
+    return !this.existsAll(...keys)
+  }
+
+  /**
+   * Verify if defaultValue or global default value option
+   * is defined.
+   */
+  private isDefinedDefaultValue(defaultValue: string): boolean {
+    return Is.Defined(defaultValue) || Is.Defined(this.options.defaultValue)
   }
 }
 

@@ -111,7 +111,7 @@
   "c8": {
     "all": true,
     "include": [
-      "src/**/*.js"
+      "src/**/*.ts"
     ],
     "exclude": [],
     "reporter": [

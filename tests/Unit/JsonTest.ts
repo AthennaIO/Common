@@ -119,4 +119,109 @@ test.group('Json Class', () => {
     assert.deepEqual(defaultValueInObjectNull, { hello: 'world' })
     assert.deepEqual(falsyDefaultValue, false)
   })
+
+  test('should be able to build objects using the ObjectBuilder', async ({ assert }) => {
+    const me = Json.builder()
+      .set('name', 'João Lenon')
+      .set('email', 'lenon@athenna.io')
+      .set('age', 22)
+      .set('details.car.color', 'white')
+      .set('details.car.name', 'BMW E46 M3')
+      .set('details.favoriteColor', 'black')
+      .set('details.job', 'Software Engineer')
+      .set('createdAt', new Date('2000-12-09').toISOString())
+      .set('updatedAt', new Date('2022-12-09').toISOString())
+      .set('deletedAt', null)
+      .set('willNotBeSet', undefined)
+      .set('willSetDefaultOne', null, 'Hello')
+      .set('willSetDefaultTwo', undefined, 'Hello')
+      .get()
+
+    assert.deepEqual(me, {
+      name: 'João Lenon',
+      email: 'lenon@athenna.io',
+      age: 22,
+      details: {
+        car: {
+          color: 'white',
+          name: 'BMW E46 M3',
+        },
+        job: 'Software Engineer',
+        favoriteColor: 'black',
+      },
+      createdAt: '2000-12-09T00:00:00.000Z',
+      updatedAt: '2022-12-09T00:00:00.000Z',
+      deletedAt: null,
+      willSetDefaultOne: 'Hello',
+      willSetDefaultTwo: 'Hello',
+    })
+
+    const ignores = Json.builder({ ignoreNull: true, ignoreUndefined: true, defaultValue: 'Global' })
+      .set('name', null)
+      .set('email', undefined)
+      .set('age', 0)
+      .set('createdAt', undefined, new Date('2000-12-09').toISOString())
+      .get()
+
+    assert.deepEqual(ignores, {
+      name: 'Global',
+      email: 'Global',
+      age: 0,
+      createdAt: '2000-12-09T00:00:00.000Z',
+    })
+  })
+
+  test('should be able to build objects and get the values using nested key path', async ({ assert }) => {
+    const builder = Json.builder()
+      .set('name', 'João Lenon')
+      .set('email', 'lenon@athenna.io')
+      .set('age', 22)
+      .set('details.car.color', 'white')
+      .set('details.car.name', 'BMW E46 M3')
+      .set('details.favoriteColor', 'black')
+      .set('details.job', 'Software Engineer')
+      .set('createdAt', new Date('2000-12-09').toISOString())
+      .set('updatedAt', new Date('2022-12-09').toISOString())
+      .set('deletedAt', null)
+      .set('willNotBeSet', undefined)
+      .set('willSetDefaultOne', null, 'Hello')
+      .set('willSetDefaultTwo', undefined, 'Hello')
+
+    assert.equal(builder.get('details.car.name'), 'BMW E46 M3')
+    assert.equal(builder.get('deletedAt', new Date('2022-12-09').toISOString()), null)
+    assert.equal(
+      builder.get('deletedAt.notFound', new Date('2022-12-09').toISOString()),
+      new Date('2022-12-09').toISOString(),
+    )
+  })
+
+  test('should be able to build objects and validate the values using nested key path', async ({ assert }) => {
+    const builder = Json.builder()
+      .set('name', 'João Lenon')
+      .set('email', 'lenon@athenna.io')
+      .set('age', 22)
+      .set('details.car.color', 'white')
+      .set('details.car.name', 'BMW E46 M3')
+      .set('details.favoriteColor', 'black')
+      .set('details.job', 'Software Engineer')
+      .set('createdAt', new Date('2000-12-09').toISOString())
+      .set('updatedAt', new Date('2022-12-09').toISOString())
+      .set('deletedAt', null)
+      .set('willNotBeSet', undefined)
+      .set('willSetDefaultOne', null, 'Hello')
+      .set('willSetDefaultTwo', undefined, 'Hello')
+
+    assert.isTrue(builder.existsAll('name', 'details.car', 'details.car.name'))
+    assert.isFalse(builder.notExistsAll('name', 'details.car', 'details.car.name'))
+
+    assert.isTrue(builder.is('details.car.name', 'FAKE1', 'FAKE2', 'BMW E46 M3'))
+    assert.isFalse(builder.is('details.car.name', 'FAKE1', 'FAKE2', 'FAKE3'))
+    assert.isFalse(builder.isNot('details.car.name', 'FAKE1', 'FAKE2', 'BMW E46 M3'))
+    assert.isTrue(builder.isNot('details.car.name', 'FAKE1', 'FAKE2', 'FAKE3'))
+
+    assert.isTrue(builder.is('details.car.name', ['FAKE1', 'FAKE2', 'BMW E46 M3']))
+    assert.isFalse(builder.is('details.car.name', ['FAKE1', 'FAKE2', 'FAKE3']))
+    assert.isFalse(builder.isNot('details.car.name', ['FAKE1', 'FAKE2', 'BMW E46 M3']))
+    assert.isTrue(builder.isNot('details.car.name', ['FAKE1', 'FAKE2', 'FAKE3']))
+  })
 })
