@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -31,10 +31,10 @@
     "templates/**"
   ],
   "type": "module",
-  "main": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./build/index.js"
   },
   "imports": {
     "#src/*": [
