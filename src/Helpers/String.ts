@@ -8,7 +8,7 @@
  */
 
 import pluralize from 'pluralize'
-import changeCase from 'change-case'
+import * as changeCase from 'change-case'
 
 import { randomBytes } from 'crypto'
 import { OrdinalNanException } from '#src/Exceptions/OrdinalNanException'
