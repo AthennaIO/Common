@@ -9,7 +9,7 @@
 
 import Youch from 'youch'
 import chalk from 'chalk'
-import changeCase from 'change-case'
+import * as changeCase from 'change-case'
 import YouchTerminal from 'youch-terminal'
 
 import { Options } from '#src/Helpers/Options'
