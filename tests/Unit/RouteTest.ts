@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Route, Uuid } from '#src'
 import { test } from '@japa/runner'
-import { Route, Uuid } from '#src/index'
 import { RouteMatchException } from '#src/Exceptions/RouteMatchException'
 
 test.group('RouteTest', () => {

@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { Module, Path } from '#src/index'
+import { Module, Path } from '#src'
 
 test.group('ModuleTest', () => {
   test('should be able to get the module first export match or default', async ({ assert }) => {

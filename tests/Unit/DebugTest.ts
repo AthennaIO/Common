@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Debug } from '#src'
 import { test } from '@japa/runner'
-import { Debug } from '#src/index'
 
 test.group('DebugTest', () => {
   test('should be able to create debug logs in any namespace', () => {

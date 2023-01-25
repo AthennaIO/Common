@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { String } from '#src'
 import { test } from '@japa/runner'
-import { String } from '#src/index'
 import { OrdinalNanException } from '#src/Exceptions/OrdinalNanException'
 
 test.group('StringTest', () => {

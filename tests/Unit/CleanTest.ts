@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Clean } from '#src'
 import { test } from '@japa/runner'
-import { Clean } from '#src/index'
 
 test.group('CleanTest', () => {
   test('should clean all falsy/empty values from array', ({ assert }) => {

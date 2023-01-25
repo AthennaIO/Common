@@ -8,8 +8,8 @@
  */
 
 import { dirname } from 'node:path'
+import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
-import { Path, File, Folder } from '#src/index'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 export class Module {

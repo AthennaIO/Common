@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { FakeApi, Folder, HttpClient, Path } from '#src/index'
+import { FakeApi, Folder, HttpClient, Path } from '#src'
 
 test.group('FakeApiTest', group => {
   group.setup(async () => {

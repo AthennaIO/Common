@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Collection } from '#src'
 import { test } from '@japa/runner'
-import { Collection } from '#src/index'
 
 test.group('CollectionTest', () => {
   test('should be able to remove duplicated values from collection', async ({ assert }) => {

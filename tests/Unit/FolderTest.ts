@@ -10,7 +10,7 @@
 import { sep } from 'node:path'
 import { test } from '@japa/runner'
 
-import { Path, File, Folder } from '#src/index'
+import { Path, File, Folder } from '#src'
 import { NotFoundFolderException } from '#src/Exceptions/NotFoundFolderException'
 
 test.group('FolderTest', group => {
