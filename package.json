@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -37,14 +37,10 @@
     ".": "./build/index.js"
   },
   "imports": {
-    "#src/*": [
-      "./src/*.ts",
-      "./src/*.js"
-    ],
-    "#tests/*": [
-      "./tests/*.ts",
-      "./tests/*.js"
-    ]
+    "#src/*": "./src/*.ts",
+    "#src": "./src/index.ts",
+    "#tests/*": "./tests/*.ts",
+    "#tests": "./tests/index.ts"
   },
   "dependencies": {
     "@fastify/formbody": "^7.4.0",
