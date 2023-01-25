@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Exec, Json } from '#src'
 import { test } from '@japa/runner'
-import { Exec, Json } from '#src/index'
 
 test.group('Json Class', () => {
   test('should return a deep copy from the object', async ({ assert }) => {

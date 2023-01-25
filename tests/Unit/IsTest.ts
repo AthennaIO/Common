@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { Is, Exception } from '#src/index'
+import { Is, Exception } from '#src'
 
 test.group('IsTest', () => {
   test('should verify if is a valid json string', async ({ assert }) => {

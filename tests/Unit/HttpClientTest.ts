@@ -14,7 +14,7 @@ import { test } from '@japa/runner'
 import { promisify } from 'node:util'
 import { File } from '#src/Helpers/File'
 import { Path } from '#src/Helpers/Path'
-import { FakeApi, HttpClient, HttpClientBuilder } from '#src/index'
+import { FakeApi, HttpClient, HttpClientBuilder } from '#src'
 
 const pipeline = promisify(stream.pipeline)
 

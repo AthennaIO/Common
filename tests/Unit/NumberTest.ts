@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Number } from '#src'
 import { test } from '@japa/runner'
-import { Number } from '#src/index'
 
 test.group('Numbers Class', () => {
   test('should get the higher and lower number from an array of numbers', async ({ assert }) => {

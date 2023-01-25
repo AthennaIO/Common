@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Exception } from '#src'
 import { test } from '@japa/runner'
-import { Exception } from '#src/index'
 
 test.group('ExceptionTest', () => {
   test('should be able to create a new exception', async ({ assert }) => {

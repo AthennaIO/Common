@@ -8,7 +8,7 @@
  */
 
 import { v4 } from 'uuid'
-import { Uuid } from '#src/index'
+import { Uuid } from '#src'
 import { test } from '@japa/runner'
 import { InvalidUuidException } from '#src/Exceptions/InvalidUuidException'
 

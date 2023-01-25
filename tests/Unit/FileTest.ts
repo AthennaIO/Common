@@ -9,7 +9,7 @@
 
 import { sep } from 'node:path'
 import { test } from '@japa/runner'
-import { File, Path, Folder } from '#src/index'
+import { File, Path, Folder } from '#src'
 import { NotFoundFileException } from '#src/Exceptions/NotFoundFileException'
 
 test.group('FileTest', group => {

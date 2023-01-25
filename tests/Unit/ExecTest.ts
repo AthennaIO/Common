@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { Exec, File, Folder, Path } from '#src/index'
+import { Exec, File, Folder, Path } from '#src'
 import { NodeCommandException } from '#src/Exceptions/NodeCommandException'
 
 test.group('ExecTest', group => {

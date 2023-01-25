@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { Parser } from '#src'
 import { test } from '@japa/runner'
-import { Parser } from '#src/index'
 import { InvalidNumberException } from '#src/Exceptions/InvalidNumberException'
 
 test.group('ParserTest', () => {
