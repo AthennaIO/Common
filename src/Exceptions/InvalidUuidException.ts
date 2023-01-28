@@ -10,7 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class InvalidUuidException extends Exception {
-  constructor(value: string) {
+  public constructor(value: string) {
     super({
       code: 'E_INVALID_UUID',
       help: 'Use a valid uuid instead.',

@@ -10,7 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class OrdinalNanException extends Exception {
-  constructor() {
+  public constructor() {
     super({
       code: 'E_ORDINAL_NAN',
       message: 'Cannot ordinal NaN or infinite numbers.',

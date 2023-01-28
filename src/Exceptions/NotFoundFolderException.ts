@@ -10,7 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class NotFoundFolderException extends Exception {
-  constructor(filePath: string) {
+  public constructor(filePath: string) {
     super({
       code: 'E_NOT_FOUND_FILE',
       message: `The folder ${filePath} doesnt exist.`,

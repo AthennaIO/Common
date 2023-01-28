@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -17,7 +17,7 @@
     "standalone"
   ],
   "scripts": {
-    "build": "rimraf build && tsup",
+    "build": "rimraf build && tsc",
     "lint:fix": "eslint \"{src,tests}/**/*.ts\" --fix",
     "test": "npm run --silent lint:fix && ts-node ./bin/test.ts",
     "test:debug": "cross-env DEBUG=api:* ts-node ./bin/test.ts --inspect",
@@ -37,10 +37,10 @@
     ".": "./build/index.js"
   },
   "imports": {
-    "#src/*": "./src/*.ts",
-    "#src": "./src/index.ts",
-    "#tests/*": "./tests/*.ts",
-    "#tests": "./tests/index.ts"
+    "#src/*": "./src/*.js",
+    "#src": "./src/index.js",
+    "#tests/*": "./tests/*.js",
+    "#tests": "./tests/index.js"
   },
   "dependencies": {
     "@fastify/formbody": "^7.4.0",
@@ -194,16 +194,5 @@
         }
       ]
     }
-  },
-  "tsup": {
-    "entry": [
-      "src"
-    ],
-    "dts": true,
-    "clean": true,
-    "format": "esm",
-    "outDir": "build",
-    "sourcemap": false,
-    "splitting": false
   }
 }

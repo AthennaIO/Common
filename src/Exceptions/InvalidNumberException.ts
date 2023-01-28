@@ -10,7 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class InvalidNumberException extends Exception {
-  constructor(number: string) {
+  public constructor(number: string) {
     super({
       code: 'E_INVALID_NUMBER',
       help: 'Use a valid string number instead.',

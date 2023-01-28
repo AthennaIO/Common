@@ -10,7 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class NodeCommandException extends Exception {
-  constructor(command: string, error: any) {
+  public constructor(command: string, error: any) {
     let help = ''
 
     if (error.stdout) {
