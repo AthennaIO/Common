@@ -10,7 +10,7 @@
 import { Exception } from '#src/Helpers/Exception'
 
 export class RouteMatchException extends Exception {
-  constructor(routeWithParams: string, routeWithValues: string) {
+  public constructor(routeWithParams: string, routeWithValues: string) {
     super({
       code: 'E_ROUTE_MATCH',
       message: `The route ${routeWithParams} does not match ${routeWithValues}`,
