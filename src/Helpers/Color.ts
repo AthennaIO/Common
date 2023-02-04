@@ -112,28 +112,14 @@ export class Color {
    * Paint as green.
    */
   static get green(): ChalkInstance {
-    return Color.green
-  }
-
-  /**
-   * Paint as darkGreen.
-   */
-  static get darkGreen(): ChalkInstance {
-    return Color.darkGreen
+    return Color.chalk.green
   }
 
   /**
    * Paint as red.
    */
   static get red(): ChalkInstance {
-    return Color.red
-  }
-
-  /**
-   * Paint as darkRed.
-   */
-  static get darkRed(): ChalkInstance {
-    return Color.darkRed
+    return Color.chalk.red
   }
 
   /**
