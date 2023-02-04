@@ -7,11 +7,12 @@
  * file that was distributed with this source code.
  */
 
-import Youch from 'youch'
-import chalk from 'chalk'
 import * as changeCase from 'change-case'
+
+import Youch from 'youch'
 import YouchTerminal from 'youch-terminal'
 
+import { Color } from '#src/Helpers/Color'
 import { Options } from '#src/Helpers/Options'
 
 export interface ExceptionJSON {
@@ -95,8 +96,8 @@ export class Exception extends Error {
     })
 
     this.name = this.code
-    const helpKey = chalk.green.bold('HELP')
-    const messageKey = chalk.yellow.bold('MESSAGE')
+    const helpKey = Color.green.bold('HELP')
+    const messageKey = Color.yellow.bold('MESSAGE')
 
     if (this.message && this.message !== '') {
       this.message = `${messageKey}\n   ${this.message}`

@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "3.2.5",
+  "version": "3.2.6",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -100,7 +100,6 @@
     "prettier": "^2.8.3",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
-    "tsup": "^6.5.0",
     "typescript": "^4.9.4"
   },
   "c8": {
@@ -108,7 +107,9 @@
     "include": [
       "src/**/*.ts"
     ],
-    "exclude": [],
+    "exclude": [
+      "src/Helpers/Color.ts"
+    ],
     "reporter": [
       "text-summary",
       "html"

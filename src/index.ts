@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import('./Globals/Path.js')
-import('./Globals/Array.js')
-import('./Globals/Error.js')
+export * from './Globals/Path.js'
+export * from './Globals/Error.js'
+export * from './Globals/Array.js'
 
 export * from './Helpers/Exception.js'
 export * from './Helpers/Clean.js'
