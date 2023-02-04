@@ -55,7 +55,7 @@ test.group('ModuleTest', () => {
   test('should be able to get all modules first export match or default from any path', async ({ assert }) => {
     const modules = await Module.getAllFrom(Path.pwd('src/Helpers'))
 
-    assert.lengthOf(modules, 19)
+    assert.lengthOf(modules, 20)
     assert.equal(modules[0].name, 'Clean')
   })
 
@@ -64,7 +64,7 @@ test.group('ModuleTest', () => {
   }) => {
     const modules = await Module.getAllFromWithAlias(Path.pwd('src/Helpers'), 'App/Helpers')
 
-    assert.lengthOf(modules, 19)
+    assert.lengthOf(modules, 20)
     assert.equal(modules[0].module.name, 'Clean')
     assert.equal(modules[0].alias, 'App/Helpers/Clean')
   })

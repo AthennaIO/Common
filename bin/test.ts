@@ -7,12 +7,52 @@
  * file that was distributed with this source code.
  */
 
-import { pathToFileURL } from 'url'
 import { assert } from '@japa/assert'
+import { pathToFileURL } from 'node:url'
 import { specReporter } from '@japa/spec-reporter'
-import { processCliArgs, configure, run } from '@japa/runner'
+import { configure, processCliArgs, run } from '@japa/runner'
 
-import('./japaTypes.js')
+/*
+|--------------------------------------------------------------------------
+| Japa types
+|--------------------------------------------------------------------------
+|
+| Declare customized japa types.
+*/
+
+declare module '@japa/assert' {
+  export interface Assert {
+    throws(fn: () => any, errType: any, message?: string): void
+    doesNotThrows(fn: () => any, errType: any, message?: string): void
+    rejects(
+      fn: () => any | Promise<any>,
+      errType: any,
+      message?: string,
+    ): Promise<any>
+    doesNotRejects(
+      fn: () => any | Promise<any>,
+      errType: any,
+      message?: string,
+    ): Promise<any>
+  }
+}
+
+declare module '@japa/runner' {
+  interface TestContext {
+    assert: import('@japa/assert').Assert
+  }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Set IS_TS env.
+|--------------------------------------------------------------------------
+|
+| Set the IS_TS environement variable to true. Very useful when using the
+| Path helper.
+*/
+
+process.env.IS_TS = 'true'
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +67,6 @@ import('./japaTypes.js')
 |
 | Please consult japa.dev/runner-config for the config docs.
 */
-
-process.env.IS_TS = 'true'
 
 configure({
   ...processCliArgs(process.argv.slice(2)),

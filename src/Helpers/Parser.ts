@@ -225,6 +225,7 @@ export class Parser {
    */
   public static connectionObjToDbUrl(object: {
     protocol: string
+    url?: string
     user?: string
     password?: string
     host: string | string[]
@@ -232,6 +233,10 @@ export class Parser {
     database: string
     options?: any
   }): string {
+    if (Is.Defined(object.url)) {
+      return object.url
+    }
+
     const { protocol, user, password, host, port, database, options } = object
 
     let url = `${protocol}://`
