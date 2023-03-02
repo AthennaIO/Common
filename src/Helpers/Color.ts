@@ -232,6 +232,13 @@ export class Color {
   }
 
   /**
+   * Remove all colors and special chars of string.
+   */
+  public static remove(value: string): string {
+    return Color.removeColors(value)
+  }
+
+  /**
    * Paint by the http method.
    */
   public static httpMethod(
@@ -269,7 +276,7 @@ export class Color {
 
     matches.forEach(match => {
       const [chalkMethodsInBrackets, chalkMethodsString] = match.match(
-        /\{(.*?)\}/,
+        /\{(.*?)}/,
       ) as any
 
       const message = match
