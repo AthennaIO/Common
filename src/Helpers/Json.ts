@@ -78,7 +78,7 @@ export class ObjectBuilder {
   /**
    * The real object that is being built.
    */
-  private object: any
+  private readonly object: any
 
   /**
    * The object builder options that are
@@ -273,7 +273,7 @@ export class Json {
     let match
     const json = []
 
-    while ((match = /{(?:[^{}])*}/.exec(text)) !== null) {
+    while ((match = /{[^{}]*}/.exec(text)) !== null) {
       text = text.replace(match[0], '')
 
       json.push(match[0])
