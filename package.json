@@ -65,7 +65,7 @@
     "uuid": "^8.3.2",
     "validator-brazil": "^1.2.2",
     "youch": "^3.2.2",
-    "youch-terminal": "^2.1.5"
+    "youch-terminal": "^2.2.0"
   },
   "devDependencies": {
     "@japa/assert": "^1.3.6",
