@@ -71,6 +71,13 @@ export class Path {
   }
 
   /**
+   * Return the src path of your project.
+   */
+  public static src(subPath = sep): string {
+    return this.pwd('src' + sep + normalize(subPath))
+  }
+
+  /**
    * Return the app path of your project.
    */
   public static app(subPath = sep): string {
