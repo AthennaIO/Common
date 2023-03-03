@@ -81,30 +81,32 @@ export class Exception extends Error {
    * Prettify the error using Youch API.
    */
   public async prettify(options?: {
-    prefix?: string
-    hideMessage?: boolean
-    hideErrorTitle?: boolean
     displayShortPath?: boolean
+    prefix?: string
+    hideErrorTitle?: boolean
+    hideMessage?: boolean
     displayMainFrameOnly?: boolean
+    framesMaxLimit?: number
   }): Promise<string> {
     options = Options.create(options, {
       displayShortPath: false,
       prefix: '',
-      hideErrorTitle: false,
+      hideErrorTitle: true,
       hideMessage: false,
       displayMainFrameOnly: false,
+      framesMaxLimit: 3,
     })
 
-    this.name = this.code
-    const helpKey = Color.green.bold('HELP')
-    const messageKey = Color.yellow.bold('MESSAGE')
+    const separator = Color.cyan('-----')
+    const helpKey = Color.gray.bold.bgGreen(' HELP ')
+    const title = Color.gray.bold.bgRed(` ${this.code || this.name} `)
 
-    if (this.message && this.message !== '') {
-      this.message = `${messageKey}\n   ${this.message}`
-    }
+    this.message = `${title}\n\n${this.message}`
 
     if (this.help && this.help !== '') {
-      this.message = `${this.message}\n\n ${helpKey}\n   ${this.help}`
+      this.help = `${helpKey}\n\n  ${Color.green(this.help)}\n\n  ${separator}`
+    } else {
+      this.message = this.message.concat(`\n\n${separator}`)
     }
 
     const pretty = await new Youch(this, {}).toJSON()
@@ -116,6 +118,6 @@ export class Exception extends Error {
       })
     }
 
-    return YouchTerminal(pretty, options).concat('\n')
+    return YouchTerminal(pretty, options)
   }
 }
