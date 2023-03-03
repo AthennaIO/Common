@@ -156,7 +156,18 @@ test.group('IsTest', () => {
     assert.isFalse(Is.Error(0))
     assert.isFalse(Is.Error(''))
     assert.isTrue(Is.Error(new Error()))
+    assert.isTrue(Is.Error(new TypeError()))
+    assert.isTrue(Is.Error(new SyntaxError()))
     assert.isTrue(Is.Error(new Exception({ message: 'Test' })))
+  })
+
+  test('should verify if is a valid exception', async ({ assert }) => {
+    assert.isFalse(Is.Exception(0))
+    assert.isFalse(Is.Exception(''))
+    assert.isFalse(Is.Exception(new Error()))
+    assert.isFalse(Is.Exception(new TypeError()))
+    assert.isFalse(Is.Exception(new SyntaxError()))
+    assert.isTrue(Is.Exception(new Exception({ message: 'Test' })))
   })
 
   test('should verify if is a valid function', async ({ assert }) => {

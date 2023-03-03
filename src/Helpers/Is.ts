@@ -12,6 +12,7 @@ import kindOf from 'kind-of'
 
 import { isIP } from 'node:net'
 import { validate } from 'uuid'
+import { Exception } from '#src/Helpers/Exception'
 import { isCep, isCnpj, isCpf } from 'validator-brazil'
 
 export class Is {
@@ -217,6 +218,26 @@ export class Is {
    */
   public static Error(value: any): value is Error {
     return Is.kindOf(value) === 'error'
+  }
+
+  /**
+   * Verify if is a valid internal JS error.
+   */
+  public static Exception(value: any): value is Exception {
+    if (!Is.Error(value)) {
+      return false
+    }
+
+    return ![
+      'Error',
+      'URIError',
+      'TypeError',
+      'EvalError',
+      'RangeError',
+      'SyntaxError',
+      'InternalError',
+      'ReferenceError',
+    ].includes(value.constructor.name)
   }
 
   /**
