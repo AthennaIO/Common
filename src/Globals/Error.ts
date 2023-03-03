@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import * as changeCase from 'change-case'
+
 import { Exception, ExceptionJSON } from '#src/Helpers/Exception'
 
 export {}
@@ -26,6 +28,7 @@ Error.prototype.toAthennaException = function (options: ExceptionJSON = {}) {
   options.name = options.name || this.name
   options.stack = options.stack || this.stack
   options.message = options.message || this.message
+  options.code = options.code || changeCase.constantCase(options.name)
 
   return new Exception(options)
 }
