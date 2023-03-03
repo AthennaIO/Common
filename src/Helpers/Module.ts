@@ -9,8 +9,8 @@
 
 import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
-import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { dirname, resolve, isAbsolute } from 'node:path'
 
 export class Module {
   /**
@@ -176,15 +176,15 @@ export class Module {
    */
   public static async resolve(path: string, meta: string): Promise<any> {
     const splited = path.split('?')
-
-    path = splited[0]
     const queries = splited[1] || ''
 
-    if (path.includes('./') || path.includes('../')) {
+    path = splited[0]
+
+    if (!path.startsWith('#') && !isAbsolute(path)) {
       path = resolve(path)
     }
 
-    if (path.startsWith('/')) {
+    if (isAbsolute(path)) {
       path = pathToFileURL(path).href
     }
 
