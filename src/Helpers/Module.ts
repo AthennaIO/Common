@@ -7,10 +7,10 @@
  * file that was distributed with this source code.
  */
 
-import { dirname } from 'node:path'
 import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { dirname, resolve, isAbsolute } from 'node:path'
 
 export class Module {
   /**
@@ -169,6 +169,28 @@ export class Module {
     } catch (err) {
       return null
     }
+  }
+
+  /**
+   * Resolve the module path by meta url and import it.
+   */
+  public static async resolve(path: string, meta: string): Promise<any> {
+    const splited = path.split('?')
+    const queries = splited[1] || ''
+
+    path = splited[0]
+
+    if (!path.startsWith('#') && !isAbsolute(path)) {
+      path = resolve(path)
+    }
+
+    if (isAbsolute(path)) {
+      path = pathToFileURL(path).href
+    }
+
+    return import.meta
+      .resolve(path, meta)
+      .then(resolved => Module.get(import(`${resolved}?${queries}`)))
   }
 
   /**

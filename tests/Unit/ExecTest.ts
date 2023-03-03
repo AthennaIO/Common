@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { Exec, File, Folder, Path } from '#src'
+import { Clean, Exec, File, Folder, Module, Path } from '#src'
 import { NodeCommandException } from '#src/Exceptions/NodeCommandException'
 
 test.group('ExecTest', group => {
@@ -84,5 +84,21 @@ test.group('ExecTest', group => {
       next: 'https://my-api.com/products?page=1&limit=10',
       last: 'https://my-api.com/products?page=2&limit=10',
     })
+  })
+
+  test('should be able to execute some callback concurrently in all array indexes and get the value', async ({
+    assert,
+  }) => {
+    const paths = [
+      '#src/Helpers/Clean',
+      '#src/Helpers/Collection',
+      '#src/Helpers/Color',
+      '#src/Helpers/Debug',
+      '#src/Helpers/Exception',
+    ]
+
+    const modules = await Exec.concurrently<string, unknown>(paths, async path => Module.resolve(path, import.meta.url))
+
+    assert.deepEqual(modules[0], Clean)
   })
 })

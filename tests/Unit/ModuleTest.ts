@@ -47,13 +47,13 @@ test.group('ModuleTest', () => {
 
     assert.equal(moduleDefault.name, 'Athenna')
 
-    const moduleFirstExport = await Module.getFrom(Path.pwd('src/Helpers/Options.ts'))
+    const moduleFirstExport = await Module.getFrom(Path.src('Helpers/Options.ts'))
 
     assert.equal(moduleFirstExport.name, 'Options')
   })
 
   test('should be able to get all modules first export match or default from any path', async ({ assert }) => {
-    const modules = await Module.getAllFrom(Path.pwd('src/Helpers'))
+    const modules = await Module.getAllFrom(Path.src('Helpers'))
 
     assert.lengthOf(modules, 20)
     assert.equal(modules[0].name, 'Clean')
@@ -62,7 +62,7 @@ test.group('ModuleTest', () => {
   test('should be able to get all modules first export match or default from any path with alias', async ({
     assert,
   }) => {
-    const modules = await Module.getAllFromWithAlias(Path.pwd('src/Helpers'), 'App/Helpers')
+    const modules = await Module.getAllFromWithAlias(Path.src('Helpers'), 'App/Helpers')
 
     assert.lengthOf(modules, 20)
     assert.equal(modules[0].module.name, 'Clean')
@@ -85,5 +85,41 @@ test.group('ModuleTest', () => {
     const nullValue = await Module.safeImport(Path.pwd('not-found.ts'))
 
     assert.isNull(nullValue)
+  })
+
+  test('should be able to resolve import alias by meta url and import it', async ({ assert }) => {
+    const Exception = await Module.resolve('#src/Helpers/Exception', import.meta.url)
+
+    assert.equal(Exception.name, 'Exception')
+  })
+
+  test('should be able to resolve partial paths by meta url and import it', async ({ assert }) => {
+    const Exception = await Module.resolve('./src/Helpers/Exception.js', import.meta.url)
+
+    assert.equal(Exception.name, 'Exception')
+  })
+
+  test('should be able to resolve absolute paths by meta url and import it', async ({ assert }) => {
+    const Exception = await Module.resolve(Path.src('Helpers/Exception.js'), import.meta.url)
+
+    assert.equal(Exception.name, 'Exception')
+  })
+
+  test('should be able to resolve versionized import alias by meta url and import it', async ({ assert }) => {
+    const Exception = await Module.resolve(`#src/Helpers/Exception?version=${Math.random()}`, import.meta.url)
+
+    assert.equal(Exception.name, 'Exception')
+  })
+
+  test('should be able to resolve versionized partial paths by meta url and import it', async ({ assert }) => {
+    const Exception = await Module.resolve(`./src/Helpers/Exception.js?version=${Math.random()}`, import.meta.url)
+
+    assert.equal(Exception.name, 'Exception')
+  })
+
+  test('should be able to resolve versionized absolute paths by meta url and import it', async ({ assert }) => {
+    const Exception = await Module.resolve(Path.src(`Helpers/Exception.js?version=${Math.random()}`), import.meta.url)
+
+    assert.equal(Exception.name, 'Exception')
   })
 })

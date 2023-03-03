@@ -9,8 +9,8 @@
 
 import lodash from 'lodash'
 
-import { Is } from './Is.js'
-import { Options } from './Options.js'
+import { Is } from '#src/Helpers/Is'
+import { Options } from '#src/Helpers/Options'
 
 export type ObjectBuilderOptions = {
   /**

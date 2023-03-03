@@ -75,6 +75,7 @@ test.group('PathTest', () => {
     const mainPath = process.cwd()
 
     assert.equal(Path.app(), mainPath.concat(sep, 'app'))
+    assert.equal(Path.src(), mainPath.concat(sep, 'src'))
     assert.equal(Path.bootstrap(), mainPath.concat(sep, 'bootstrap'))
     assert.equal(Path.config(), mainPath.concat(sep, 'config'))
     assert.equal(Path.database(), mainPath.concat(sep, 'database'))

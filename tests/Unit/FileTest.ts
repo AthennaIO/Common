@@ -13,11 +13,8 @@ import { File, Path, Folder } from '#src'
 import { NotFoundFileException } from '#src/Exceptions/NotFoundFileException'
 
 test.group('FileTest', group => {
-  /** @type {File} */
-  let bigFile = null
-
-  /** @type {File} */
-  let nonexistentFile = null
+  let bigFile: File = null
+  let nonexistentFile: File = null
 
   const bigFilePath = Path.storage('files/file.txt')
   const nonexistentFilePath = Path.storage('files/non-existent.txt')
@@ -48,6 +45,14 @@ test.group('FileTest', group => {
 
     assert.isFalse(File.isFileSync('../../tests'))
     assert.isTrue(File.isFileSync('../../package.json'))
+  })
+
+  test('should be able to instantiate a new file as string', async ({ assert }) => {
+    const mockedFile = new File(Path.storage('files/testing/.js'), 'Content', true)
+
+    assert.isDefined(mockedFile.name)
+    assert.notEqual(mockedFile.name, '.js')
+    assert.notEqual(mockedFile.name, 'testing')
   })
 
   test('should be able to create files with mocked values', async ({ assert }) => {
@@ -204,5 +209,97 @@ test.group('FileTest', group => {
 
     assert.instanceOf(bigFileContent, Buffer)
     assert.instanceOf(nonexistentFileContent, Buffer)
+  })
+
+  test('should be able to set the file content', async ({ assert }) => {
+    await bigFile.setContent('hello', { withContent: true })
+
+    assert.equal(bigFile.content.toString(), 'hello')
+  })
+
+  test('should be able to set the file content sync', async ({ assert }) => {
+    bigFile.setContentSync('helloSync', { withContent: true })
+
+    assert.equal(bigFile.content.toString(), 'helloSync')
+  })
+
+  test('should be able to set the file content without adding in the instance', async ({ assert }) => {
+    await bigFile.setContent('hello')
+
+    assert.equal(bigFile.getContentSync().toString(), 'hello')
+  })
+
+  test('should be able to set the file content without adding in the instance sync', async ({ assert }) => {
+    bigFile.setContentSync('helloSync')
+
+    assert.equal(bigFile.getContentSync().toString(), 'helloSync')
+  })
+
+  test('should be able to get the file content as string', async ({ assert }) => {
+    const bigFileContent = await bigFile.setContentSync('hello').getContentAsString()
+
+    assert.equal(bigFileContent, 'hello')
+  })
+
+  test('should be able to get the file content as string sync', async ({ assert }) => {
+    const bigFileContent = bigFile.setContentSync('hello').getContentAsStringSync()
+
+    assert.equal(bigFileContent, 'hello')
+  })
+
+  test('should be able to get the file content as json', async ({ assert }) => {
+    const bigFileContent = await bigFile.setContentSync('{"hello":"world"}').getContentAsJson()
+
+    assert.deepEqual(bigFileContent, { hello: 'world' })
+  })
+
+  test('should be able to get the file content as string json', async ({ assert }) => {
+    const bigFileContent = bigFile.setContentSync('{"hello":"world"}').getContentAsJsonSync()
+
+    assert.deepEqual(bigFileContent, { hello: 'world' })
+  })
+
+  test('should return null when the file content is not a valid json', async ({ assert }) => {
+    const bigFileContent = await bigFile.setContentSync('').getContentAsJson()
+
+    assert.isNull(bigFileContent)
+  })
+
+  test('should return null when the file content is not a valid json sync', async ({ assert }) => {
+    const bigFileContent = bigFile.setContentSync('').getContentAsJsonSync()
+
+    assert.isNull(bigFileContent)
+  })
+
+  test('should be able to import some file that is a valid module', async ({ assert }) => {
+    const Folder = await new File(Path.src('Helpers/Folder.ts')).import()
+
+    assert.equal(Folder.name, 'Folder')
+  })
+
+  test('should be able to safe import some file that is a module', async ({ assert }) => {
+    const Folder = await new File(Path.src('Helpers/Folder.ts')).safeImport()
+
+    assert.equal(Folder.name, 'Folder')
+  })
+
+  test('should be able to safe import some file that is not a module without errors', async ({ assert }) => {
+    const readme = await new File(Path.pwd('README.md')).safeImport()
+
+    assert.isNull(readme)
+  })
+
+  test('should be able to safe import some file that does not exist without errors', async ({ assert }) => {
+    const path = Path.pwd('not-found.js')
+    const notFound = await new File(path, '').safeImport()
+    await File.safeRemove(path)
+
+    assert.isNull(notFound)
+  })
+
+  test('should be able to safe import some file that does not export anything without errors', async ({ assert }) => {
+    const notFound = await new File(Path.stubs('no-export.ts')).safeImport()
+
+    assert.isNull(notFound)
   })
 })

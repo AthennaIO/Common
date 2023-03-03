@@ -52,6 +52,17 @@ export class Exec {
   }
 
   /**
+   * Execute some callback concurrently in all values of the array.
+   */
+
+  public static async concurrently<T = any, R = any>(
+    array: T[],
+    callback: (value: T, index: number, array: T[]) => Promise<R>,
+  ): Promise<R[]> {
+    return Promise.all(array.map(callback))
+  }
+
+  /**
    * Execute a command of child process exec as promise.
    */
   public static async command(

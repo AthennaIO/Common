@@ -25,6 +25,7 @@ import {
 } from 'node:fs'
 
 import { lookup } from 'mime-types'
+import { Is } from '#src/Helpers/Is'
 import { pathToFileURL } from 'node:url'
 import { Path } from '#src/Helpers/Path'
 import { Json } from '#src/Helpers/Json'
@@ -32,6 +33,7 @@ import { randomBytes } from 'node:crypto'
 import { Debug } from '#src/Helpers/Debug'
 import { StreamOptions } from 'node:stream'
 import { Parser } from '#src/Helpers/Parser'
+import { Module } from '#src/Helpers/Module'
 import { Options } from '#src/Helpers/Options'
 import { isAbsolute, parse, sep } from 'node:path'
 import { NotFoundFileException } from '#src/Exceptions/NotFoundFileException'
@@ -159,7 +161,7 @@ export class File {
 
   public constructor(
     filePath: string,
-    content: Buffer = undefined,
+    content: string | Buffer = undefined,
     mockedValues = false,
     isCopy = false,
   ) {
@@ -173,7 +175,7 @@ export class File {
     this.isCopy = isCopy
     this.originalFileExists = File.existsSync(this.originalPath) && !this.isCopy
     this.fileExists = this.originalFileExists
-    this.content = content
+    this.content = Is.String(content) ? Buffer.from(content) : content
     this.mime = mime
     this.extension = ext
     this.createFileValues(mockedValues)
@@ -629,20 +631,53 @@ export class File {
   }
 
   /**
-   * Get only the content of the file.
+   * Set content in file overwriting all his content.
    */
-  public getContentSync(options?: { saveContent?: boolean }): Buffer {
-    this.loadSync({ isInternalLoad: true, withContent: false })
+  public async setContent(
+    content: string | Buffer,
+    options?: { withContent?: boolean },
+  ): Promise<File> {
+    options = Options.create(options, {
+      withContent: false,
+    })
 
-    options = Options.create(options, { saveContent: false })
+    await this.load({ isInternalLoad: true, withContent: false })
 
-    const content = readFileSync(this.path)
+    const stream = this.createWriteStream()
 
-    if (options.saveContent) {
-      this.content = content
+    await new Promise((resolve, reject) => {
+      stream.write(content)
+      stream.end(resolve)
+      stream.on('error', reject)
+    })
+
+    if (options.withContent) {
+      this.content = Is.String(content) ? Buffer.from(content) : content
     }
 
-    return content
+    return this
+  }
+
+  /**
+   * Set content in file overwriting all his content.
+   */
+  public setContentSync(
+    content: string | Buffer,
+    options?: { withContent?: boolean },
+  ): File {
+    options = Options.create(options, {
+      withContent: false,
+    })
+
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    writeFileSync(this.path, content)
+
+    if (options.withContent) {
+      this.content = Is.String(content) ? Buffer.from(content) : content
+    }
+
+    return this
   }
 
   /**
@@ -680,6 +715,73 @@ export class File {
   }
 
   /**
+   * Get only the content of the file.
+   */
+  public getContentSync(options?: { saveContent?: boolean }): Buffer {
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    options = Options.create(options, { saveContent: false })
+
+    const content = readFileSync(this.path)
+
+    if (options.saveContent) {
+      this.content = content
+    }
+
+    return content
+  }
+
+  /**
+   * Get only the content of the file as string.
+   */
+  public async getContentAsString(options?: {
+    saveContent?: boolean
+  }): Promise<string> {
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    const content = await this.getContent(options)
+
+    return content.toString()
+  }
+
+  /**
+   * Get only the content of the file as string.
+   */
+  public getContentAsStringSync(options?: { saveContent?: boolean }): string {
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    const content = this.getContentSync(options)
+
+    return content.toString()
+  }
+
+  /**
+   * Get only the content of the file as json.
+   */
+  public async getContentAsJson(options?: {
+    saveContent?: boolean
+  }): Promise<any | any[]> {
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    const content = await this.getContentAsString(options)
+
+    return Json.parse(content)
+  }
+
+  /**
+   * Get only the content of the file as json.
+   */
+  public getContentAsJsonSync(options?: {
+    saveContent?: boolean
+  }): any | any[] {
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    const content = this.getContentAsStringSync(options)
+
+    return Json.parse(content)
+  }
+
+  /**
    * Create a readable stream of the file.
    */
   public createReadStream(
@@ -699,6 +801,36 @@ export class File {
     }
 
     return createWriteStream(this.originalPath, options)
+  }
+
+  /**
+   * Import the file assuming that the file is a valid module.
+   */
+  public async import(meta?: string): Promise<any> {
+    await this.load({ isInternalLoad: true, withContent: false })
+
+    if (meta) {
+      return Module.resolve(this.href, meta)
+    }
+
+    return Module.get(import(this.href))
+  }
+
+  /**
+   * Safe import the file assuming that the file COULD be a valid module.
+   */
+  public async safeImport(meta?: string): Promise<any | null> {
+    try {
+      const _module = await this.import(meta)
+
+      if (!_module) {
+        return null
+      }
+
+      return _module
+    } catch (err) {
+      return null
+    }
   }
 
   /**
