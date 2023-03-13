@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import __chalk from 'chalk'
+
 import { test } from '@japa/runner'
 import { Module, Path } from '#src'
 
@@ -121,5 +123,11 @@ test.group('ModuleTest', () => {
     const Exception = await Module.resolve(Path.src(`Helpers/Exception.js?version=${Math.random()}`), import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
+  })
+
+  test('should be able to resolve modules from node_modules using resolve', async ({ assert }) => {
+    const chalk = await Module.resolve('chalk', import.meta.url)
+
+    assert.deepEqual(chalk, (await import('chalk')).default)
   })
 })

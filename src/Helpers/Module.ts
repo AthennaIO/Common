@@ -10,7 +10,7 @@
 import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { dirname, resolve, isAbsolute } from 'node:path'
+import { extname, dirname, resolve, isAbsolute } from 'node:path'
 
 export class Module {
   /**
@@ -180,7 +180,7 @@ export class Module {
 
     path = splited[0]
 
-    if (!path.startsWith('#') && !isAbsolute(path)) {
+    if (extname(path)) {
       path = resolve(path)
     }
 
