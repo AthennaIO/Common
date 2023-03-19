@@ -234,6 +234,7 @@ export class Is {
       'TypeError',
       'EvalError',
       'RangeError',
+      'CustomError',
       'SyntaxError',
       'InternalError',
       'ReferenceError',
