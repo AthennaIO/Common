@@ -58,6 +58,15 @@ export class Path {
   }
 
   /**
+   * Return the original pwd path of your project without the defaultBeforePath.
+   */
+  public static originalPwd(subPath = sep): string {
+    const pwd = normalize(`${process.cwd()}${sep}${normalize(subPath)}`)
+
+    return this.removeSlashes(pwd)
+  }
+
+  /**
    * Return the pwd path of your project.
    */
   public static pwd(subPath = sep): string {
