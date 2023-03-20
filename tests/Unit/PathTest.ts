@@ -157,4 +157,16 @@ test.group('PathTest', () => {
     assert.isDefined(Path.vmTmp('/'))
     assert.isDefined(Path.vmHome('/'))
   })
+
+  test('should be able to ignore the original pwd path of the application without the default before path', async ({
+    assert,
+  }) => {
+    const mainPath = process.cwd()
+
+    Path.defaultBeforePath = 'build'
+
+    assert.equal(Path.originalPwd('/'), mainPath)
+    assert.equal(Path.originalPwd('/app'), `${mainPath}${sep}app`)
+    assert.equal(Path.originalPwd('/app/Console'), `${mainPath}${sep}app${sep}Console`)
+  })
 })
