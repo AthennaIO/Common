@@ -242,4 +242,14 @@ test.group('Json Class', () => {
     user.name = 'João'
     assert.equal(builder.get('user.name'), 'João')
   })
+
+  test('should be able to set an entire object in set method of ObjectBuilder', async ({ assert }) => {
+    const me = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 }).get()
+
+    assert.deepEqual(me, {
+      name: 'João Lenon',
+      email: 'lenon@athenna.io',
+      age: 22,
+    })
+  })
 })
