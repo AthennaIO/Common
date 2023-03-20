@@ -78,13 +78,13 @@ export class ObjectBuilder {
   /**
    * The real object that is being built.
    */
-  private readonly object: any
+  public object: any
 
   /**
    * The object builder options that are
    * going to be used to shape the object.
    */
-  private options: ObjectBuilderOptions
+  public options: ObjectBuilderOptions
 
   public constructor(options?: ObjectBuilderOptions) {
     this.options = Options.create(options, {
@@ -107,7 +107,13 @@ export class ObjectBuilder {
    *
    *  console.log(object.hello.world)
    */
-  public set(key: string, value: any, defaultValue?: any): this {
+  public set(key: string | any, value?: any, defaultValue?: any): this {
+    if (!Is.String(key)) {
+      this.object = this.getValue(key)
+
+      return this
+    }
+
     if (this.isDefinedDefaultValue(defaultValue) && !Is.Defined(value)) {
       lodash.set(this.object, key.split('.'), this.getValue(defaultValue))
 
