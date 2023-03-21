@@ -101,10 +101,12 @@ export class Exception extends Error {
     const helpKey = Color.gray.bold.bgGreen(' HELP ')
     const title = Color.gray.bold.bgRed(` ${this.code || this.name} `)
 
-    this.message = `${title}\n\n${this.message}`
+    this.message = `${title}\n\n${Color.apply(this.message)}`
 
     if (this.help && this.help !== '') {
-      this.help = `${helpKey}\n\n  ${Color.green(this.help)}\n\n  ${separator}`
+      this.help = `${helpKey}\n\n  ${Color.green(
+        Color.apply(this.help),
+      )}\n\n  ${separator}`
     } else {
       this.message = this.message.concat(`\n\n${separator}`)
     }
