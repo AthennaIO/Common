@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Path, File, Exec } from '#src'
+import { Path, File, Exec, Folder, Is } from '#src'
 
 /*
 |--------------------------------------------------------------------------
@@ -19,34 +19,56 @@ import { Path, File, Exec } from '#src'
 
 const path = Path.nodeModules('@athenna/tsconfig.build.json')
 
-/*
-|--------------------------------------------------------------------------
-| TypeScript Config
-|--------------------------------------------------------------------------
-|
-| Create the tsconfig file for building the project.
-*/
+async function beforeAll() {
+  const tsconfig = await new File('../tsconfig.json').getContentAsBuilder()
 
-const tsconfig = await new File('../tsconfig.json').getContentAsJson()
+  tsconfig.delete('ts-node')
+  tsconfig.set('include', ['../../src'])
+  tsconfig.set('compilerOptions.rootDir', '../../src')
+  tsconfig.set('compilerOptions.outDir', '../../build')
+  tsconfig.set('exclude', ['../../bin', '../../node_modules', '../../tests'])
 
-delete tsconfig['ts-node']
+  const oldBuild = new Folder(Path.pwd('/build'))
+  await new File(path, JSON.stringify(tsconfig.get())).load()
 
-tsconfig.compilerOptions.rootDir = '../../src'
-tsconfig.compilerOptions.outDir = '../../build'
+  if (oldBuild.folderExists) {
+    await oldBuild.remove()
+  }
+}
 
-tsconfig.include = ['../../src']
-tsconfig.exclude = ['../../bin', '../../node_modules', '../../tests']
+async function afterAll() {
+  const tsConfigBuild = await new File(path).load()
+
+  if (tsConfigBuild.fileExists) {
+    await tsConfigBuild.remove()
+  }
+}
 
 /*
 |--------------------------------------------------------------------------
 | Compilation
 |--------------------------------------------------------------------------
 |
-| Saving the file in some path, deleting old "build" folder, executing
-| compilation and deleting the tsconfig file generated.
+| Executing compilation and deleting the tsconfig.build file generated.
 */
 
-const file = new File(path, '')
-await file.setContent(JSON.stringify(tsconfig))
-await Exec.command(`rimraf ../build && tsc --project ${path}`)
-await file.remove()
+try {
+  await beforeAll()
+
+  const { stdout } = await Exec.command(
+    `node_modules/.bin/tsc --project ${path}`,
+  )
+
+  if (stdout) {
+    console.log(stdout)
+  }
+} catch (error) {
+  if (!Is.Exception(error)) {
+    // eslint-disable-next-line no-ex-assign
+    error = error.toAthennaException()
+  }
+
+  console.error(await error.prettify())
+} finally {
+  await afterAll()
+}
