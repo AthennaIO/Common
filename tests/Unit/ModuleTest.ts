@@ -11,6 +11,7 @@ import __chalk from 'chalk'
 
 import { test } from '@japa/runner'
 import { Module, Path } from '#src'
+import { NotFoundResolveException } from '#src/Exceptions/NotFoundResolveException'
 
 test.group('ModuleTest', () => {
   test('should be able to get the module first export match or default', async ({ assert }) => {
@@ -129,5 +130,13 @@ test.group('ModuleTest', () => {
     const chalk = await Module.resolve('chalk', import.meta.url)
 
     assert.deepEqual(chalk, (await import('chalk')).default)
+  })
+
+  test('should throw an exception when the importa.meta.resolve function is not defined', async ({ assert }) => {
+    process.env.RESOLVE_TESTING = 'true'
+
+    await assert.rejects(() => Module.resolve('chalk', import.meta.url), NotFoundResolveException)
+
+    delete process.env.RESOLVE_TESTING
   })
 })

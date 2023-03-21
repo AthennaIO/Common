@@ -11,6 +11,7 @@ import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { extname, dirname, resolve, isAbsolute } from 'node:path'
+import { NotFoundResolveException } from '#src/Exceptions/NotFoundResolveException'
 
 export class Module {
   /**
@@ -175,6 +176,10 @@ export class Module {
    * Resolve the module path by meta url and import it.
    */
   public static async resolve(path: string, meta: string): Promise<any> {
+    if (!import.meta.resolve || process.env.RESOLVE_TESTING) {
+      throw new NotFoundResolveException()
+    }
+
     const splited = path.split('?')
     const queries = splited[1] || ''
 
