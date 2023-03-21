@@ -28,7 +28,6 @@ import { lookup } from 'mime-types'
 import { Is } from '#src/Helpers/Is'
 import { pathToFileURL } from 'node:url'
 import { Path } from '#src/Helpers/Path'
-import { Json } from '#src/Helpers/Json'
 import { randomBytes } from 'node:crypto'
 import { Debug } from '#src/Helpers/Debug'
 import { StreamOptions } from 'node:stream'
@@ -37,6 +36,7 @@ import { Module } from '#src/Helpers/Module'
 import { Options } from '#src/Helpers/Options'
 import { isAbsolute, parse, sep } from 'node:path'
 import { NotFoundFileException } from '#src/Exceptions/NotFoundFileException'
+import { Json, ObjectBuilder, ObjectBuilderOptions } from '#src/Helpers/Json'
 
 export interface FileJSON {
   dir: string
@@ -779,6 +779,28 @@ export class File {
     const content = this.getContentAsStringSync(options)
 
     return Json.parse(content)
+  }
+
+  /**
+   * Get only the content of the file as an instance of ObjectBuilder.
+   */
+  public async getContentAsBuilder(options?: {
+    saveContent?: boolean
+    builder?: ObjectBuilderOptions
+  }): Promise<ObjectBuilder> {
+    return this.getContentAsJson(options).then(content =>
+      new ObjectBuilder().set(content),
+    )
+  }
+
+  /**
+   * Get only the content of the file as an instance of ObjectBuilder.
+   */
+  public getContentAsBuilderSync(options?: {
+    saveContent?: boolean
+    builder?: ObjectBuilderOptions
+  }): ObjectBuilder {
+    return new ObjectBuilder().set(this.getContentAsJsonSync(options))
   }
 
   /**

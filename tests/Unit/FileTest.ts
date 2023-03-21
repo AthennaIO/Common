@@ -302,4 +302,16 @@ test.group('FileTest', group => {
 
     assert.isNull(notFound)
   })
+
+  test('should be able to get the file content as object builder instance', async ({ assert }) => {
+    const bigFileContent = await bigFile.setContentSync('{"hello":"world"}').getContentAsBuilder()
+
+    assert.deepEqual(bigFileContent.get(), { hello: 'world' })
+  })
+
+  test('should be able to get the file content as string json', async ({ assert }) => {
+    const bigFileContent = bigFile.setContentSync('{"hello":"world"}').getContentAsBuilderSync()
+
+    assert.deepEqual(bigFileContent.get(), { hello: 'world' })
+  })
 })
