@@ -14,15 +14,15 @@ export class NodeCommandException extends Exception {
     let help = ''
 
     if (error.stdout) {
-      help = help.concat(`Command stdout:\n\n${error.stdout}\n\n`)
+      help = help.concat(`Command stdout:\n\n${error.stdout}`)
     }
 
     if (error.stderr) {
-      help = help.concat(`Command stderr:\n\n${error.stderr}\n\n`)
+      help = help.concat(`Command stderr:\n\n${error.stderr}`)
     }
 
     if (!error.stdout && !error.stdout) {
-      help = `Command error:\n\n${JSON.stringify(error)}\n\n`
+      help = `Command error:\n\n${JSON.stringify(error)}`
     }
 
     super({
