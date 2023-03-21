@@ -111,12 +111,13 @@ export class Exception extends Error {
 
     const pretty = await new Youch(this, {}).toJSON()
 
-    if (!pretty.error.frames.find(frame => frame.isApp)) {
-      pretty.error.frames = pretty.error.frames.map(frame => {
-        frame.isApp = true
-        return frame
-      })
-    }
+    pretty.error.frames = pretty.error.frames.map(frame => {
+      frame.isApp = true
+      frame.isNative = true
+      frame.isModule = true
+
+      return frame
+    })
 
     return YouchTerminal(pretty, options)
   }
