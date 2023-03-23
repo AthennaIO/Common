@@ -659,7 +659,7 @@ export class Folder {
   /**
    * Get all the files of folder using glob pattern.
    */
-  public getFilesByPattern(pattern?: string, recursive = false): File[] {
+  public getFilesByPattern(pattern?: string): File[] {
     this.loadSync({ withSub: true, isInternalLoad: true })
 
     if (pattern) {
@@ -669,18 +669,14 @@ export class Folder {
     const files = []
 
     this.files.forEach(file => {
-      if (pattern && minimatch(file.path, pattern)) {
-        files.push(file)
-
+      if (pattern && !minimatch(file.path, pattern)) {
         return
       }
 
       files.push(file)
     })
 
-    if (recursive) {
-      files.push(...Folder.getSubFiles(this.folders, pattern))
-    }
+    files.push(...Folder.getSubFiles(this.folders, pattern))
 
     return files
   }
@@ -688,7 +684,7 @@ export class Folder {
   /**
    * Get all the folders of folder using glob pattern.
    */
-  public getFoldersByPattern(pattern?: string, recursive = false): Folder[] {
+  public getFoldersByPattern(pattern?: string): Folder[] {
     this.loadSync({ withSub: true, isInternalLoad: true })
 
     if (pattern) {
@@ -698,8 +694,8 @@ export class Folder {
     const folders = []
 
     this.folders.forEach(folder => {
-      if (recursive && folder.folders.length) {
-        folders.push(...Folder.getSubFolders(folder, recursive, pattern))
+      if (folder.folders.length) {
+        folders.push(...Folder.getSubFolders(folder, true, pattern))
       }
 
       if (pattern && minimatch(folder.path, pattern)) {

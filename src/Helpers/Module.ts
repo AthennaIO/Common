@@ -145,10 +145,7 @@ export class Module {
 
     const folder = await new Folder(path).load()
 
-    // FIXME Why glob pattern *.js is retrieving .d.ts and .js.map files?
-    return folder
-      .getFilesByPattern(`*/**/*.${Path.ext()}`, true)
-      .filter(file => file.extension.endsWith(`.${Path.ext()}`))
+    return folder.getFilesByPattern(`**/*.${Path.ext()}`)
   }
 
   /**

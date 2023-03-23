@@ -232,90 +232,80 @@ test.group('FolderTest', group => {
   test('should get all files/folders that match the pattern', async ({ assert }) => {
     const path = bigFolderPath.concat(sep, 'folder')
 
-    await File.createFileOfSize(path.concat('/file.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.edge'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.edge'), 1024 * 1024)
 
-    new Folder(path.concat('/A')).loadSync()
-    new Folder(path.concat('/A', '/B')).loadSync()
+    await new Folder(path.concat('/A')).load()
+    await new Folder(path.concat('/A', '/B')).load()
 
-    await File.createFileOfSize(path.concat('/A', '/B', '/file.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.edge'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.edge'), 1024 * 1024)
 
     const folder = new Folder(path)
 
-    const files = folder.getFilesByPattern('**/*.txt')
+    const ts = folder.getFilesByPattern('**/*.ts')
+    const txt = folder.getFilesByPattern('**/*.txt')
+    const json = folder.getFilesByPattern('**/*.json')
+    const edge = folder.getFilesByPattern('**/*.edge')
     const folders = folder.getFoldersByPattern('**/*')
 
-    assert.lengthOf(files, 1)
-    assert.lengthOf(folders, 1)
+    assert.lengthOf(folders, 2)
+
+    assert.lengthOf(ts, 4)
+    ts.forEach(file => assert.equal(file.extension, '.ts'))
+
+    assert.lengthOf(txt, 4)
+    txt.forEach(file => assert.equal(file.extension, '.txt'))
+
+    assert.lengthOf(json, 4)
+    json.forEach(file => assert.equal(file.extension, '.json'))
+
+    assert.lengthOf(edge, 4)
+    edge.forEach(file => assert.equal(file.extension, '.edge'))
   })
 
   test('should be able to get all files/folders without any pattern', async ({ assert }) => {
     const path = bigFolderPath.concat(sep, 'folder')
 
-    await File.createFileOfSize(path.concat('/file.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileOne.edge'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/fileTwo.edge'), 1024 * 1024)
 
-    new Folder(path.concat('/A')).loadSync()
-    new Folder(path.concat('/A', '/B')).loadSync()
+    await new Folder(path.concat('/A')).load()
+    await new Folder(path.concat('/A', '/B')).load()
 
-    await File.createFileOfSize(path.concat('/A', '/B', '/file.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.ts'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.txt'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.json'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileOne.edge'), 1024 * 1024)
+    await File.createFileOfSize(path.concat('/A', '/B', '/fileTwo.edge'), 1024 * 1024)
 
     const folder = new Folder(path)
 
     const files = folder.getFilesByPattern()
     const folders = folder.getFoldersByPattern()
 
-    assert.lengthOf(files, 1)
-    assert.lengthOf(folders, 1)
-  })
-
-  test('should get all files/folders recursively that match the pattern', async ({ assert }) => {
-    const path = bigFolderPath.concat(sep, 'folder')
-
-    await new Folder(path.concat('/A')).load({ withSub: false })
-    new Folder(path.concat('/B')).loadSync({ withSub: false })
-    new Folder(path.concat('/C')).loadSync()
-    new Folder(path.concat('/C', '/D')).loadSync()
-    new Folder(path.concat('/C', '/D', '/E')).loadSync()
-
-    const size = 1024 * 1024
-
-    await File.createFileOfSize(path.concat('/A', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/B', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/C', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/C', '/D', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/C', '/D', '/E', '/file.txt'), size)
-
-    const folder = new Folder(path)
-
-    assert.lengthOf(folder.getFilesByPattern('**/*.txt', true), 5)
-    assert.lengthOf(folder.getFoldersByPattern('**/*', true), 5)
-
-    assert.lengthOf(folder.getFilesByPattern('*/*.txt', true), 3)
-    assert.lengthOf(folder.getFoldersByPattern('*', true), 3)
-  })
-
-  test('should be able to get all files/folders recursively without any pattern', async ({ assert }) => {
-    const path = bigFolderPath.concat(sep, 'folder')
-
-    await new Folder(path.concat('/A')).load({ withSub: false })
-    new Folder(path.concat('/B')).loadSync({ withSub: false })
-    new Folder(path.concat('/C')).loadSync()
-    new Folder(path.concat('/C', '/D')).loadSync()
-    new Folder(path.concat('/C', '/D', '/E')).loadSync()
-
-    const size = 1024 * 1024
-
-    await File.createFileOfSize(path.concat('/A', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/B', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/C', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/C', '/D', '/file.txt'), size)
-    await File.createFileOfSize(path.concat('/C', '/D', '/E', '/file.txt'), size)
-
-    const folder = new Folder(path)
-
-    const files = folder.getFilesByPattern(null, true)
-    const folders = folder.getFoldersByPattern(null, true)
-
-    assert.lengthOf(files, 5)
-    assert.lengthOf(folders, 5)
+    assert.lengthOf(files, 16)
+    assert.lengthOf(folders, 2)
   })
 })

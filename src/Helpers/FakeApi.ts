@@ -88,7 +88,7 @@ export class FakeApi {
    * Register all file routes found in folder path.
    */
   public static async registerFolder(path: string): Promise<void> {
-    const files = new Folder(path).getFilesByPattern('*/**/*.json', true)
+    const files = new Folder(path).getFilesByPattern('**/*.json')
 
     const promises = files.map(file =>
       file.load().then(fileLoaded => this.registerFile(fileLoaded)),
