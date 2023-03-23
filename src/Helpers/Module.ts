@@ -182,7 +182,7 @@ export class Module {
 
     path = splited[0]
 
-    if (extname(path)) {
+    if (!path.startsWith('#') && extname(path)) {
       path = resolve(path)
     }
 
