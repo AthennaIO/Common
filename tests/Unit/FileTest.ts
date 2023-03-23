@@ -76,6 +76,36 @@ test.group('FileTest', group => {
     assert.equal(relativePathFile.base, 'package.json')
   })
 
+  test('should be able to generate instance of files that has dots in the path and the extension should be the last', async ({
+    assert,
+  }) => {
+    const file = new File(Path.stubs('controllers/app.controller.ts'))
+
+    assert.isTrue(file.fileExists)
+    assert.equal(file.extension, '.ts')
+    assert.equal(file.base, 'app.controller.ts')
+  })
+
+  test('should be able to generate instance of files with .js.map extension and the extension should be .js.map', async ({
+    assert,
+  }) => {
+    const file = new File(Path.stubs('extensions/file.js.map'))
+
+    assert.isTrue(file.fileExists)
+    assert.equal(file.extension, '.js.map')
+    assert.equal(file.base, 'file.js.map')
+  })
+
+  test('should be able to generate instance of files with .d.ts extension and the extension should be .d.ts', async ({
+    assert,
+  }) => {
+    const file = new File(Path.stubs('extensions/file.d.ts'))
+
+    assert.isTrue(file.fileExists)
+    assert.equal(file.extension, '.d.ts')
+    assert.equal(file.base, 'file.d.ts')
+  })
+
   test('should generate an instance of a file, it existing or not', async ({ assert }) => {
     assert.equal(bigFile.path, bigFilePath)
     assert.equal(bigFile.mime, 'text/plain')

@@ -274,15 +274,18 @@ export class File {
       filePath = Path.this(filePath, 3)
     }
 
-    const { base, dir, root } = parse(filePath)
+    let { base, dir, root, ext } = parse(filePath)
+
+    if (base.endsWith('.d.ts')) {
+      ext = '.d.ts'
+    }
+
+    if (base.endsWith('.js.map')) {
+      ext = '.js.map'
+    }
 
     const baseArray = base.split('.')
-
     const name = baseArray.splice(0, 1)[0]
-    const ext = baseArray.reduce((accumulator, current) => {
-      return accumulator.concat('.').concat(current)
-    }, '')
-
     const mime = lookup(dir + sep + base)
 
     return { ext, dir, name, root, base, mime, path: dir + sep + base }
