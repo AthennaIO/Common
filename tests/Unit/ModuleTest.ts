@@ -96,6 +96,12 @@ test.group('ModuleTest', () => {
     assert.equal(Exception.name, 'Exception')
   })
 
+  test('should be able to resolve import alias with dots in the path by meta url and import it', async ({ assert }) => {
+    const AppController = await Module.resolve('#tests/Stubs/controllers/app.controller', import.meta.url)
+
+    assert.equal(AppController.name, 'AppController')
+  })
+
   test('should be able to resolve partial paths by meta url and import it', async ({ assert }) => {
     const Exception = await Module.resolve('./src/Helpers/Exception.js', import.meta.url)
 
