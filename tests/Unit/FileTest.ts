@@ -83,6 +83,7 @@ test.group('FileTest', group => {
 
     assert.isTrue(file.fileExists)
     assert.equal(file.extension, '.ts')
+    assert.equal(file.name, 'app.controller')
     assert.equal(file.base, 'app.controller.ts')
   })
 
@@ -92,8 +93,9 @@ test.group('FileTest', group => {
     const file = new File(Path.stubs('extensions/file.js.map'))
 
     assert.isTrue(file.fileExists)
-    assert.equal(file.extension, '.js.map')
+    assert.equal(file.name, 'file')
     assert.equal(file.base, 'file.js.map')
+    assert.equal(file.extension, '.js.map')
   })
 
   test('should be able to generate instance of files with .d.ts extension and the extension should be .d.ts', async ({
@@ -102,8 +104,9 @@ test.group('FileTest', group => {
     const file = new File(Path.stubs('extensions/file.d.ts'))
 
     assert.isTrue(file.fileExists)
-    assert.equal(file.extension, '.d.ts')
+    assert.equal(file.name, 'file')
     assert.equal(file.base, 'file.d.ts')
+    assert.equal(file.extension, '.d.ts')
   })
 
   test('should generate an instance of a file, it existing or not', async ({ assert }) => {
