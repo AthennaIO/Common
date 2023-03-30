@@ -224,21 +224,11 @@ export class Is {
    * Verify if is a valid internal JS error.
    */
   public static Exception(value: any): value is Exception {
-    if (!Is.Error(value)) {
+    if (!value) {
       return false
     }
 
-    return ![
-      'Error',
-      'URIError',
-      'TypeError',
-      'EvalError',
-      'RangeError',
-      'CustomError',
-      'SyntaxError',
-      'InternalError',
-      'ReferenceError',
-    ].includes(value.constructor.name)
+    return value?.isAthennaException === true && Is.Defined(value.prettify)
   }
 
   /**

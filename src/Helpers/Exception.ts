@@ -28,6 +28,7 @@ export class Exception extends Error {
   public code?: string
   public help?: any
   public status?: number
+  public isAthennaException = true
 
   /**
    * Creates a new instance of Exception.
