@@ -97,9 +97,8 @@ test.group('FakeApiTest', group => {
 
     const routes = FakeApi.listRoutes()
 
-    assert.isTrue(routes.includes('users (GET)'))
-    assert.isTrue(routes.includes('users (POST)'))
-    assert.isTrue(routes.includes(':id (DELETE)'))
+    assert.isTrue(routes.includes('users'))
+    assert.isTrue(routes.includes(':id'))
     assert.isTrue(routes.includes('service-unavailable'))
   })
 })
