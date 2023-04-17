@@ -9,8 +9,19 @@
 
 import { sep } from 'node:path'
 import { test } from '@japa/runner'
+import { Json } from '#src/index'
 
-test.group('PathTest', () => {
+test.group('PathTest', group => {
+  let defaultDirs: any = {}
+
+  group.each.setup(() => {
+    defaultDirs = Json.copy(Path.dirs)
+  })
+
+  group.each.teardown(() => {
+    Path.dirs = defaultDirs
+  })
+
   test('should get the extension js and ts', async ({ assert }) => {
     process.env.IS_TS = 'false'
     assert.equal(Path.ext(), 'js')
@@ -55,6 +66,7 @@ test.group('PathTest', () => {
     assert.isDefined(Path.vmHome())
     assert.isTrue(Path.this().endsWith('Unit'))
     assert.isFalse(Path.this('../../').endsWith('tests'))
+    assert.isTrue(Path.this('../../package.json').endsWith('package.json'))
   })
 
   test('should get the sub paths of app main path', async ({ assert }) => {
