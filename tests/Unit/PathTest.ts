@@ -209,4 +209,14 @@ test.group('PathTest', group => {
     assert.isTrue(Path.tests().endsWith('build/tests'))
     assert.isTrue(Path.stubs().endsWith('build/tests/Stubs'))
   })
+
+  test('should be able to merge custom directories with defaults', async ({ assert }) => {
+    Path.mergeDirs({
+      app: 'build/app',
+    })
+
+    assert.isTrue(Path.bin().endsWith('bin'))
+    assert.isTrue(Path.src().endsWith('src'))
+    assert.isTrue(Path.app().endsWith('app'))
+  })
 })

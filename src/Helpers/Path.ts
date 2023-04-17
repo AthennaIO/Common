@@ -11,10 +11,11 @@ import callSite from 'callsite'
 
 import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
+import { PathDirs } from '#src/Types/PathDirs'
 import { dirname, posix, win32 } from 'node:path'
 
 export class Path {
-  public static dirs = {
+  public static dirs: PathDirs = {
     bin: 'bin',
     src: 'src',
     app: 'app',
@@ -49,6 +50,15 @@ export class Path {
     logs: 'storage/logs',
     tests: 'tests',
     stubs: 'tests/Stubs',
+  }
+
+  /**
+   * Merge your custom directories with the default directories.
+   */
+  public static mergeDirs(dirs: PathDirs): typeof Path {
+    this.dirs = { ...this.dirs, ...dirs }
+
+    return this
   }
 
   /**
