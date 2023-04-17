@@ -11,7 +11,7 @@ import callSite from 'callsite'
 
 import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
-import { dirname, normalize, posix, win32 } from 'node:path'
+import { dirname, posix, win32 } from 'node:path'
 
 export class Path {
   public static dirs = {
@@ -71,7 +71,7 @@ export class Path {
    * Return the pwd path of your project.
    */
   public static pwd(subPath = '/'): string {
-    const pwd = normalize(`${process.cwd()}/${posix.normalize(subPath)}`)
+    const pwd = posix.normalize(`${process.cwd()}/${posix.normalize(subPath)}`)
 
     return this.removeSlashes(pwd)
   }
