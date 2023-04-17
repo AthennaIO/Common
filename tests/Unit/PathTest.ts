@@ -11,51 +11,15 @@ import { sep } from 'node:path'
 import { test } from '@japa/runner'
 
 test.group('PathTest', () => {
-  test('should be able to resolve the environment where the app will run', async ({ assert }) => {
-    const metaUrl = import.meta.url
-    const metaUrlJs = metaUrl.replace('.ts', '.js')
-
-    Path.resolveEnvironment(metaUrl)
-
-    assert.equal(process.env.IS_TS, 'true')
-    assert.equal(Path.defaultBeforePath, '')
-
-    delete process.env.IS_TS
-    Path.resolveEnvironment(metaUrl, '/build')
-
-    assert.equal(process.env.IS_TS, 'true')
-    assert.equal(Path.defaultBeforePath, '')
-
-    delete process.env.IS_TS
-    Path.resolveEnvironment(metaUrlJs, '/build')
-
-    assert.equal(process.env.IS_TS, 'false')
-    assert.equal(Path.defaultBeforePath, '/build')
-
-    delete process.env.IS_TS
-    Path.resolveEnvironment(metaUrlJs)
-
-    assert.equal(process.env.IS_TS, 'false')
-    assert.equal(Path.defaultBeforePath, '')
+  test('should get the extension js and ts', async ({ assert }) => {
+    process.env.IS_TS = 'false'
+    assert.equal(Path.ext(), 'js')
 
     process.env.IS_TS = 'true'
-  })
-
-  test('should get the extension js and ts', async ({ assert }) => {
     assert.equal(Path.ext(), 'ts')
 
-    process.env.IS_TS = 'false'
-    assert.equal(Path.ext(), 'js')
+    assert.isTrue(Path.pwd(`artisan.${Path.ext()}`).includes(`${sep}artisan.ts`))
 
-    process.env.IS_TS = '(false)'
-    assert.equal(Path.ext(), 'js')
-
-    process.env.IS_TS = 'false'
-    Path.defaultBeforePath = 'build'
-
-    assert.isTrue(Path.pwd(`artisan.${Path.ext()}`).includes(`build${sep}artisan.js`))
-
-    Path.defaultBeforePath = ''
     process.env.IS_TS = 'true'
   })
 
@@ -99,7 +63,23 @@ test.group('PathTest', () => {
     assert.equal(Path.http(), mainPath.concat(sep, 'Http'))
     assert.equal(Path.console(), mainPath.concat(sep, 'Console'))
     assert.equal(Path.services(), mainPath.concat(sep, 'Services'))
+    assert.equal(Path.exceptions(), mainPath.concat(sep, 'Exceptions'))
     assert.equal(Path.repositories(), mainPath.concat(sep, 'Repositories'))
+  })
+
+  test('should get the sub paths of http main path', async ({ assert }) => {
+    const mainPath = process.cwd().concat(sep, 'app', sep, 'Http')
+
+    assert.equal(Path.controllers(), mainPath.concat(sep, 'Controllers'))
+    assert.equal(Path.middlewares(), mainPath.concat(sep, 'Middlewares'))
+    assert.equal(Path.interceptors(), mainPath.concat(sep, 'Interceptors'))
+    assert.equal(Path.terminators(), mainPath.concat(sep, 'Terminators'))
+  })
+
+  test('should get the sub paths of console main path', async ({ assert }) => {
+    const mainPath = process.cwd().concat(sep, 'app', sep, 'Console')
+
+    assert.equal(Path.commands(), mainPath.concat(sep, 'Commands'))
   })
 
   test('should get the sub paths of database main path', async ({ assert }) => {
@@ -109,15 +89,16 @@ test.group('PathTest', () => {
     assert.equal(Path.migrations(), mainPath.concat(sep, 'migrations'))
   })
 
-  test('should get the sub paths of node_modules main path', async ({ assert }) => {
+  test('should get the .bin folder of node_modules main path', async ({ assert }) => {
     const mainPath = process.cwd().concat(sep, 'node_modules')
 
-    assert.equal(Path.bin(), mainPath.concat(sep, '.bin'))
+    assert.equal(Path.nodeModulesBin(), mainPath.concat(sep, '.bin'))
   })
 
   test('should get the sub paths of public main path', async ({ assert }) => {
     const mainPath = process.cwd().concat(sep, 'public')
 
+    assert.equal(Path.static(), mainPath.concat(sep, 'static'))
     assert.equal(Path.assets(), mainPath.concat(sep, 'assets'))
   })
 
@@ -143,30 +124,77 @@ test.group('PathTest', () => {
   test('should get the sub paths of providers main path', async ({ assert }) => {
     const mainPath = process.cwd().concat(sep, 'providers')
 
-    assert.equal(Path.facades(), mainPath.concat(sep, 'Facades'))
+    assert.equal(Path.facades(), mainPath.concat(sep, 'facades'))
   })
 
-  test('should be able to set a default before path in Path class', async ({ assert }) => {
-    const mainPath = process.cwd()
+  test('should be able to setup different paths for all methods of Path class', async ({ assert }) => {
+    Path.setBin('build/bin')
+      .setSrc('build/src')
+      .setApp('build/app')
+      .setServices('build/app/Services')
+      .setExceptions('build/app/Exceptions')
+      .setRepositories('build/app/Repositories')
+      .setConsole('build/app/Console')
+      .setCommands('build/app/Console/Commands')
+      .setHttp('build/app/Http')
+      .setControllers('build/app/Http/Controllers')
+      .setMiddlewares('build/app/Http/Middlewares')
+      .setInterceptors('build/app/Http/Interceptors')
+      .setTerminators('build/app/Http/Terminators')
+      .setBootstrap('build/bootstrap')
+      .setConfig('build/config')
+      .setDatabase('build/database')
+      .setSeeders('build/database/seeders')
+      .setMigrations('build/database/migrations')
+      .setLang('build/lang')
+      .setResources('build/resources')
+      .setViews('build/resources/views')
+      .setLocales('build/resources/locales')
+      .setNodeModules('build/node_modules')
+      .setNodeModulesBin('build/node_modules/.bin')
+      .setProviders('build/providers')
+      .setFacades('build/providers/facades')
+      .setPublic('build/public')
+      .setStatic('build/public/static')
+      .setAssets('build/public/assets')
+      .setRoutes('build/routes')
+      .setStorage('build/storage')
+      .setLogs('build/storage/logs')
+      .setTests('build/tests')
+      .setStubs('build/tests/Stubs')
 
-    Path.defaultBeforePath = 'build'
-
-    assert.equal(Path.pwd('/'), `${mainPath}${sep}build`)
-    assert.equal(Path.app('/'), `${mainPath}${sep}build${sep}app`)
-    assert.equal(Path.console('/'), `${mainPath}${sep}build${sep}app${sep}Console`)
-    assert.isDefined(Path.vmTmp('/'))
-    assert.isDefined(Path.vmHome('/'))
-  })
-
-  test('should be able to ignore the original pwd path of the application without the default before path', async ({
-    assert,
-  }) => {
-    const mainPath = process.cwd()
-
-    Path.defaultBeforePath = 'build'
-
-    assert.equal(Path.originalPwd('/'), mainPath)
-    assert.equal(Path.originalPwd('/app'), `${mainPath}${sep}app`)
-    assert.equal(Path.originalPwd('/app/Console'), `${mainPath}${sep}app${sep}Console`)
+    assert.isTrue(Path.bin().endsWith('build/bin'))
+    assert.isTrue(Path.src().endsWith('build/src'))
+    assert.isTrue(Path.app().endsWith('build/app'))
+    assert.isTrue(Path.services().endsWith('build/app/Services'))
+    assert.isTrue(Path.exceptions().endsWith('build/app/Exceptions'))
+    assert.isTrue(Path.repositories().endsWith('build/app/Repositories'))
+    assert.isTrue(Path.console().endsWith('build/app/Console'))
+    assert.isTrue(Path.commands().endsWith('build/app/Console/Commands'))
+    assert.isTrue(Path.http().endsWith('build/app/Http'))
+    assert.isTrue(Path.controllers().endsWith('build/app/Http/Controllers'))
+    assert.isTrue(Path.middlewares().endsWith('build/app/Http/Middlewares'))
+    assert.isTrue(Path.interceptors().endsWith('build/app/Http/Interceptors'))
+    assert.isTrue(Path.terminators().endsWith('build/app/Http/Terminators'))
+    assert.isTrue(Path.bootstrap().endsWith('build/bootstrap'))
+    assert.isTrue(Path.config().endsWith('build/config'))
+    assert.isTrue(Path.database().endsWith('build/database'))
+    assert.isTrue(Path.seeders().endsWith('build/database/seeders'))
+    assert.isTrue(Path.migrations().endsWith('build/database/migrations'))
+    assert.isTrue(Path.resources().endsWith('build/resources'))
+    assert.isTrue(Path.views().endsWith('build/resources/views'))
+    assert.isTrue(Path.locales().endsWith('build/resources/locales'))
+    assert.isTrue(Path.nodeModules().endsWith('build/node_modules'))
+    assert.isTrue(Path.nodeModulesBin().endsWith('build/node_modules/.bin'))
+    assert.isTrue(Path.providers().endsWith('build/providers'))
+    assert.isTrue(Path.facades().endsWith('build/providers/facades'))
+    assert.isTrue(Path.public().endsWith('build/public'))
+    assert.isTrue(Path.static().endsWith('build/public/static'))
+    assert.isTrue(Path.assets().endsWith('build/public/assets'))
+    assert.isTrue(Path.routes().endsWith('build/routes'))
+    assert.isTrue(Path.storage().endsWith('build/storage'))
+    assert.isTrue(Path.logs().endsWith('build/storage/logs'))
+    assert.isTrue(Path.tests().endsWith('build/tests'))
+    assert.isTrue(Path.stubs().endsWith('build/tests/Stubs'))
   })
 })
