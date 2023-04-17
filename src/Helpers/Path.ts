@@ -12,7 +12,7 @@ import callSite from 'callsite'
 import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
 import { PathDirs } from '#src/Types/PathDirs'
-import { dirname, posix, win32 } from 'node:path'
+import { sep, normalize, dirname } from 'node:path'
 
 export class Path {
   public static dirs: PathDirs = {
@@ -80,8 +80,8 @@ export class Path {
   /**
    * Return the pwd path of your project.
    */
-  public static pwd(subPath = '/'): string {
-    const pwd = posix.normalize(`${process.cwd()}/${posix.normalize(subPath)}`)
+  public static pwd(subPath = sep): string {
+    const pwd = normalize(`${process.cwd()}${sep}${normalize(subPath)}`)
 
     return this.removeSlashes(pwd)
   }
@@ -89,8 +89,8 @@ export class Path {
   /**
    * Return the src path of your project.
    */
-  public static src(subPath = '/'): string {
-    return this.pwd(this.dirs.src + '/' + posix.normalize(subPath))
+  public static src(subPath = sep): string {
+    return this.pwd(normalize(this.dirs.src) + sep + normalize(subPath))
   }
 
   /**
@@ -105,8 +105,8 @@ export class Path {
   /**
    * Return the bin path of your project.
    */
-  public static bin(subPath = '/'): string {
-    return this.pwd(this.dirs.bin + '/' + posix.normalize(subPath))
+  public static bin(subPath = sep): string {
+    return this.pwd(normalize(this.dirs.bin) + sep + normalize(subPath))
   }
 
   /**
@@ -121,8 +121,8 @@ export class Path {
   /**
    * Return the app path of your project.
    */
-  public static app(subPath = '/'): string {
-    return this.pwd(this.dirs.app + '/' + posix.normalize(subPath))
+  public static app(subPath = sep): string {
+    return this.pwd(normalize(this.dirs.app) + sep + normalize(subPath))
   }
 
   /**
@@ -137,8 +137,8 @@ export class Path {
   /**
    * Return the bootstrap path of your project.
    */
-  public static bootstrap(subPath = '/'): string {
-    return this.pwd(this.dirs.bootstrap + '/' + posix.normalize(subPath))
+  public static bootstrap(subPath = sep): string {
+    return this.pwd(normalize(this.dirs.bootstrap) + sep + normalize(subPath))
   }
 
   /**
@@ -153,8 +153,8 @@ export class Path {
   /**
    * Return the config path of your project.
    */
-  public static config(subPath = '/'): string {
-    return this.pwd(this.dirs.config + '/' + posix.normalize(subPath))
+  public static config(subPath = sep): string {
+    return this.pwd(normalize(this.dirs.config) + sep + normalize(subPath))
   }
 
   /**
@@ -169,8 +169,8 @@ export class Path {
   /**
    * Return the database path of your project.
    */
-  public static database(subPath = '/'): string {
-    return this.pwd(this.dirs.database + '/' + posix.normalize(subPath))
+  public static database(subPath = sep): string {
+    return this.pwd(this.dirs.database + sep + normalize(subPath))
   }
 
   /**
@@ -185,8 +185,8 @@ export class Path {
   /**
    * Return the lang path of your project.
    */
-  public static lang(subPath = '/'): string {
-    return this.pwd(this.dirs.lang + '/' + posix.normalize(subPath))
+  public static lang(subPath = sep): string {
+    return this.pwd(this.dirs.lang + sep + normalize(subPath))
   }
 
   /**
@@ -201,8 +201,8 @@ export class Path {
   /**
    * Return the node_modules path of your project.
    */
-  public static nodeModules(subPath = '/'): string {
-    return this.pwd(this.dirs.nodeModules + '/' + posix.normalize(subPath))
+  public static nodeModules(subPath = sep): string {
+    return this.pwd(this.dirs.nodeModules + sep + normalize(subPath))
   }
 
   /**
@@ -217,8 +217,8 @@ export class Path {
   /**
    * Return the providers' path of your project.
    */
-  public static providers(subPath = '/'): string {
-    return this.pwd(this.dirs.providers + '/' + posix.normalize(subPath))
+  public static providers(subPath = sep): string {
+    return this.pwd(this.dirs.providers + sep + normalize(subPath))
   }
 
   /**
@@ -233,8 +233,8 @@ export class Path {
   /**
    * Return the facades' path of your project.
    */
-  public static facades(subPath = '/'): string {
-    return this.pwd(this.dirs.facades + '/' + posix.normalize(subPath))
+  public static facades(subPath = sep): string {
+    return this.pwd(this.dirs.facades + sep + normalize(subPath))
   }
 
   /**
@@ -249,8 +249,8 @@ export class Path {
   /**
    * Return the public path of your project.
    */
-  public static public(subPath = '/'): string {
-    return this.pwd(this.dirs.public + '/' + posix.normalize(subPath))
+  public static public(subPath = sep): string {
+    return this.pwd(this.dirs.public + sep + normalize(subPath))
   }
 
   /**
@@ -265,8 +265,8 @@ export class Path {
   /**
    * Return the resources' path of your project.
    */
-  public static resources(subPath = '/'): string {
-    return this.pwd(this.dirs.resources + '/' + posix.normalize(subPath))
+  public static resources(subPath = sep): string {
+    return this.pwd(this.dirs.resources + sep + normalize(subPath))
   }
 
   /**
@@ -281,8 +281,8 @@ export class Path {
   /**
    * Return the routes' path of your project.
    */
-  public static routes(subPath = '/'): string {
-    return this.pwd(this.dirs.routes + '/' + posix.normalize(subPath))
+  public static routes(subPath = sep): string {
+    return this.pwd(this.dirs.routes + sep + normalize(subPath))
   }
 
   /**
@@ -297,8 +297,8 @@ export class Path {
   /**
    * Return the storage path of your project.
    */
-  public static storage(subPath = '/'): string {
-    return this.pwd(this.dirs.storage + '/' + posix.normalize(subPath))
+  public static storage(subPath = sep): string {
+    return this.pwd(this.dirs.storage + sep + normalize(subPath))
   }
 
   /**
@@ -313,8 +313,8 @@ export class Path {
   /**
    * Return the tests' path of your project.
    */
-  public static tests(subPath = '/'): string {
-    return this.pwd(this.dirs.tests + '/' + posix.normalize(subPath))
+  public static tests(subPath = sep): string {
+    return this.pwd(this.dirs.tests + sep + normalize(subPath))
   }
 
   /**
@@ -329,8 +329,8 @@ export class Path {
   /**
    * Return the logs' path of your project.
    */
-  public static logs(subPath = '/'): string {
-    return this.pwd(this.dirs.logs + '/' + posix.normalize(subPath))
+  public static logs(subPath = sep): string {
+    return this.pwd(this.dirs.logs + sep + normalize(subPath))
   }
 
   /**
@@ -345,8 +345,8 @@ export class Path {
   /**
    * Return the views' path of your project.
    */
-  public static views(subPath = '/'): string {
-    return this.pwd(this.dirs.views + '/' + posix.normalize(subPath))
+  public static views(subPath = sep): string {
+    return this.pwd(this.dirs.views + sep + normalize(subPath))
   }
 
   /**
@@ -361,8 +361,8 @@ export class Path {
   /**
    * Return the static' path of your project.
    */
-  public static static(subPath = '/'): string {
-    return this.pwd(this.dirs.static + '/' + posix.normalize(subPath))
+  public static static(subPath = sep): string {
+    return this.pwd(this.dirs.static + sep + normalize(subPath))
   }
 
   /**
@@ -377,8 +377,8 @@ export class Path {
   /**
    * Return the assets' path of your project.
    */
-  public static assets(subPath = '/'): string {
-    return this.pwd(this.dirs.assets + '/' + posix.normalize(subPath))
+  public static assets(subPath = sep): string {
+    return this.pwd(this.dirs.assets + sep + normalize(subPath))
   }
 
   /**
@@ -393,8 +393,8 @@ export class Path {
   /**
    * Return the locales' path of your project.
    */
-  public static locales(subPath = '/'): string {
-    return this.pwd(this.dirs.locales + '/' + posix.normalize(subPath))
+  public static locales(subPath = sep): string {
+    return this.pwd(this.dirs.locales + sep + normalize(subPath))
   }
 
   /**
@@ -409,8 +409,8 @@ export class Path {
   /**
    * Return the stubs' path of your project.
    */
-  public static stubs(subPath = '/'): string {
-    return this.pwd(this.dirs.stubs + '/' + posix.normalize(subPath))
+  public static stubs(subPath = sep): string {
+    return this.pwd(this.dirs.stubs + sep + normalize(subPath))
   }
 
   /**
@@ -425,8 +425,8 @@ export class Path {
   /**
    * Return the http path of your project.
    */
-  public static http(subPath = '/'): string {
-    return this.pwd(this.dirs.http + '/' + posix.normalize(subPath))
+  public static http(subPath = sep): string {
+    return this.pwd(this.dirs.http + sep + normalize(subPath))
   }
 
   /**
@@ -441,8 +441,8 @@ export class Path {
   /**
    * Return the console path of your project.
    */
-  public static console(subPath = '/'): string {
-    return this.pwd(this.dirs.console + '/' + posix.normalize(subPath))
+  public static console(subPath = sep): string {
+    return this.pwd(this.dirs.console + sep + normalize(subPath))
   }
 
   /**
@@ -457,8 +457,8 @@ export class Path {
   /**
    * Return the services' path of your project.
    */
-  public static services(subPath = '/'): string {
-    return this.pwd(this.dirs.services + '/' + posix.normalize(subPath))
+  public static services(subPath = sep): string {
+    return this.pwd(this.dirs.services + sep + normalize(subPath))
   }
 
   /**
@@ -473,8 +473,8 @@ export class Path {
   /**
    * Return the repositories' path of your project.
    */
-  public static repositories(subPath = '/'): string {
-    return this.pwd(this.dirs.repositories + '/' + posix.normalize(subPath))
+  public static repositories(subPath = sep): string {
+    return this.pwd(this.dirs.repositories + sep + normalize(subPath))
   }
 
   /**
@@ -489,8 +489,8 @@ export class Path {
   /**
    * Return the commands' path of your project.
    */
-  public static commands(subPath = '/'): string {
-    return this.pwd(this.dirs.commands + '/' + posix.normalize(subPath))
+  public static commands(subPath = sep): string {
+    return this.pwd(this.dirs.commands + sep + normalize(subPath))
   }
 
   /**
@@ -505,8 +505,8 @@ export class Path {
   /**
    * Return the controllers' path of your project.
    */
-  public static controllers(subPath = '/'): string {
-    return this.pwd(this.dirs.controllers + '/' + posix.normalize(subPath))
+  public static controllers(subPath = sep): string {
+    return this.pwd(this.dirs.controllers + sep + normalize(subPath))
   }
 
   /**
@@ -521,8 +521,8 @@ export class Path {
   /**
    * Return the exceptions' path of your project.
    */
-  public static exceptions(subPath = '/'): string {
-    return this.pwd(this.dirs.exceptions + '/' + posix.normalize(subPath))
+  public static exceptions(subPath = sep): string {
+    return this.pwd(this.dirs.exceptions + sep + normalize(subPath))
   }
 
   /**
@@ -537,8 +537,8 @@ export class Path {
   /**
    * Return the middlewares' path of your project.
    */
-  public static middlewares(subPath = '/'): string {
-    return this.pwd(this.dirs.middlewares + '/' + posix.normalize(subPath))
+  public static middlewares(subPath = sep): string {
+    return this.pwd(this.dirs.middlewares + sep + normalize(subPath))
   }
 
   /**
@@ -553,8 +553,8 @@ export class Path {
   /**
    * Return the interceptors' path of your project.
    */
-  public static interceptors(subPath = '/'): string {
-    return this.pwd(this.dirs.interceptors + '/' + posix.normalize(subPath))
+  public static interceptors(subPath = sep): string {
+    return this.pwd(this.dirs.interceptors + sep + normalize(subPath))
   }
 
   /**
@@ -569,8 +569,8 @@ export class Path {
   /**
    * Return the terminators' path of your project.
    */
-  public static terminators(subPath = '/'): string {
-    return this.pwd(this.dirs.terminators + '/' + posix.normalize(subPath))
+  public static terminators(subPath = sep): string {
+    return this.pwd(this.dirs.terminators + sep + normalize(subPath))
   }
 
   /**
@@ -585,8 +585,8 @@ export class Path {
   /**
    * Return the migrations' path of your project.
    */
-  public static migrations(subPath = '/'): string {
-    return this.pwd(this.dirs.migrations + '/' + posix.normalize(subPath))
+  public static migrations(subPath = sep): string {
+    return this.pwd(this.dirs.migrations + sep + normalize(subPath))
   }
 
   /**
@@ -601,8 +601,8 @@ export class Path {
   /**
    * Return the seeders' path of your project.
    */
-  public static seeders(subPath = '/'): string {
-    return this.pwd(this.dirs.seeders + '/' + posix.normalize(subPath))
+  public static seeders(subPath = sep): string {
+    return this.pwd(this.dirs.seeders + sep + normalize(subPath))
   }
 
   /**
@@ -617,8 +617,8 @@ export class Path {
   /**
    * Return the .bin path of your node_modules.
    */
-  public static nodeModulesBin(subPath = '/'): string {
-    return this.pwd(this.dirs.nodeModulesBin + '/' + posix.normalize(subPath))
+  public static nodeModulesBin(subPath = sep): string {
+    return this.pwd(this.dirs.nodeModulesBin + sep + normalize(subPath))
   }
 
   /**
@@ -633,10 +633,10 @@ export class Path {
   /**
    * Return the tmp path of your vm.
    */
-  public static vmTmp(subPath = '/'): string {
+  public static vmTmp(subPath = sep): string {
     const osTmpDir = tmpdir()
 
-    const tmpDir = osTmpDir.concat('/', posix.normalize(subPath))
+    const tmpDir = osTmpDir.concat(sep, normalize(subPath))
 
     return this.removeSlashes(tmpDir)
   }
@@ -644,10 +644,10 @@ export class Path {
   /**
    * Return the home path of your vm.
    */
-  public static vmHome(subPath = '/'): string {
+  public static vmHome(subPath = sep): string {
     const osHomeDir = homedir()
 
-    const homeDir = osHomeDir.concat('/', posix.normalize(subPath))
+    const homeDir = osHomeDir.concat(sep, normalize(subPath))
 
     return this.removeSlashes(homeDir)
   }
@@ -656,12 +656,10 @@ export class Path {
    * Return the execution path of where this method
    * is being called.
    */
-  public static this(subPath = '/', stackIndex = 1): string {
+  public static this(subPath = sep, stackIndex = 1): string {
     const stack = callSite()
     const requester = dirname(fileURLToPath(stack[stackIndex].getFileName()))
-    const execDir = posix.normalize(
-      requester.concat('/', posix.normalize(subPath)),
-    )
+    const execDir = normalize(requester.concat(sep, normalize(subPath)))
 
     return this.removeSlashes(execDir)
   }
@@ -670,14 +668,10 @@ export class Path {
    * Remove additional slashes from path.
    */
   private static removeSlashes(path: string): string {
-    path = posix.normalize(path)
+    path = normalize(path)
 
-    if (path.endsWith('/')) {
-      path = path.slice(0, -1)
-    }
-
-    if (process.platform === 'win32') {
-      return win32.normalize(path)
+    if (path.endsWith(sep)) {
+      return this.removeSlashes(path.slice(0, -1))
     }
 
     return path
