@@ -252,13 +252,13 @@ export class Color {
    *
    * @example
    * ```ts
-   * const message = Color.apply('The file ({yellow, bold} "app/Services/Service") has been created.')
+   * const message = Color.apply('The file ({yellow, bold} "app/services/Service") has been created.')
    *
    * console.log(message)
    * ```
    * Output:
    * ```bash
-   * The file "app/Services/Service" has been created.
+   * The file "app/services/Service" has been created.
    * ```
    */
   public static apply(...args: string[]): string {

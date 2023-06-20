@@ -31,7 +31,7 @@ export class Module {
    * Get the module first export match or default with an alias.
    *
    * @example
-   *  const _module = import('#app/Services/MyService')
+   *  const _module = import('#app/services/MyService')
    *  const _alias = 'App/Services'
    *
    *  const { alias, module } = Module.getWithAlias(_module, _alias)
@@ -68,7 +68,7 @@ export class Module {
    * Get all modules first export match or default with an alias.
    *
    * @example
-   *  const _modules = [import('#app/Services/MyService')]
+   *  const _modules = [import('#app/services/MyService')]
    *  const _alias = 'App/Services'
    *
    *  const [{ alias, module }] = Module.getAllWithAlias(_modules, _alias)

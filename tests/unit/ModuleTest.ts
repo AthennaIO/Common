@@ -48,13 +48,13 @@ test.group('ModuleTest', () => {
 
     assert.equal(moduleDefault.name, 'Athenna')
 
-    const moduleFirstExport = await Module.getFrom(Path.src('Helpers/Options.ts'))
+    const moduleFirstExport = await Module.getFrom(Path.src('helpers/Options.ts'))
 
     assert.equal(moduleFirstExport.name, 'Options')
   })
 
   test('should be able to get all modules first export match or default from any path', async ({ assert }) => {
-    const modules = await Module.getAllFrom(Path.src('Helpers'))
+    const modules = await Module.getAllFrom(Path.src('helpers'))
 
     assert.lengthOf(modules, 20)
     assert.equal(modules[0].name, 'Clean')
@@ -63,7 +63,7 @@ test.group('ModuleTest', () => {
   test('should be able to get all modules first export match or default from any path with alias', async ({
     assert,
   }) => {
-    const modules = await Module.getAllFromWithAlias(Path.src('Helpers'), 'App/Helpers')
+    const modules = await Module.getAllFromWithAlias(Path.src('helpers'), 'App/Helpers')
 
     assert.lengthOf(modules, 20)
     assert.equal(modules[0].module.name, 'Clean')
@@ -95,7 +95,7 @@ test.group('ModuleTest', () => {
   })
 
   test('should be able to resolve import alias with dots in the path by meta url and import it', async ({ assert }) => {
-    const AppController = await Module.resolve('#tests/Stubs/controllers/app.controller', import.meta.url)
+    const AppController = await Module.resolve('#tests/stubs/controllers/app.controller', import.meta.url)
 
     assert.equal(AppController.name, 'AppController')
   })
