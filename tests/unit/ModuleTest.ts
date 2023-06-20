@@ -125,7 +125,7 @@ test.group('ModuleTest', () => {
   })
 
   test('should be able to resolve versionized absolute paths by meta url and import it', async ({ assert }) => {
-    const Exception = await Module.resolve(Path.src(`Helpers/Exception.js?version=${Math.random()}`), import.meta.url)
+    const Exception = await Module.resolve(Path.src(`helpers/Exception.js?version=${Math.random()}`), import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   })

@@ -10,6 +10,7 @@
 import { sep } from 'node:path'
 import { test } from '@japa/runner'
 import { Json } from '#src/index'
+import * as process from 'process'
 
 test.group('PathTest', group => {
   let defaultDirs: any = {}

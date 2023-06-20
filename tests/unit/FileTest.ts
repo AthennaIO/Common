@@ -332,14 +332,14 @@ export default class FileTest {
 
   @Test()
   public async shouldBeAbleToImportSomeFileThatIsAValidModule({ assert }: Context) {
-    const Folder = await new File(Path.src('Helpers/Folder.ts')).import()
+    const Folder = await new File(Path.src('helpers/Folder.ts')).import()
 
     assert.equal(Folder.name, 'Folder')
   }
 
   @Test()
   public async shouldBeAbleToSafeImportSomeFileThatIsAModule({ assert }: Context) {
-    const Folder = await new File(Path.src('Helpers/Folder.ts')).safeImport()
+    const Folder = await new File(Path.src('helpers/Folder.ts')).safeImport()
 
     assert.equal(Folder.name, 'Folder')
   }
