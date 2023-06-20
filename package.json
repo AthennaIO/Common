@@ -71,7 +71,7 @@
     "youch-terminal": "^2.2.0"
   },
   "devDependencies": {
-    "@athenna/test": "^3.7.0",
+    "@athenna/test": "^4.0.0",
     "@types/bytes": "^3.1.1",
     "@types/callsite": "^1.0.31",
     "@types/debug": "^4.1.7",
