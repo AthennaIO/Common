@@ -8,10 +8,11 @@
  */
 
 import { Clean } from '#src'
-import { test } from '@japa/runner'
+import { Context, Test } from '@athenna/test'
 
-test.group('CleanTest', () => {
-  test('should clean all falsy/empty values from array', ({ assert }) => {
+export default class CleanTest {
+  @Test()
+  public async shouldCleanAllFalsyAndEmptyValuesFromArray({ assert }: Context) {
     const array = [1, null, 2, undefined, 3, { joao: 'joao', lenon: null }, '', {}]
 
     Clean.cleanArray(array)
@@ -19,9 +20,10 @@ test.group('CleanTest', () => {
 
     Clean.cleanArray(array, true, true)
     assert.deepEqual(array, [1, 2, 3, { joao: 'joao' }])
-  })
+  }
 
-  test('should clean all falsy/empty values from object', ({ assert }) => {
+  @Test()
+  public async shouldCleanAllFalsyAndEmptyValuesFromObject({ assert }: Context) {
     const object = {
       a: 'a',
       b: 'b',
@@ -55,5 +57,5 @@ test.group('CleanTest', () => {
       f: { joao: 'joao' },
       i: [1, { joao: 'joao' }],
     })
-  })
-})
+  }
+}

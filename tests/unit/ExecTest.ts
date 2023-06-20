@@ -7,34 +7,39 @@
  * file that was distributed with this source code.
  */
 
-import { test } from '@japa/runner'
+import { Test, Context, BeforeEach } from '@athenna/test'
 import { Clean, Exec, File, Folder, Module, Path } from '#src'
 import { NodeCommandException } from '#src/exceptions/NodeCommandException'
 
-test.group('ExecTest', group => {
-  group.each.teardown(async () => {
+export default class ExecTest {
+  @BeforeEach()
+  public async beforeEach() {
     await Folder.safeRemove(Path.storage())
-  })
+  }
 
-  test('should be able to sleep the code for some ms', async () => {
+  @Test()
+  public async shouldBeAbleToSleepTheCodeForSomeMs() {
     await Exec.sleep(10)
-  })
+  }
 
-  test('should be able to execute a command in the VM and get the stdout', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToExecuteACommandInTheVMAndGetTheStdout({ assert }: Context) {
     const { stdout } = await Exec.command('ls')
 
     assert.isTrue(stdout.includes('README.md'))
-  })
+  }
 
-  test('should throw an node exec exception when command fails', async ({ assert }) => {
+  @Test()
+  public async shouldThrowAnNodeExecExceptionWhenCommandFails({ assert }: Context) {
     const useCase = async () => {
       await Exec.command('echo "error thrown" && exit 255')
     }
 
     await assert.rejects(useCase, NodeCommandException)
-  })
+  }
 
-  test('should be able to execute a command that throws errors and ignore it linux', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToExecuteACommandThatThrowsErrorsAndIgnoreItInUnix({ assert }: Context) {
     if (process.platform === 'win32') {
       return
     }
@@ -42,16 +47,18 @@ test.group('ExecTest', group => {
     const { stdout } = await Exec.command('echo "error thrown" && exit 255', { ignoreErrors: true })
 
     assert.isTrue(stdout.includes('error thrown'))
-  })
+  }
 
-  test('should be able to download files', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToDownloadFiles({ assert }: Context) {
     const file = await Exec.download('node.pkg', Path.storage('downloads'), 'https://nodejs.org/dist/latest/node.pkg')
 
     assert.equal(file.base, 'node.pkg')
     assert.isTrue(await File.exists(file.path))
-  })
+  }
 
-  test('should be able to paginate a collection of data', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToPaginateACollectionOfData({ assert }: Context) {
     let i = 0
     const collection = []
 
@@ -84,11 +91,10 @@ test.group('ExecTest', group => {
       next: 'https://my-api.com/products?page=1&limit=10',
       last: 'https://my-api.com/products?page=2&limit=10',
     })
-  })
+  }
 
-  test('should be able to execute some callback concurrently in all array indexes and get the value', async ({
-    assert,
-  }) => {
+  @Test()
+  public async shouldBeAbleToExecuteSomeCallbackConcurrentlyInAllArrayIndexesAndGetTheValue({ assert }: Context) {
     const paths = [
       '#src/helpers/Clean',
       '#src/helpers/Collection',
@@ -100,5 +106,5 @@ test.group('ExecTest', group => {
     const modules = await Exec.concurrently<string, unknown>(paths, async path => Module.resolve(path, import.meta.url))
 
     assert.deepEqual(modules[0], Clean)
-  })
-})
+  }
+}

@@ -7,23 +7,27 @@
  * file that was distributed with this source code.
  */
 
-import { test } from '@japa/runner'
 import { FakeApi, Folder, HttpClient, Path } from '#src'
+import { Test, AfterAll, BeforeAll, AfterEach, Context } from '@athenna/test'
 
-test.group('FakeApiTest', group => {
-  group.setup(async () => {
+export default class FakeApiTest {
+  @BeforeAll()
+  public async beforeAll() {
     await new Folder(Path.stubs('resources')).copy(Path.resources())
-  })
+  }
 
-  group.teardown(async () => {
+  @AfterAll()
+  public async afterAll() {
     await Folder.safeRemove(Path.resources())
-  })
+  }
 
-  group.each.teardown(async () => {
+  @AfterEach()
+  public async afterEach() {
     await FakeApi.stop()
-  })
+  }
 
-  test('should be able to register runtime routes', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToRegisterRuntimeRoutes({ assert }: Context) {
     FakeApi.build()
       .path('/example')
       .method('GET')
@@ -39,9 +43,10 @@ test.group('FakeApiTest', group => {
     assert.isTrue(FakeApi.isRunning())
     assert.equal(response.statusCode, 201)
     assert.deepEqual(response.body, { hello: 'world', example: 'example' })
-  })
+  }
 
-  test('should be able to register routes to redirect to other', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToRegisterRoutesToRedirectToOther({ assert }: Context) {
     FakeApi.build()
       .path('/example')
       .method('GET')
@@ -59,9 +64,10 @@ test.group('FakeApiTest', group => {
     assert.isTrue(FakeApi.isRunning())
     assert.equal(response.statusCode, 201)
     assert.deepEqual(response.body, { hello: 'world', example: 'example' })
-  })
+  }
 
-  test('should be able to register file routes with runtime routes', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToRegisterFileRoutesWithRuntimeRoutes({ assert }: Context) {
     FakeApi.build()
       .path('/example')
       .method('GET')
@@ -90,9 +96,10 @@ test.group('FakeApiTest', group => {
 
     assert.equal(responseThree.statusCode, 201)
     assert.deepEqual(responseThree.body, { hello: 'world', example: 'example' })
-  })
+  }
 
-  test('should be able to list all the routes registered in the fake server', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToListAllRoutesRegisteredInTheFakeServer({ assert }: Context) {
     await FakeApi.start()
 
     const routes = FakeApi.listRoutes()
@@ -100,5 +107,5 @@ test.group('FakeApiTest', group => {
     assert.isTrue(routes.includes('users'))
     assert.isTrue(routes.includes(':id'))
     assert.isTrue(routes.includes('service-unavailable'))
-  })
-})
+  }
+}

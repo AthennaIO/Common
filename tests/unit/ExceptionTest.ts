@@ -8,10 +8,11 @@
  */
 
 import { Exception } from '#src'
-import { test } from '@japa/runner'
+import { Test, Context } from '@athenna/test'
 
-test.group('ExceptionTest', () => {
-  test('should be able to create a new exception', async ({ assert }) => {
+export default class ExceptionTest {
+  @Test()
+  public async shouldBeAbleToCreateANewException({ assert }: Context) {
     const exception = new Exception({ message: 'My custom instance error' })
 
     const errorJson = exception.toJSON()
@@ -20,9 +21,10 @@ test.group('ExceptionTest', () => {
     assert.equal(errorJson.code, 'EXCEPTION')
     assert.equal(errorJson.name, 'Exception')
     assert.equal(errorJson.message, 'My custom instance error')
-  })
+  }
 
-  test('should be able to create a new exception from vanilla errors', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToCreateANewExceptionFromVanillaErrors({ assert }: Context) {
     const exception = new Error('My custom instance error').toAthennaException({
       status: 0,
       code: 'EXCEPTION',
@@ -35,9 +37,10 @@ test.group('ExceptionTest', () => {
     assert.equal(errorJson.code, 'EXCEPTION')
     assert.equal(errorJson.name, 'Exception')
     assert.equal(errorJson.message, 'My custom instance error')
-  })
+  }
 
-  test('should be able to extend exception class to create a new exception', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToExtendExceptionClassToCreateANewException({ assert }: Context) {
     class InternalServerException extends Exception {
       constructor(content = 'Internal Server Error', status = 500) {
         super({ message: content, status, code: 'E_RUNTIME_EXCEPTION', help: 'Restart computer.' })
@@ -53,9 +56,10 @@ test.group('ExceptionTest', () => {
     assert.equal(errorJson.code, 'E_RUNTIME_EXCEPTION')
     assert.equal(errorJson.name, 'InternalServerException')
     assert.equal(errorJson.message, 'Internal Server Error')
-  })
+  }
 
-  test('should be able to pretiffy the exception', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToPrettifyTheException({ assert }: Context) {
     class InternalServerException extends Exception {
       constructor(content = 'Internal Server Error.', status = 500) {
         super({
@@ -73,5 +77,5 @@ test.group('ExceptionTest', () => {
 
     assert.isDefined(prettyError)
     assert.typeOf(prettyError, 'string')
-  })
-})
+  }
+}

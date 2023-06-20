@@ -8,343 +8,369 @@
  */
 
 import { sep } from 'node:path'
-import { test } from '@japa/runner'
 import { File, Path, Folder } from '#src'
+import { Test, AfterEach, BeforeEach, Context } from '@athenna/test'
 import { NotFoundFileException } from '#src/exceptions/NotFoundFileException'
 
-test.group('FileTest', group => {
-  let bigFile: File = null
-  let nonexistentFile: File = null
+export default class FileTest {
+  private bigFile: File = null
+  private nonexistentFile: File = null
 
-  const bigFilePath = Path.storage('files/file.txt')
-  const nonexistentFilePath = Path.storage('files/non-existent.txt')
+  private bigFilePath = Path.storage('files/file.txt')
+  private nonexistentFilePath = Path.storage('files/non-existent.txt')
 
-  group.each.setup(async () => {
-    await File.safeRemove(bigFilePath)
-    await File.safeRemove(nonexistentFilePath)
+  @BeforeEach()
+  public async beforeEach() {
+    await File.safeRemove(this.bigFilePath)
+    await File.safeRemove(this.nonexistentFilePath)
     await Folder.safeRemove(Path.storage())
 
-    await File.createFileOfSize(bigFilePath, 1024 * 1024 * 100)
+    await File.createFileOfSize(this.bigFilePath, 1024 * 1024 * 100)
 
-    bigFile = new File(bigFilePath)
-    nonexistentFile = new File(nonexistentFilePath, Buffer.from('Content'))
-  })
+    this.bigFile = new File(this.bigFilePath)
+    this.nonexistentFile = new File(this.nonexistentFilePath, Buffer.from('Content'))
+  }
 
-  group.each.teardown(async () => {
-    await File.safeRemove(bigFilePath)
-    await File.safeRemove(nonexistentFilePath)
+  @AfterEach()
+  public async afterEach() {
+    await File.safeRemove(this.bigFilePath)
+    await File.safeRemove(this.nonexistentFilePath)
     await Folder.safeRemove(Path.storage())
 
-    bigFile = null
-    nonexistentFile = null
-  })
+    this.bigFile = null
+    this.nonexistentFile = null
+  }
 
-  test('should be able to verify if path is from file or directory', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToVerifyIfPathIsFromFileOrDirectory({ assert }: Context) {
     assert.isFalse(await File.isFile('../../tests'))
     assert.isTrue(await File.isFile('../../package.json'))
 
     assert.isFalse(File.isFileSync('../../tests'))
     assert.isTrue(File.isFileSync('../../package.json'))
-  })
+  }
 
-  test('should be able to instantiate a new file as string', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToInstantiateANewFileAsString({ assert }: Context) {
     const mockedFile = new File(Path.storage('files/testing/.js'), 'Content', true)
 
     assert.isDefined(mockedFile.name)
     assert.notEqual(mockedFile.name, '.js')
     assert.notEqual(mockedFile.name, 'testing')
-  })
+  }
 
-  test('should be able to create files with mocked values', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToCreateFilesWithMockedValues({ assert }: Context) {
     const mockedFile = new File(Path.storage('files/testing/.js'), Buffer.from('Content'), true)
 
     assert.isDefined(mockedFile.name)
     assert.notEqual(mockedFile.name, '.js')
     assert.notEqual(mockedFile.name, 'testing')
-  })
+  }
 
-  test('should throw an error when trying to create an instance of a file that doesnt exist', async ({ assert }) => {
+  @Test()
+  public async shouldThrowAnErrorWhenTryingToCreateAnInstanceOfAFileThatDoesntExist({ assert }: Context) {
     const useCase = () => new File(Path.pwd('not-found.txt'))
 
     assert.throws(useCase, NotFoundFileException)
-  })
+  }
 
-  test('should be able to generate instance of files using relative paths', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToGenerateInstanceOfFilesUsingRelativePaths({ assert }: Context) {
     const relativePathFile = new File('../../package.json')
 
     assert.isTrue(relativePathFile.fileExists)
     assert.equal(relativePathFile.base, 'package.json')
-  })
+  }
 
-  test('should be able to generate instance of files that has dots in the path and the extension should be the last', async ({
-    assert,
-  }) => {
+  @Test()
+  public async shouldBeAbleToGenerateInstanceOfFilesThatHasDotsInThePath({ assert }: Context) {
     const file = new File(Path.stubs('controllers/app.controller.ts'))
 
     assert.isTrue(file.fileExists)
     assert.equal(file.extension, '.ts')
     assert.equal(file.name, 'app.controller')
     assert.equal(file.base, 'app.controller.ts')
-  })
+  }
 
-  test('should be able to generate instance of files with .js.map extension and the extension should be .js.map', async ({
-    assert,
-  }) => {
+  @Test()
+  public async shouldBeAbleToGenerateInstanceOfFilesWithJsMapExtension({ assert }: Context) {
     const file = new File(Path.stubs('extensions/file.js.map'))
 
     assert.isTrue(file.fileExists)
     assert.equal(file.name, 'file')
     assert.equal(file.base, 'file.js.map')
     assert.equal(file.extension, '.js.map')
-  })
+  }
 
-  test('should be able to generate instance of files with .d.ts extension and the extension should be .d.ts', async ({
-    assert,
-  }) => {
+  @Test()
+  public async shouldBeAbleToGenerateInstanceOfFilesWithDTsExtension({ assert }: Context) {
     const file = new File(Path.stubs('extensions/file.d.ts'))
 
     assert.isTrue(file.fileExists)
     assert.equal(file.name, 'file')
     assert.equal(file.base, 'file.d.ts')
     assert.equal(file.extension, '.d.ts')
-  })
+  }
 
-  test('should generate an instance of a file, it existing or not', async ({ assert }) => {
-    assert.equal(bigFile.path, bigFilePath)
-    assert.equal(bigFile.mime, 'text/plain')
-    assert.equal(bigFile.originalPath, bigFilePath)
-    assert.isTrue(bigFile.originalFileExists)
-    assert.equal(bigFile.dir, bigFilePath.replace(`${sep}file.txt`, ''))
+  @Test()
+  public async shouldGenerateAnInstanceOfAFileItExistingOrNot({ assert }: Context) {
+    assert.equal(this.bigFile.path, this.bigFilePath)
+    assert.equal(this.bigFile.mime, 'text/plain')
+    assert.equal(this.bigFile.originalPath, this.bigFilePath)
+    assert.isTrue(this.bigFile.originalFileExists)
+    assert.equal(this.bigFile.dir, this.bigFilePath.replace(`${sep}file.txt`, ''))
 
-    assert.isDefined(nonexistentFile.base)
-    assert.isDefined(nonexistentFile.path)
-    assert.equal(nonexistentFile.mime, 'text/plain')
-    assert.isFalse(nonexistentFile.originalFileExists)
-    assert.equal(nonexistentFile.originalPath, nonexistentFilePath)
-    assert.equal(nonexistentFile.originalBase, 'non-existent.txt')
-  })
+    assert.isDefined(this.nonexistentFile.base)
+    assert.isDefined(this.nonexistentFile.path)
+    assert.equal(this.nonexistentFile.mime, 'text/plain')
+    assert.isFalse(this.nonexistentFile.originalFileExists)
+    assert.equal(this.nonexistentFile.originalPath, this.nonexistentFilePath)
+    assert.equal(this.nonexistentFile.originalBase, 'non-existent.txt')
+  }
 
-  test('should only load the bigFile because it already exists', async ({ assert }) => {
-    assert.isUndefined(bigFile.content)
-    assert.isTrue(bigFile.fileExists)
+  @Test()
+  public async shouldOnlyLoadTheBigFileBecauseItAlreadyExists({ assert }: Context) {
+    assert.isUndefined(this.bigFile.content)
+    assert.isTrue(this.bigFile.fileExists)
 
     // Load the file because it already exists.
-    bigFile.loadSync({ withContent: true })
+    this.bigFile.loadSync({ withContent: true })
 
-    assert.isDefined(bigFile.content)
-    assert.isTrue(bigFile.originalFileExists)
-    assert.isTrue(bigFile.fileSize.includes('MB'))
-    assert.isTrue(await File.exists(bigFile.path))
-  })
+    assert.isDefined(this.bigFile.content)
+    assert.isTrue(this.bigFile.originalFileExists)
+    assert.isTrue(this.bigFile.fileSize.includes('MB'))
+    assert.isTrue(await File.exists(this.bigFile.path))
+  }
 
-  test('should create the nonexistentFile because it doesnt exists', async ({ assert }) => {
-    assert.isDefined(nonexistentFile.content)
-    assert.isFalse(nonexistentFile.fileExists)
+  @Test()
+  public async shouldCreateTheNonExistentFileBecauseItDoesntExists({ assert }: Context) {
+    assert.isDefined(this.nonexistentFile.content)
+    assert.isFalse(this.nonexistentFile.fileExists)
 
     // Create the file because it doesn't exist.
-    await nonexistentFile.load({ withContent: true })
+    await this.nonexistentFile.load({ withContent: true })
 
-    assert.isDefined(nonexistentFile.content)
-    assert.isTrue(nonexistentFile.fileExists)
-    assert.isFalse(nonexistentFile.originalFileExists)
-    assert.isTrue(nonexistentFile.fileSize.includes('B'))
-    assert.isTrue(await File.exists(nonexistentFile.path))
-  })
+    assert.isDefined(this.nonexistentFile.content)
+    assert.isTrue(this.nonexistentFile.fileExists)
+    assert.isFalse(this.nonexistentFile.originalFileExists)
+    assert.isTrue(this.nonexistentFile.fileSize.includes('B'))
+    assert.isTrue(await File.exists(this.nonexistentFile.path))
+  }
 
-  test('should be able to get the file information in JSON Format', async ({ assert }) => {
-    assert.equal(bigFile.toJSON().name, bigFile.name)
-    assert.equal(nonexistentFile.toJSON().name, nonexistentFile.name)
-  })
+  @Test()
+  public async shouldBeAbleToGeTheFileInformationInJsonFormat({ assert }: Context) {
+    assert.equal(this.bigFile.toJSON().name, this.bigFile.name)
+    assert.equal(this.nonexistentFile.toJSON().name, this.nonexistentFile.name)
+  }
 
-  test('should be able to remove files', async ({ assert }) => {
-    await bigFile.remove()
+  @Test()
+  public async shouldBeAbleToRemoveFiles({ assert }: Context) {
+    await this.bigFile.remove()
 
-    assert.isFalse(await File.exists(bigFile.path))
-  })
+    assert.isFalse(await File.exists(this.bigFile.path))
+  }
 
-  test('should throw an not found exception when trying to remove bigFile', async ({ assert }) => {
-    await bigFile.remove()
+  @Test()
+  public async shouldThrowAnNotFoundExceptionWhenTryingToRemoveBigFile({ assert }: Context) {
+    await this.bigFile.remove()
 
-    const useCase = async () => await bigFile.remove()
+    const useCase = async () => await this.bigFile.remove()
 
     await assert.rejects(useCase, NotFoundFileException)
-  })
+  }
 
-  test('should throw an not found exception when trying to remove nonExistentFile', async ({ assert }) => {
-    const useCase = () => nonexistentFile.removeSync()
+  @Test()
+  public async shouldThrowANotFoundExceptionWhenTryingToRemoveNonExistentFile({ assert }: Context) {
+    const useCase = () => this.nonexistentFile.removeSync()
 
     assert.throws(useCase, NotFoundFileException)
-  })
+  }
 
-  test('should be able to make a copy of the file', async ({ assert }) => {
-    const copyOfBigFile = await bigFile.copy(Path.storage('files/testing/copy-big-file.txt'), {
+  @Test()
+  public async shouldBeAbleToMakeACopyOfTheFile({ assert }: Context) {
+    const copyOfBigFile = await this.bigFile.copy(Path.storage('files/testing/copy-big-file.txt'), {
       withContent: false,
     })
 
-    assert.isDefined(await File.exists(bigFile.path))
+    assert.isDefined(await File.exists(this.bigFile.path))
     assert.isDefined(await File.exists(copyOfBigFile.path))
     assert.isUndefined(copyOfBigFile.content)
     assert.isTrue(copyOfBigFile.isCopy)
 
-    const copyOfNoExistFile = nonexistentFile.copySync(Path.storage('testing/copy-non-existent-file.txt'))
+    const copyOfNoExistFile = this.nonexistentFile.copySync(Path.storage('testing/copy-non-existent-file.txt'))
 
-    assert.isDefined(await File.exists(nonexistentFile.path))
+    assert.isDefined(await File.exists(this.nonexistentFile.path))
     assert.isDefined(await File.exists(copyOfNoExistFile.path))
     assert.isDefined(copyOfNoExistFile.content)
     assert.isTrue(copyOfNoExistFile.isCopy)
-  })
+  }
 
-  test('should be able to move the file', async ({ assert }) => {
-    const moveOfBigFile = await bigFile.move(Path.storage('testing/move-big-file.txt'), {
+  @Test()
+  public async shouldBeAbleToMoveTheFile({ assert }: Context) {
+    const moveOfBigFile = await this.bigFile.move(Path.storage('testing/move-big-file.txt'), {
       withContent: false,
     })
 
-    assert.isFalse(await File.exists(bigFile.path))
+    assert.isFalse(await File.exists(this.bigFile.path))
     assert.isDefined(await File.exists(moveOfBigFile.path))
     assert.isUndefined(moveOfBigFile.content)
 
-    const moveOfNoExistFile = nonexistentFile.moveSync(Path.storage('testing/move-non-existent-file.txt'))
+    const moveOfNoExistFile = this.nonexistentFile.moveSync(Path.storage('testing/move-non-existent-file.txt'))
 
-    assert.isFalse(await File.exists(nonexistentFile.path))
+    assert.isFalse(await File.exists(this.nonexistentFile.path))
     assert.isTrue(await File.exists(moveOfNoExistFile.path))
     assert.isDefined(moveOfNoExistFile.content)
-  })
+  }
 
-  test('should be able to append data to the file', async ({ assert }) => {
-    await bigFile.append('Hello World!')
-    nonexistentFile.appendSync('Hello World!')
+  @Test()
+  public async shouldBeAbleToAppendDataToTheFile({ assert }: Context) {
+    await this.bigFile.append('Hello World!')
+    this.nonexistentFile.appendSync('Hello World!')
 
-    const bigFileContent = await bigFile.getContent()
-    const nonexistentFileContent = nonexistentFile.getContentSync()
+    const bigFileContent = await this.bigFile.getContent()
+    const nonexistentFileContent = this.nonexistentFile.getContentSync()
 
     assert.isTrue(bigFileContent.toString().endsWith('Hello World!'))
     assert.isTrue(nonexistentFileContent.toString().endsWith('Hello World!'))
-  })
+  }
 
-  test('should be able to prepend data to the file', async ({ assert }) => {
-    await bigFile.prepend('Hello World!')
-    nonexistentFile.prependSync('Hello World!')
+  @Test()
+  public async shouldBeAbleToPrependDataToTheFile({ assert }: Context) {
+    await this.bigFile.prepend('Hello World!')
+    this.nonexistentFile.prependSync('Hello World!')
 
-    const bigFileContent = await bigFile.getContent()
-    const nonexistentFileContent = nonexistentFile.getContentSync()
+    const bigFileContent = await this.bigFile.getContent()
+    const nonexistentFileContent = this.nonexistentFile.getContentSync()
 
     assert.isTrue(bigFileContent.toString().startsWith('Hello World!'))
     assert.isTrue(nonexistentFileContent.toString().startsWith('Hello World!'))
-  })
+  }
 
-  test('should be able to get the file content separately', async ({ assert }) => {
-    const bigFileContent = await bigFile.getContent()
-    const nonexistentFileContent = nonexistentFile.getContentSync({ saveContent: true })
+  @Test()
+  public async shouldBeAbleToGetTheFileContentSeparately({ assert }: Context) {
+    const bigFileContent = await this.bigFile.getContent()
+    const nonexistentFileContent = this.nonexistentFile.getContentSync({ saveContent: true })
 
-    nonexistentFile.content = null
-    await nonexistentFile.getContent({ saveContent: true })
-    await nonexistentFile.getContent({ saveContent: true })
+    this.nonexistentFile.content = null
+    await this.nonexistentFile.getContent({ saveContent: true })
+    await this.nonexistentFile.getContent({ saveContent: true })
 
     assert.instanceOf(bigFileContent, Buffer)
     assert.instanceOf(nonexistentFileContent, Buffer)
-  })
+  }
 
-  test('should be able to set the file content', async ({ assert }) => {
-    await bigFile.setContent('hello', { withContent: true })
+  @Test()
+  public async shouldBeAbleToSetTheFileContent({ assert }: Context) {
+    await this.bigFile.setContent('hello', { withContent: true })
 
-    assert.equal(bigFile.content.toString(), 'hello')
-  })
+    assert.equal(this.bigFile.content.toString(), 'hello')
+  }
 
-  test('should be able to set the file content sync', async ({ assert }) => {
-    bigFile.setContentSync('helloSync', { withContent: true })
+  @Test()
+  public async shouldBeAbleToSetTheFileContentSync({ assert }: Context) {
+    this.bigFile.setContentSync('helloSync', { withContent: true })
 
-    assert.equal(bigFile.content.toString(), 'helloSync')
-  })
+    assert.equal(this.bigFile.content.toString(), 'helloSync')
+  }
 
-  test('should be able to set the file content without adding in the instance', async ({ assert }) => {
-    await bigFile.setContent('hello')
+  @Test()
+  public async shouldBeAbleToSetTheFileContentWithoutAddingInTheInstance({ assert }: Context) {
+    await this.bigFile.setContent('hello')
 
-    assert.equal(bigFile.getContentSync().toString(), 'hello')
-  })
+    assert.equal(this.bigFile.getContentSync().toString(), 'hello')
+  }
 
-  test('should be able to set the file content without adding in the instance sync', async ({ assert }) => {
-    bigFile.setContentSync('helloSync')
+  @Test()
+  public async shouldBeAbleToSetTheFileContentWithoutAddingInTheInstanceSync({ assert }: Context) {
+    this.bigFile.setContentSync('helloSync')
 
-    assert.equal(bigFile.getContentSync().toString(), 'helloSync')
-  })
+    assert.equal(this.bigFile.getContentSync().toString(), 'helloSync')
+  }
 
-  test('should be able to get the file content as string', async ({ assert }) => {
-    const bigFileContent = await bigFile.setContentSync('hello').getContentAsString()
+  @Test()
+  public async shouldBeAbleToGetTheFileContentAsString({ assert }: Context) {
+    const bigFileContent = await this.bigFile.setContentSync('hello').getContentAsString()
 
     assert.equal(bigFileContent, 'hello')
-  })
+  }
 
-  test('should be able to get the file content as string sync', async ({ assert }) => {
-    const bigFileContent = bigFile.setContentSync('hello').getContentAsStringSync()
+  @Test()
+  public async shouldBeAbleToGetTheFileContentAsStringSync({ assert }: Context) {
+    const bigFileContent = this.bigFile.setContentSync('hello').getContentAsStringSync()
 
     assert.equal(bigFileContent, 'hello')
-  })
+  }
 
-  test('should be able to get the file content as json', async ({ assert }) => {
-    const bigFileContent = await bigFile.setContentSync('{"hello":"world"}').getContentAsJson()
-
-    assert.deepEqual(bigFileContent, { hello: 'world' })
-  })
-
-  test('should be able to get the file content as string json', async ({ assert }) => {
-    const bigFileContent = bigFile.setContentSync('{"hello":"world"}').getContentAsJsonSync()
+  @Test()
+  public async shouldBeAbleToGetTheFileContentAsJson({ assert }: Context) {
+    const bigFileContent = await this.bigFile.setContentSync('{"hello":"world"}').getContentAsJson()
 
     assert.deepEqual(bigFileContent, { hello: 'world' })
-  })
+  }
 
-  test('should return null when the file content is not a valid json', async ({ assert }) => {
-    const bigFileContent = await bigFile.setContentSync('').getContentAsJson()
+  @Test()
+  public async shouldBeAbleToGetTheFileContentAsStringJson({ assert }: Context) {
+    const bigFileContent = this.bigFile.setContentSync('{"hello":"world"}').getContentAsJsonSync()
+
+    assert.deepEqual(bigFileContent, { hello: 'world' })
+  }
+
+  @Test()
+  public async shouldReturnNullWhenTheFileContentIsNotAValidJson({ assert }: Context) {
+    const bigFileContent = await this.bigFile.setContentSync('').getContentAsJson()
 
     assert.isNull(bigFileContent)
-  })
+  }
 
-  test('should return null when the file content is not a valid json sync', async ({ assert }) => {
-    const bigFileContent = bigFile.setContentSync('').getContentAsJsonSync()
+  @Test()
+  public async shouldReturnNullWhenTheFileContentIsNotAValidJsonSync({ assert }: Context) {
+    const bigFileContent = this.bigFile.setContentSync('').getContentAsJsonSync()
 
     assert.isNull(bigFileContent)
-  })
+  }
 
-  test('should be able to import some file that is a valid module', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToImportSomeFileThatIsAValidModule({ assert }: Context) {
     const Folder = await new File(Path.src('Helpers/Folder.ts')).import()
 
     assert.equal(Folder.name, 'Folder')
-  })
+  }
 
-  test('should be able to safe import some file that is a module', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSafeImportSomeFileThatIsAModule({ assert }: Context) {
     const Folder = await new File(Path.src('Helpers/Folder.ts')).safeImport()
 
     assert.equal(Folder.name, 'Folder')
-  })
+  }
 
-  test('should be able to safe import some file that is not a module without errors', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSafeImportSomeFileThatIsNotAModuleWithoutErrors({ assert }: Context) {
     const readme = await new File(Path.pwd('README.md')).safeImport()
 
     assert.isNull(readme)
-  })
+  }
 
-  test('should be able to safe import some file that does not exist without errors', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSafeImportSomeFileThatDoesNotExistWithoutErrors({ assert }: Context) {
     const path = Path.pwd('not-found.js')
     const notFound = await new File(path, '').safeImport()
     await File.safeRemove(path)
 
     assert.isNull(notFound)
-  })
+  }
 
-  test('should be able to safe import some file that does not export anything without errors', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSafeImportSomeFileThatDoesNotExportAnythingWithoutErrors({ assert }: Context) {
     const notFound = await new File(Path.stubs('no-export.ts')).safeImport()
 
     assert.isNull(notFound)
-  })
+  }
 
-  test('should be able to get the file content as object builder instance', async ({ assert }) => {
-    const bigFileContent = await bigFile.setContentSync('{"hello":"world"}').getContentAsBuilder()
-
-    assert.deepEqual(bigFileContent.get(), { hello: 'world' })
-  })
-
-  test('should be able to get the file content as string json', async ({ assert }) => {
-    const bigFileContent = bigFile.setContentSync('{"hello":"world"}').getContentAsBuilderSync()
+  @Test()
+  public async shouldBeAbleToGetTheFileContentAsObjectBuilderInstance({ assert }: Context) {
+    const bigFileContent = await this.bigFile.setContentSync('{"hello":"world"}').getContentAsBuilder()
 
     assert.deepEqual(bigFileContent.get(), { hello: 'world' })
-  })
-})
+  }
+}

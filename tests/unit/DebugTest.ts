@@ -8,11 +8,12 @@
  */
 
 import { Debug } from '#src'
-import { test } from '@japa/runner'
+import { Test } from '@athenna/test'
 
-test.group('DebugTest', () => {
-  test('should be able to create debug logs in any namespace', () => {
+export default class DebugTest {
+  @Test()
+  public async shouldBeAbleToCreateDebugLogsInAnyNamespace() {
     Debug.log('Hello debug API!')
     Debug.log({ hello: 'world' }, 'api:testing')
-  })
-})
+  }
+}
