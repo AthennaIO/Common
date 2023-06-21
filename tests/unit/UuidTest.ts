@@ -9,38 +9,42 @@
 
 import { v4 } from 'uuid'
 import { Uuid } from '#src'
-import { test } from '@japa/runner'
+import { Test, Context } from '@athenna/test'
 import { InvalidUuidException } from '#src/exceptions/InvalidUuidException'
 
-test.group('UuidTest', () => {
-  const uuid = v4()
+export default class UuidTest {
+  private uuid = v4()
 
-  test('should verify if uuid is a valid uuid even if it is prefixed', async ({ assert }) => {
+  @Test()
+  public shouldVerifyIfUuidIsAValidUuidEventIfItIsPrefixed({ assert }: Context) {
     const tokenPrefixed = Uuid.generate('tkn')
 
-    const verify = Uuid.verify(uuid)
+    const verify = Uuid.verify(this.uuid)
     const verifyError = Uuid.verify('falseUuid')
     const verifyPrefixed = Uuid.verify(tokenPrefixed, true)
 
     assert.isTrue(verify)
     assert.isFalse(verifyError)
     assert.isTrue(verifyPrefixed)
-  })
+  }
 
-  test('should get only the token from prefixed uuid', async ({ assert }) => {
+  @Test()
+  public shouldGetOnlyTheTokenFromPrefixedUuid({ assert }: Context) {
     const tokenUuid = Uuid.generate('tkn')
 
     assert.equal(Uuid.getToken(tokenUuid), tokenUuid.replace('tkn::', ''))
-  })
+  }
 
-  test('should get only the prefix from prefixed uuid', async ({ assert }) => {
+  @Test()
+  public shouldGetOnlyThePrefixFromPrefixedUuid({ assert }: Context) {
     const tokenUuid = Uuid.generate('tkn')
 
-    assert.isNull(Uuid.getPrefix(uuid), null)
+    assert.isNull(Uuid.getPrefix(this.uuid), null)
     assert.equal(Uuid.getPrefix(tokenUuid), 'tkn')
-  })
+  }
 
-  test('should inject the prefix in the token', async ({ assert }) => {
+  @Test()
+  public shouldInjectThePrefixInTheToken({ assert }: Context) {
     const tokenUuid = Uuid.generate()
     const injectedPrefix = Uuid.injectPrefix('tkn', tokenUuid)
     const tokenPrefixedChange = Uuid.changePrefix('any', injectedPrefix)
@@ -51,17 +55,18 @@ test.group('UuidTest', () => {
     const useCase = () => Uuid.injectPrefix('tkn', 'not-valid-uuid')
 
     assert.throws(useCase, InvalidUuidException)
-  })
+  }
 
-  test('should change or generate a new token', async ({ assert }) => {
+  @Test()
+  public shouldChangeOrGenerateANewToken({ assert }: Context) {
     const tokenGenerated = Uuid.changeOrGenerate('tkn', undefined)
-    const tokenChanged = Uuid.changeOrGenerate('tkn', `ooo::${uuid}`)
+    const tokenChanged = Uuid.changeOrGenerate('tkn', `ooo::${this.uuid}`)
 
     assert.isDefined(tokenGenerated)
-    assert.equal(tokenChanged, `tkn::${uuid}`)
+    assert.equal(tokenChanged, `tkn::${this.uuid}`)
 
     const useCase = () => Uuid.changePrefix('tkn', 'not-valid-uuid')
 
     assert.throws(useCase, InvalidUuidException)
-  })
-})
+  }
+}
