@@ -8,24 +8,27 @@
  */
 
 import { Route, Uuid } from '#src'
-import { test } from '@japa/runner'
+import { Test, Context } from '@athenna/test'
 import { RouteMatchException } from '#src/exceptions/RouteMatchException'
 
-test.group('RouteTest', () => {
-  test('should get query params in string format from the route', async ({ assert }) => {
+export default class RouteTest {
+  @Test()
+  public async shouldGetQueryParamsInStringFormatFromTheRoute({ assert }: Context) {
     const path = '/users/1/posts?page=1&limit=10&created_at=1995-12-17T03:24:00'
 
     assert.deepEqual(Route.getQueryString(path), '?page=1&limit=10&created_at=1995-12-17T03:24:00')
-  })
+  }
 
-  test('should remove all query params from the route', async ({ assert }) => {
+  @Test()
+  public async shouldRemoveAllQueryParamsFromTheRoute({ assert }: Context) {
     const path = '/users/1/posts?page=1&limit=10&created_at=1995-12-17T03:24:00'
 
     assert.deepEqual(Route.removeQueryParams(path), '/users/1/posts')
     assert.deepEqual(Route.removeQueryParams(Route.removeQueryParams(path)), '/users/1/posts')
-  })
+  }
 
-  test('should get query params value from any route', async ({ assert }) => {
+  @Test()
+  public async shouldGetQueryParamsValueFromAnyRoute({ assert }: Context) {
     const path = '/users/1/posts?page=1&limit=10&created_at=1995-12-17T03:24:00'
 
     assert.deepEqual(Route.getQueryParamsValue(path), {
@@ -33,22 +36,25 @@ test.group('RouteTest', () => {
       limit: '10',
       created_at: '1995-12-17T03:24:00',
     })
-  })
+  }
 
-  test('should return an empty object/array when route doesnt have query params', async ({ assert }) => {
+  @Test()
+  public async shouldReturnAnEmptyObjectAndArrayWhenRouteDoesntHaveQueryParams({ assert }: Context) {
     const path = '/users/1/posts'
 
     assert.deepEqual(Route.getQueryParamsName(path), [])
     assert.deepEqual(Route.getQueryParamsValue(path), {})
-  })
+  }
 
-  test('should get query params names from any route', async ({ assert }) => {
+  @Test()
+  public async shouldGetQueryParamsNamesFromAnyRoute({ assert }: Context) {
     const path = '/users/1/posts?page=1&limit=10&created_at=1995-12-17T03:24:00'
 
     assert.deepEqual(Route.getQueryParamsName(path), ['page', 'limit', 'created_at'])
-  })
+  }
 
-  test('should get params value from any route', async ({ assert }) => {
+  @Test()
+  public async shouldGetParamsValueFromAnyRoute({ assert }: Context) {
     const pathWithParams = '/users/:id/posts/:post_id?page=1&limit=10'
     const pathWithValues = '/users/1/posts/2?page=1&limit=10'
 
@@ -56,24 +62,27 @@ test.group('RouteTest', () => {
       id: '1',
       post_id: '2',
     })
-  })
+  }
 
-  test('should throw an route match exception when routes are different', async ({ assert }) => {
+  @Test()
+  public async shouldThrowARouteMatchExceptionWhenRoutesAreDifferent({ assert }: Context) {
     const pathWithParams = '/users/:id/posts/:post_id'
     const pathWithValues = '/users/1/posts/2/extra'
 
     const useCase = () => Route.getParamsValue(pathWithParams, pathWithValues)
 
     assert.throws(useCase, RouteMatchException)
-  })
+  }
 
-  test('should get params names from any route', async ({ assert }) => {
+  @Test()
+  public async shouldGetParamsNamesFromAnyRoute({ assert }: Context) {
     const path = '/users/:id/posts/:post_id?page=1&limit=10'
 
     assert.deepEqual(Route.getParamsName(path), ['id', 'post_id'])
-  })
+  }
 
-  test('should create a matcher RegExp to recognize the route', async ({ assert }) => {
+  @Test()
+  public async shouldCreateAMatcherRegExpToRecognizeTheRoute({ assert }: Context) {
     const path = '/users/:id/posts/:post_id?page=1&limit=10'
 
     const pathTest1 = '/users/1/posts/tests'
@@ -96,5 +105,5 @@ test.group('RouteTest', () => {
     assert.isFalse(matcher2.test(pathTest1))
     assert.isFalse(matcher2.test(pathTest2))
     assert.isFalse(matcher2.test(pathTest3))
-  })
-})
+  }
+}
