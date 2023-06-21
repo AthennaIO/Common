@@ -39,11 +39,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Link project to be able to use @athenna/test
+        run: npm link @athenna/common
+
       - name: Run tests
         run: npm run test:coverage
 
       - name: Test code compilation
-        run: sh scripts/build
+        run: npm run build
 
   windows:
     runs-on: windows-latest
@@ -62,8 +65,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Link project to be able to use @athenna/test
+        run: npm link @athenna/common
+
       - name: Run tests
         run: npm run test:coverage
 
       - name: Test code compilation
-        run: sh scripts/build
+        run: npm run build
