@@ -73,6 +73,9 @@ test.group('PathTest', group => {
   test('should get the sub paths of app main path', async ({ assert }) => {
     const mainPath = process.cwd().concat(sep, 'app')
 
+    console.log('MAIN', mainPath)
+    console.log('IMPL', Path.http())
+
     assert.equal(Path.http(), mainPath.concat(sep, 'http'))
     assert.equal(Path.console(), mainPath.concat(sep, 'console'))
     assert.equal(Path.services(), mainPath.concat(sep, 'services'))
