@@ -8,11 +8,12 @@
  */
 
 import { Parser } from '#src'
-import { test } from '@japa/runner'
+import { Test, Context } from '@athenna/test'
 import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
-test.group('ParserTest', () => {
-  test('should parse string to number and string to array', async ({ assert }) => {
+export default class ParserTest {
+  @Test()
+  public async shouldParseStringToNumberAndStringToArray({ assert }: Context) {
     const parsedNumberInt = Parser.stringToNumber('1')
     const parsedNumberFloat = Parser.stringToNumber('100.000,000000')
 
@@ -26,9 +27,10 @@ test.group('ParserTest', () => {
     const useCase = () => Parser.stringToNumber('not-a-number')
 
     assert.throws(useCase, InvalidNumberException)
-  })
+  }
 
-  test('should parse array to string based on options', async ({ assert }) => {
+  @Test()
+  public async shouldParseArrayToStringBasedOnOptions({ assert }: Context) {
     assert.equal(Parser.arrayToString([]), '')
     assert.equal(Parser.arrayToString(['']), '')
     assert.equal(Parser.arrayToString(['1', '2']), '1 and 2')
@@ -47,9 +49,10 @@ test.group('ParserTest', () => {
       }),
       '1-2',
     )
-  })
+  }
 
-  test('should parse json to form data', async ({ assert }) => {
+  @Test()
+  public async shouldParseJsonToFormData({ assert }: Context) {
     const json = {
       name: 'lenon',
       email: 'lenonSec7@gmail.com',
@@ -58,9 +61,10 @@ test.group('ParserTest', () => {
     const formData = Parser.jsonToFormData(json)
 
     assert.equal(formData, 'name=lenon&email=lenonSec7%40gmail.com')
-  })
+  }
 
-  test('should parse form data to json', async ({ assert }) => {
+  @Test()
+  public async shouldParseFormDataToJson({ assert }: Context) {
     const formData = '?name=lenon&email=lenonSec7%40gmail.com'
 
     const json = Parser.formDataToJson(formData)
@@ -69,16 +73,18 @@ test.group('ParserTest', () => {
       name: 'lenon',
       email: 'lenonSec7@gmail.com',
     })
-  })
+  }
 
-  test('should be able to parse a link to urls with <a></a> from html inside strings', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToParseALinkToUrlsWithATagFromHTMLInsideStrings({ assert }: Context) {
     const string =
       'this is a string with one link - https://joao.com and other link https://joaolenon.com and https://lenon.com'
 
     assert.isString(Parser.linkToHref(string))
-  })
+  }
 
-  test('should parse the number to byte format and byte format to number', async ({ assert }) => {
+  @Test()
+  public async shouldParseTheNumberToByteFormatAndByteFormatToNumber({ assert }: Context) {
     // size to byte
     assert.equal(Parser.sizeToByte(1024), '1KB')
     assert.equal(Parser.sizeToByte(1048576), '1MB')
@@ -92,9 +98,10 @@ test.group('ParserTest', () => {
     assert.equal(Parser.byteToSize('1GB'), 1073741824)
     assert.equal(Parser.byteToSize('1TB'), 1099511627776)
     assert.equal(Parser.byteToSize('1PB'), 1125899906842624)
-  })
+  }
 
-  test('should parse the string to ms format and ms format to string', async ({ assert }) => {
+  @Test()
+  public async shouldParseTheStringToMsFormatAndMsFormatToString({ assert }: Context) {
     // time to ms
     assert.equal(Parser.timeToMs('2 days'), 172800000)
     assert.equal(Parser.timeToMs('1d'), 86400000)
@@ -110,9 +117,10 @@ test.group('ParserTest', () => {
     assert.equal(Parser.msToTime(-36000000), '-10h')
     assert.equal(Parser.msToTime(31557600000, true), '365 days')
     assert.equal(Parser.msToTime(-31557600000, true), '-365 days')
-  })
+  }
 
-  test('should parse the status code to reason and reason to status code', async ({ assert }) => {
+  @Test()
+  public async shouldParseTheStatusCodeToReasonAndReasonToStatusCode({ assert }: Context) {
     // status code to reason
     assert.equal(Parser.statusCodeToReason(200), 'OK')
     assert.equal(Parser.statusCodeToReason('201'), 'CREATED')
@@ -124,9 +132,10 @@ test.group('ParserTest', () => {
     assert.equal(Parser.reasonToStatusCode('Created'), 201)
     assert.equal(Parser.reasonToStatusCode('unauthorized'), 401)
     assert.equal(Parser.reasonToStatusCode('INTERNAL_SERVER_ERROR'), 500)
-  })
+  }
 
-  test('should parse the complete database url to object and object to complete database url', async ({ assert }) => {
+  @Test()
+  public async shouldParseTheCompleteDatabaseUrlToObject({ assert }: Context) {
     const url = 'postgresql://postgres:root@127.0.0.1:5432/postgres?paramOne=1&paramTwo=2&paramThree=3'
 
     // database url to connection object
@@ -148,11 +157,10 @@ test.group('ParserTest', () => {
     const connectionUrl = Parser.connectionObjToDbUrl(connectionObject)
 
     assert.equal(connectionUrl, url)
-  })
+  }
 
-  test('should parse the without auth database url to object and object to without auth database url', async ({
-    assert,
-  }) => {
+  @Test()
+  public async shouldParseTheWithoutAuthDatabaseUrlToObject({ assert }: Context) {
     const url = 'postgresql://root:root@127.0.0.1:5432/postgres'
 
     // database url to connection object
@@ -170,11 +178,10 @@ test.group('ParserTest', () => {
     const connectionUrl = Parser.connectionObjToDbUrl(connectionObject)
 
     assert.equal(connectionUrl, url)
-  })
+  }
 
-  test('should parse the without auth and port database url to object and object to without auth and port database url', async ({
-    assert,
-  }) => {
+  @Test()
+  public async shouldParseTheWithoutAuthAndPortDatabaseUrlToObject({ assert }: Context) {
     const url = 'postgresql://127.0.0.1/postgres?options=10&test=10'
 
     // database url to connection object
@@ -195,11 +202,10 @@ test.group('ParserTest', () => {
     const connectionUrl = Parser.connectionObjToDbUrl(connectionObject)
 
     assert.equal(connectionUrl, url)
-  })
+  }
 
-  test('should parse the without auth, port and options database url to object and object to without auth, port and options database url', async ({
-    assert,
-  }) => {
+  @Test()
+  public async shouldParseTheWithoutAuthPortAndOptionsDatabaseUrl({ assert }: Context) {
     const url = 'postgresql://127.0.0.1/postgres'
 
     // database url to connection object
@@ -217,9 +223,10 @@ test.group('ParserTest', () => {
     const connectionUrl = Parser.connectionObjToDbUrl(connectionObject)
 
     assert.equal(connectionUrl, url)
-  })
+  }
 
-  test('should parse the cluster database url to object and object to cluster database url', async ({ assert }) => {
+  @Test()
+  public async shouldParseTheClusterDatabaseUrlToObject({ assert }: Context) {
     const url = 'postgresql://postgres:root@127.0.0.1:5432,127.0.0.1:5433,127.0.0.1:5434/postgres'
 
     // database url to connection object
@@ -237,5 +244,5 @@ test.group('ParserTest', () => {
     const connectionUrl = Parser.connectionObjToDbUrl(connectionObject)
 
     assert.equal(connectionUrl, url)
-  })
-})
+  }
+}
