@@ -8,138 +8,152 @@
  */
 
 import { sep } from 'node:path'
-import { test } from '@japa/runner'
-
 import { Path, File, Folder } from '#src'
+import { Test, Context, AfterEach, BeforeEach } from '@athenna/test'
 import { NotFoundFolderException } from '#src/exceptions/NotFoundFolderException'
 
-test.group('FolderTest', group => {
-  /** @type {Folder} */
-  let bigFolder = null
+export default class FolderTest {
+  public bigFolder: Folder = null
+  public nonexistentFolder: Folder = null
+  public oneMbSize = 1024 * 1024 * 100
 
-  /** @type {Folder} */
-  let nonexistentFolder = null
+  public bigFolderPath = Path.storage('folders/bigFolder')
+  public nonexistentFolderPath = Path.storage('folders/nonExistent')
 
-  // 100MB
-  const size = 1024 * 1024 * 100
-
-  const bigFolderPath = Path.storage('folders/bigFolder')
-  const nonexistentFolderPath = Path.storage('folders/nonExistent')
-
-  group.each.setup(async () => {
+  @BeforeEach()
+  public async beforeEach() {
     await Folder.safeRemove(Path.storage())
 
-    await File.createFileOfSize(bigFolderPath.concat('/file.txt'), size)
+    await File.createFileOfSize(this.bigFolderPath.concat('/file.txt'), this.oneMbSize)
 
-    bigFolder = new Folder(bigFolderPath)
+    this.bigFolder = new Folder(this.bigFolderPath)
 
-    await File.createFileOfSize(bigFolderPath.concat('/hello/file.txt'), size)
-    await File.createFileOfSize(bigFolderPath.concat('/hello/nice/file.txt'), size)
+    await File.createFileOfSize(this.bigFolderPath.concat('/hello/file.txt'), this.oneMbSize)
+    await File.createFileOfSize(this.bigFolderPath.concat('/hello/nice/file.txt'), this.oneMbSize)
 
-    nonexistentFolder = new Folder(nonexistentFolderPath)
-  })
+    this.nonexistentFolder = new Folder(this.nonexistentFolderPath)
+  }
 
-  group.each.teardown(async () => {
+  @AfterEach()
+  public async afterEach() {
     await Folder.safeRemove(Path.storage())
 
-    bigFolder = null
-    nonexistentFolder = null
-  })
+    this.bigFolder = null
+    this.nonexistentFolder = null
+  }
 
-  test('should be able to verify if path is from folder or file', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToVerifyIfPathIsFromFolderOrFile({ assert }: Context) {
     assert.isTrue(await Folder.isFolder('../../tests'))
     assert.isFalse(await Folder.isFolder('../../package.json'))
 
     assert.isTrue(Folder.isFolderSync('../../tests'))
     assert.isFalse(Folder.isFolderSync('../../package.json'))
-  })
+  }
 
-  test('should be able to create folders with mocked values', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToCreateFoldersWithMockedValues({ assert }: Context) {
     const mockedFolder = new Folder(Path.storage('folders/testing'), true)
 
     assert.isDefined(mockedFolder.name)
     assert.notEqual(mockedFolder.name, 'testing')
-  })
+  }
 
-  test('should be able to generate instance of folders using relative paths', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToGenerateInstanceOfFoldersUsingRelativePaths({ assert }: Context) {
     const relativePathFolder = new Folder('../../tests')
 
     assert.isTrue(relativePathFolder.folderExists)
     assert.equal(relativePathFolder.name, 'tests')
-  })
+  }
 
-  test('should generate an instance of a folder, it existing or not', async ({ assert }) => {
-    assert.equal(bigFolder.path, bigFolderPath)
-    assert.equal(bigFolder.originalPath, bigFolderPath)
-    assert.isTrue(bigFolder.originalFolderExists)
-    assert.equal(bigFolder.dir, bigFolderPath.replace(`${sep}bigFolder`, ''))
+  @Test()
+  public async shouldGenerateAnInstanceOfAFolderItExistingOrNot({ assert }: Context) {
+    assert.equal(this.bigFolder.path, this.bigFolderPath)
+    assert.equal(this.bigFolder.originalPath, this.bigFolderPath)
+    assert.isTrue(this.bigFolder.originalFolderExists)
+    assert.equal(this.bigFolder.dir, this.bigFolderPath.replace(`${sep}bigFolder`, ''))
 
-    assert.isDefined(nonexistentFolder.path)
-    assert.isFalse(nonexistentFolder.originalFolderExists)
-    assert.equal(nonexistentFolder.originalPath, nonexistentFolderPath)
-  })
+    assert.isDefined(this.nonexistentFolder.path)
+    assert.isFalse(this.nonexistentFolder.originalFolderExists)
+    assert.equal(this.nonexistentFolder.originalPath, this.nonexistentFolderPath)
+  }
 
-  test('should only load the bigFolder because it already exists', async ({ assert }) => {
-    assert.isUndefined(bigFolder.folderSize)
-    assert.isTrue(bigFolder.folderExists)
+  @Test()
+  public async shouldOnlyLoadTheBigFolderBecauseItAlreadyExists({ assert }: Context) {
+    assert.isUndefined(this.bigFolder.folderSize)
+    assert.isTrue(this.bigFolder.folderExists)
 
     // Load the folder because it already exists.
-    bigFolder.loadSync({ withSub: true, withFileContent: true })
+    this.bigFolder.loadSync({ withSub: true, withContent: true })
 
-    assert.isDefined(bigFolder.folderSize)
-    assert.isTrue(bigFolder.originalFolderExists)
-    assert.isTrue(bigFolder.folderSize.includes('MB'))
-    assert.isTrue(await Folder.exists(bigFolder.path))
-  })
+    assert.isDefined(this.bigFolder.folderSize)
+    assert.isTrue(this.bigFolder.originalFolderExists)
+    assert.isTrue(this.bigFolder.folderSize.includes('MB'))
+    assert.isTrue(await Folder.exists(this.bigFolder.path))
+  }
 
-  test('should create the nonexistentFolder because it doesnt exists', async ({ assert }) => {
-    assert.isUndefined(nonexistentFolder.folderSize)
-    assert.isFalse(nonexistentFolder.folderExists)
+  @Test()
+  public async shouldCreateTheNonExistentFolderBecauseItDoesntExists({ assert }: Context) {
+    assert.isUndefined(this.nonexistentFolder.folderSize)
+    assert.isFalse(this.nonexistentFolder.folderExists)
 
     // Create the folder because it doesn't exist.
-    await nonexistentFolder.load({ withSub: true, withFileContent: true })
+    await this.nonexistentFolder.load({ withSub: true, withContent: true })
 
-    assert.isDefined(nonexistentFolder.folderSize)
-    assert.isTrue(nonexistentFolder.folderExists)
-    assert.isFalse(nonexistentFolder.originalFolderExists)
-    assert.isTrue(nonexistentFolder.folderSize.includes('B'))
-    assert.isTrue(await Folder.exists(nonexistentFolder.path))
-  })
+    assert.isDefined(this.nonexistentFolder.folderSize)
+    assert.isTrue(this.nonexistentFolder.folderExists)
+    assert.isFalse(this.nonexistentFolder.originalFolderExists)
+    assert.isTrue(this.nonexistentFolder.folderSize.includes('B'))
+    assert.isTrue(await Folder.exists(this.nonexistentFolder.path))
+  }
 
-  test('should be able to get the folder information in JSON Format', async ({ assert }) => {
-    bigFolder.loadSync()
+  @Test()
+  public async shouldBeAbleToGetTheFolderInformationInJsonFormat({ assert }: Context) {
+    assert.isUndefined(this.nonexistentFolder.folderSize)
+    assert.isFalse(this.nonexistentFolder.folderExists)
 
-    assert.equal(bigFolder.toJSON().name, bigFolder.name)
-    assert.equal(nonexistentFolder.toJSON().name, nonexistentFolder.name)
-  })
+    // Create the folder because it doesn't exist.
+    await this.nonexistentFolder.load({ withSub: true, withContent: true })
 
-  test('should be able to remove folders', async ({ assert }) => {
-    await bigFolder.remove()
+    assert.isDefined(this.nonexistentFolder.folderSize)
+    assert.isTrue(this.nonexistentFolder.folderExists)
+    assert.isFalse(this.nonexistentFolder.originalFolderExists)
+    assert.isTrue(this.nonexistentFolder.folderSize.includes('B'))
+    assert.isTrue(await Folder.exists(this.nonexistentFolder.path))
+  }
 
-    assert.isFalse(await Folder.exists(bigFolder.path))
-  })
+  @Test()
+  public async shouldBeAbleToRemoveFolders({ assert }: Context) {
+    await this.bigFolder.remove()
 
-  test('should throw an not found exception when trying to remove bigFolder', async ({ assert }) => {
-    await bigFolder.remove()
+    assert.isFalse(await Folder.exists(this.bigFolder.path))
+  }
 
-    const useCase = async () => await bigFolder.remove()
+  @Test()
+  public async shouldThrowANotFoundExceptionWhenTryingToRemoveBigFolder({ assert }: Context) {
+    await this.bigFolder.remove()
+
+    const useCase = async () => await this.bigFolder.remove()
 
     await assert.rejects(useCase, NotFoundFolderException)
-  })
+  }
 
-  test('should throw an not found exception when trying to remove nonExistentFolder', async ({ assert }) => {
-    const useCase = () => nonexistentFolder.removeSync()
+  @Test()
+  public async shouldThrowANotFoundExceptionWhenTryingToRemoveNonExistingFolder({ assert }: Context) {
+    const useCase = () => this.nonexistentFolder.removeSync()
 
     assert.throws(useCase, NotFoundFolderException)
-  })
+  }
 
-  test('should be able to make a copy of the folder', async ({ assert }) => {
-    const copyOfBigFolder = await bigFolder.copy(Path.storage('folders/testing/copy-big-folder'), {
+  @Test()
+  public async shouldBeAbleToMakeACopyOfFolder({ assert }: Context) {
+    const copyOfBigFolder = await this.bigFolder.copy(Path.storage('folders/testing/copy-big-folder'), {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
     })
 
-    bigFolder.removeSync()
+    this.bigFolder.removeSync()
 
     assert.isTrue(await Folder.exists(copyOfBigFolder.path))
 
@@ -152,18 +166,21 @@ test.group('FolderTest', group => {
     assert.isTrue(await File.exists(copyOfBigFolder.folders[0].files[0].path))
     assert.isDefined(copyOfBigFolder.folders[0].files[0].name)
 
-    const copyOfNoExistFolder = await nonexistentFolder.copy(Path.storage('folders/testing/copy-non-existent-folder'))
+    const copyOfNoExistFolder = await this.nonexistentFolder.copy(
+      Path.storage('folders/testing/copy-non-existent-folder'),
+    )
 
     assert.isTrue(await Folder.exists(copyOfNoExistFolder.path))
-  })
+  }
 
-  test('should be able to make a copy in sync mode of the folder', async ({ assert }) => {
-    const copyOfBigFolder = bigFolder.copySync(Path.storage('folders/testing/copy-big-folder'), {
+  @Test()
+  public async shouldBeAbleToMakeACopyInSyncModeOfTheFolder({ assert }: Context) {
+    const copyOfBigFolder = this.bigFolder.copySync(Path.storage('folders/testing/copy-big-folder'), {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
     })
 
-    bigFolder.removeSync()
+    this.bigFolder.removeSync()
 
     assert.isTrue(await Folder.exists(copyOfBigFolder.path))
 
@@ -176,18 +193,21 @@ test.group('FolderTest', group => {
     assert.isTrue(await File.exists(copyOfBigFolder.folders[0].files[0].path))
     assert.isDefined(copyOfBigFolder.folders[0].files[0].name)
 
-    const copyOfNoExistFolder = nonexistentFolder.copySync(Path.storage('folders/testing/copy-non-existent-folder'))
+    const copyOfNoExistFolder = this.nonexistentFolder.copySync(
+      Path.storage('folders/testing/copy-non-existent-folder'),
+    )
 
     assert.isTrue(await Folder.exists(copyOfNoExistFolder.path))
-  })
+  }
 
-  test('should be able to move the folder', async ({ assert }) => {
-    const moveOfBigFolder = await bigFolder.move(Path.storage('folders/testing/move-big-folder'), {
+  @Test()
+  public async shouldBeAbleToMoveTheFolder({ assert }: Context) {
+    const moveOfBigFolder = await this.bigFolder.move(Path.storage('folders/testing/move-big-folder'), {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
     })
 
-    assert.isFalse(await Folder.exists(bigFolder.path))
+    assert.isFalse(await Folder.exists(this.bigFolder.path))
     assert.isTrue(await Folder.exists(moveOfBigFolder.path))
 
     assert.isTrue(await File.exists(moveOfBigFolder.files[0].path))
@@ -199,19 +219,22 @@ test.group('FolderTest', group => {
     assert.isTrue(await File.exists(moveOfBigFolder.folders[0].files[0].path))
     assert.isDefined(moveOfBigFolder.folders[0].files[0].name)
 
-    const moveOfNoExistFolder = await nonexistentFolder.move(Path.storage('folders/testing/move-non-existent-folder'))
+    const moveOfNoExistFolder = await this.nonexistentFolder.move(
+      Path.storage('folders/testing/move-non-existent-folder'),
+    )
 
-    assert.isFalse(await Folder.exists(nonexistentFolder.path))
+    assert.isFalse(await Folder.exists(this.nonexistentFolder.path))
     assert.isTrue(await Folder.exists(moveOfNoExistFolder.path))
-  })
+  }
 
-  test('should be able to move the folder in sync mode', async ({ assert }) => {
-    const moveOfBigFolder = await bigFolder.moveSync(Path.storage('folders/testing/move-big-folder'), {
+  @Test()
+  public async shouldBeAbleToMoveTheFolderInSyncMode({ assert }: Context) {
+    const moveOfBigFolder = await this.bigFolder.moveSync(Path.storage('folders/testing/move-big-folder'), {
       withSub: true,
-      withFileContent: false,
+      withContent: false,
     })
 
-    assert.isFalse(await Folder.exists(bigFolder.path))
+    assert.isFalse(await Folder.exists(this.bigFolder.path))
     assert.isTrue(await Folder.exists(moveOfBigFolder.path))
 
     assert.isTrue(await File.exists(moveOfBigFolder.files[0].path))
@@ -223,14 +246,17 @@ test.group('FolderTest', group => {
     assert.isTrue(await File.exists(moveOfBigFolder.folders[0].files[0].path))
     assert.isDefined(moveOfBigFolder.folders[0].files[0].name)
 
-    const moveOfNoExistFolder = nonexistentFolder.moveSync(Path.storage('folders/testing/move-non-existent-folder'))
+    const moveOfNoExistFolder = this.nonexistentFolder.moveSync(
+      Path.storage('folders/testing/move-non-existent-folder'),
+    )
 
-    assert.isFalse(await Folder.exists(nonexistentFolder.path))
+    assert.isFalse(await Folder.exists(this.nonexistentFolder.path))
     assert.isTrue(await Folder.exists(moveOfNoExistFolder.path))
-  })
+  }
 
-  test('should get all files/folders that match the pattern', async ({ assert }) => {
-    const path = bigFolderPath.concat(sep, 'folder')
+  @Test()
+  public async shouldGetAllFilesAndFoldersThatMatchThePattern({ assert }: Context) {
+    const path = this.bigFolderPath.concat(sep, 'folder')
 
     await File.createFileOfSize(path.concat('/fileOne.ts'), 1024 * 1024)
     await File.createFileOfSize(path.concat('/fileTwo.ts'), 1024 * 1024)
@@ -274,10 +300,11 @@ test.group('FolderTest', group => {
 
     assert.lengthOf(edge, 4)
     edge.forEach(file => assert.equal(file.extension, '.edge'))
-  })
+  }
 
-  test('should be able to get all files/folders without any pattern', async ({ assert }) => {
-    const path = bigFolderPath.concat(sep, 'folder')
+  @Test()
+  public async shouldBeAbleToGetAllFilesAndFoldersWithoutAnyPattern({ assert }: Context) {
+    const path = this.bigFolderPath.concat(sep, 'folder')
 
     await File.createFileOfSize(path.concat('/fileOne.ts'), 1024 * 1024)
     await File.createFileOfSize(path.concat('/fileTwo.ts'), 1024 * 1024)
@@ -307,5 +334,5 @@ test.group('FolderTest', group => {
 
     assert.lengthOf(files, 16)
     assert.lengthOf(folders, 2)
-  })
-})
+  }
+}
