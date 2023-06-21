@@ -8,22 +8,19 @@
  */
 
 import { sep } from 'node:path'
-import { test } from '@japa/runner'
-import { Json } from '#src/index'
-import * as process from 'process'
+import { Path, Json, PathDirs } from '#src'
+import { Test, Context, BeforeEach } from '@athenna/test'
 
-test.group('PathTest', group => {
-  let defaultDirs: any = {}
+export default class PathTest {
+  public defaultPathDirs: PathDirs = Json.copy(Path.dirs)
 
-  group.each.setup(() => {
-    defaultDirs = Json.copy(Path.dirs)
-  })
+  @BeforeEach()
+  public async beforeEach() {
+    Path.dirs = this.defaultPathDirs
+  }
 
-  group.each.teardown(() => {
-    Path.dirs = defaultDirs
-  })
-
-  test('should get the extension js and ts', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheExtensionJsAndTs({ assert }: Context) {
     process.env.IS_TS = 'false'
     assert.equal(Path.ext(), 'js')
 
@@ -33,9 +30,10 @@ test.group('PathTest', group => {
     assert.isTrue(Path.pwd(`artisan.${Path.ext()}`).includes(`${sep}artisan.ts`))
 
     process.env.IS_TS = 'true'
-  })
+  }
 
-  test('should get pwd path', async ({ assert }) => {
+  @Test()
+  public async shouldGetPwdPath({ assert }: Context) {
     const mainPath = process.cwd()
     const srcPath = mainPath.concat(sep, 'src')
     const srcAppPath = srcPath.concat(sep, 'app')
@@ -45,9 +43,10 @@ test.group('PathTest', group => {
     assert.equal(Path.pwd(sep.concat('src', sep)), srcPath)
     assert.equal(Path.pwd(sep.concat(sep, sep, 'src', sep, sep, sep)), srcPath)
     assert.equal(Path.pwd(sep.concat(sep, sep, 'src', sep, sep, sep, 'app', sep, sep, sep)), srcAppPath)
-  })
+  }
 
-  test('should get the main application paths', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheMainApplicationPaths({ assert }: Context) {
     const mainPath = process.cwd()
 
     assert.equal(Path.app(), mainPath.concat(sep, 'app'))
@@ -68,82 +67,90 @@ test.group('PathTest', group => {
     assert.isTrue(Path.this().endsWith('unit'))
     assert.isFalse(Path.this('../../').endsWith('tests'))
     assert.isTrue(Path.this('../../package.json').endsWith('package.json'))
-  })
+  }
 
-  test('should get the sub paths of app main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfAppMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'app')
-
-    console.log('MAIN', mainPath)
-    console.log('IMPL', Path.http())
 
     assert.equal(Path.http(), mainPath.concat(sep, 'http'))
     assert.equal(Path.console(), mainPath.concat(sep, 'console'))
     assert.equal(Path.services(), mainPath.concat(sep, 'services'))
     assert.equal(Path.exceptions(), mainPath.concat(sep, 'exceptions'))
     assert.equal(Path.repositories(), mainPath.concat(sep, 'repositories'))
-  })
+  }
 
-  test('should get the sub paths of http main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfHttpMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'app', sep, 'http')
 
     assert.equal(Path.controllers(), mainPath.concat(sep, 'controllers'))
     assert.equal(Path.middlewares(), mainPath.concat(sep, 'middlewares'))
     assert.equal(Path.interceptors(), mainPath.concat(sep, 'interceptors'))
     assert.equal(Path.terminators(), mainPath.concat(sep, 'terminators'))
-  })
+  }
 
-  test('should get the sub paths of console main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfConsoleMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'app', sep, 'console')
 
     assert.equal(Path.commands(), mainPath.concat(sep, 'commands'))
-  })
+  }
 
-  test('should get the sub paths of database main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfDatabaseMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'database')
 
     assert.equal(Path.seeders(), mainPath.concat(sep, 'seeders'))
     assert.equal(Path.migrations(), mainPath.concat(sep, 'migrations'))
-  })
+  }
 
-  test('should get the .bin folder of node_modules main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheDotBinFolderOfNodeModulesMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'node_modules')
 
     assert.equal(Path.nodeModulesBin(), mainPath.concat(sep, '.bin'))
-  })
+  }
 
-  test('should get the sub paths of public main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfPublicMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'public')
 
     assert.equal(Path.static(), mainPath.concat(sep, 'static'))
     assert.equal(Path.assets(), mainPath.concat(sep, 'assets'))
-  })
+  }
 
-  test('should get the sub paths of tests main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubOPathsOfTestsMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'tests')
 
     assert.equal(Path.stubs(), mainPath.concat(sep, 'stubs'))
-  })
+  }
 
-  test('should get the sub paths of storage main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfStorageMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'storage')
 
     assert.equal(Path.logs(), mainPath.concat(sep, 'logs'))
-  })
+  }
 
-  test('should get the sub paths of resources main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfResourcesMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'resources')
 
     assert.equal(Path.views(), mainPath.concat(sep, 'views'))
     assert.equal(Path.locales(), mainPath.concat(sep, 'locales'))
-  })
+  }
 
-  test('should get the sub paths of providers main path', async ({ assert }) => {
+  @Test()
+  public async shouldGetTheSubPathsOfProvidersMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'providers')
 
     assert.equal(Path.facades(), mainPath.concat(sep, 'facades'))
-  })
+  }
 
-  test('should be able to setup different paths for all methods of Path class', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSetupDifferentPathsForAllMethodsOfPathClass({ assert }: Context) {
     Path.setBin('build/bin')
       .setSrc('build/src')
       .setApp('build/app')
@@ -212,9 +219,10 @@ test.group('PathTest', group => {
     assert.isTrue(Path.logs().endsWith(`build${sep}storage${sep}logs`))
     assert.isTrue(Path.tests().endsWith(`build${sep}tests`))
     assert.isTrue(Path.stubs().endsWith(`build${sep}tests${sep}stubs`))
-  })
+  }
 
-  test('should be able to merge custom directories with defaults', async ({ assert }) => {
+  @Test()
+  public shouldBeAbleToMergeCustomDirectoriesWithDefaults({ assert }: Context) {
     Path.mergeDirs({
       app: 'build/app',
     })
@@ -222,5 +230,5 @@ test.group('PathTest', group => {
     assert.isTrue(Path.bin().endsWith('bin'))
     assert.isTrue(Path.src().endsWith('src'))
     assert.isTrue(Path.app().endsWith('app'))
-  })
-})
+  }
+}

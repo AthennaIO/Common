@@ -24,7 +24,7 @@ export class Path {
     repositories: 'app/repositories',
     console: 'app/console',
     commands: 'app/console/commands',
-    http: 'app/httpp',
+    http: 'app/http',
     controllers: 'app/http/controllers',
     middlewares: 'app/http/middlewares',
     interceptors: 'app/http/interceptors',
