@@ -8,26 +8,30 @@
  */
 
 import { String } from '#src'
-import { test } from '@japa/runner'
+import { Test, Context } from '@athenna/test'
 import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
 
-test.group('StringTest', () => {
-  test('should generate random strings by size', async ({ assert }) => {
+export default class StringTest {
+  @Test()
+  public async shouldGenerateRandomStringsBySize({ assert }: Context) {
     assert.lengthOf(String.generateRandom(10), 10)
     assert.lengthOf(String.generateRandom(20), 20)
-  })
+  }
 
-  test('should generate random colors in hexadecimal format', async ({ assert }) => {
+  @Test()
+  public async shouldGenerateRandomColorsInHexadecimalFormat({ assert }: Context) {
     assert.isTrue(String.generateRandomColor().startsWith('#'))
     assert.isTrue(String.generateRandomColor().startsWith('#'))
     assert.isTrue(String.generateRandomColor().startsWith('#'))
-  })
+  }
 
-  test('should normalize a base64 string value', async ({ assert }) => {
+  @Test()
+  public async shouldNormalizeABase64StringValue({ assert }: Context) {
     assert.equal(String.normalizeBase64('+++///==='), '---___')
-  })
+  }
 
-  test('should change the case of the string', async ({ assert }) => {
+  @Test()
+  public async shouldChangeTheCaseOfTheString({ assert }: Context) {
     const string = 'Hello world' // Sentence case
 
     assert.equal(String.toCamelCase(string), 'helloWorld')
@@ -42,9 +46,10 @@ test.group('StringTest', () => {
     assert.equal(String.toNoCase(string), 'hello world')
     assert.equal(String.toDashCase(string), 'hello-world')
     assert.equal(String.toDashCase(string, true), 'Hello-World')
-  })
+  }
 
-  test('should transform the string to singular, plural and ordinal', async ({ assert }) => {
+  @Test()
+  public async shouldTransformTheStringToSingularPluralAndOrdinal({ assert }: Context) {
     const string = 'Hello world'
 
     assert.equal(String.pluralize(string), 'Hello worlds')
@@ -61,5 +66,5 @@ test.group('StringTest', () => {
     const useCase = () => String.ordinalize(Number.NaN)
 
     assert.throws(useCase, OrdinalNanException)
-  })
-})
+  }
+}
