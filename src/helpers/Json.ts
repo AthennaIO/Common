@@ -340,26 +340,6 @@ export class Json {
   }
 
   /**
-   * Remove all duplicated values from the array.
-   *
-   * @deprecated Use the Collection.removeDuplicated method.
-   */
-  public static removeDuplicated(array: any[]): any[] {
-    return [...new Set(array)]
-  }
-
-  /**
-   * Raffle any value from the array.
-   *
-   * @deprecated Use the Collection.random method.
-   */
-  public static raffle(array: any[]): any {
-    const index = Math.random() * array.length
-
-    return array[Math.floor(index)]
-  }
-
-  /**
    * Get the object properties based on key.
    */
   public static get<T = any>(

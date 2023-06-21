@@ -8,10 +8,11 @@
  */
 
 import { Exec, Json } from '#src'
-import { test } from '@japa/runner'
+import { Test, Context } from '@athenna/test'
 
-test.group('Json Class', () => {
-  test('should return a deep copy from the object', async ({ assert }) => {
+export default class JsonTest {
+  @Test()
+  public async shouldReturnADeepCopyFromObject({ assert }: Context) {
     const object = {
       test: 'hello',
       hello: () => 'hy',
@@ -26,27 +27,31 @@ test.group('Json Class', () => {
     assert.equal(object.hello(), 'hy')
     assert.equal(objectCopy.test, 'hello from copy')
     assert.equal(objectCopy.hello(), 'hy from copy')
-  })
+  }
 
-  test('should return all json found inside of the string', async ({ assert }) => {
+  @Test()
+  public async shouldReturnAllJsonFoundInsideOfTheString({ assert }: Context) {
     const text = 'this is a string with a json inside of it {"text":"hello"} and one more json {"hello":"world"}'
 
     assert.deepEqual(Json.getJson(text), ['{"text":"hello"}', '{"hello":"world"}'])
-  })
+  }
 
-  test('should return null if JSON parse goes wrong', async ({ assert }) => {
+  @Test()
+  public async shouldReturnNullIfJSONParseGoesWrong({ assert }: Context) {
     const text = 'a string that is not a valid JSON'
 
     assert.isNull(Json.parse(text))
-  })
+  }
 
-  test('should return the object when string is a valid JSON', async ({ assert }) => {
+  @Test()
+  public async shouldReturnTheObjectWhenStringIsAValidJSON({ assert }: Context) {
     const text = '{"text":"hello"}'
 
     assert.deepEqual(Json.parse(text), { text: 'hello' })
-  })
+  }
 
-  test('should clean data object removing all keys that are not in key array', async ({ assert }) => {
+  @Test()
+  public async shouldCleanDataObjectRemovingAllKeysThatAreNotInKeyArray({ assert }: Context) {
     const data = {
       hello: 'hello',
       world: 'world',
@@ -54,9 +59,10 @@ test.group('Json Class', () => {
 
     assert.deepEqual(Json.fillable(data, ['world']), { world: 'world' })
     assert.deepEqual(Json.fillable(data, ['world', 'someNullWord']), { world: 'world' })
-  })
+  }
 
-  test('should be able to observe changes of an object', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToObserveChangesOfAnObject({ assert }: Context) {
     const object = {
       joao: 'lenon',
       hello: 'world',
@@ -78,23 +84,10 @@ test.group('Json Class', () => {
     objectProxy.joao = 'oi'
 
     await Exec.sleep(2000)
-  })
+  }
 
-  test('should be able to remove duplicated values from array', async ({ assert }) => {
-    const array = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
-
-    assert.deepEqual(Json.removeDuplicated(array), [1, 2, 3, 4, 5])
-  })
-
-  test('should be able to raffle any value from the array', async ({ assert }) => {
-    const array = [1, 2, 3, 4, 5]
-
-    const raffledValue = Json.raffle(array)
-
-    assert.isDefined(array.find(a => a === raffledValue))
-  })
-
-  test('should be able to get nested properties from object', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToGetNestedPropertiesFromObject({ assert }: Context) {
     const object = {
       hello: {
         world: {
@@ -118,9 +111,10 @@ test.group('Json Class', () => {
     assert.deepEqual(object, fullObject)
     assert.deepEqual(defaultValueInObjectNull, { hello: 'world' })
     assert.deepEqual(falsyDefaultValue, false)
-  })
+  }
 
-  test('should be able to build objects using the ObjectBuilder', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToBuildObjectsUsingTheObjectBuilder({ assert }: Context) {
     const me = Json.builder()
       .set('name', 'João Lenon')
       .set('email', 'lenon@athenna.io')
@@ -169,9 +163,10 @@ test.group('Json Class', () => {
       age: 0,
       createdAt: '2000-12-09T00:00:00.000Z',
     })
-  })
+  }
 
-  test('should be able to build objects and get the values using nested key path', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToBuildObjectAndGetTheValuesUsigNestedKeyPath({ assert }: Context) {
     const builder = Json.builder()
       .set('name', 'João Lenon')
       .set('email', 'lenon@athenna.io')
@@ -193,9 +188,10 @@ test.group('Json Class', () => {
       builder.get('deletedAt.notFound', new Date('2022-12-09').toISOString()),
       new Date('2022-12-09').toISOString(),
     )
-  })
+  }
 
-  test('should be able to build objects and validate the values using nested key path', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToBuildObjectsAndValidateTheValuesUsingNestedKeyPath({ assert }: Context) {
     const builder = Json.builder()
       .set('name', 'João Lenon')
       .set('email', 'lenon@athenna.io')
@@ -223,27 +219,30 @@ test.group('Json Class', () => {
     assert.isFalse(builder.is('details.car.name', ['FAKE1', 'FAKE2', 'FAKE3']))
     assert.isFalse(builder.isNot('details.car.name', ['FAKE1', 'FAKE2', 'BMW E46 M3']))
     assert.isTrue(builder.isNot('details.car.name', ['FAKE1', 'FAKE2', 'FAKE3']))
-  })
+  }
 
-  test('should be able to set not referenced values in ObjectBuilder', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSetNotReferencedValuesInObjectBuilder({ assert }: Context) {
     const user = { name: 'Victor' }
     const builder = Json.builder({ referencedValues: false }).set('user', user)
 
     assert.equal(builder.get('user.name'), 'Victor')
     user.name = 'João'
     assert.equal(builder.get('user.name'), 'Victor')
-  })
+  }
 
-  test('should be able to set referenced values in ObjectBuilder', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSetReferencedValuesInObjectBuilder({ assert }: Context) {
     const user = { name: 'Victor' }
     const builder = Json.builder({ referencedValues: true }).set('user', user)
 
     assert.equal(builder.get('user.name'), 'Victor')
     user.name = 'João'
     assert.equal(builder.get('user.name'), 'João')
-  })
+  }
 
-  test('should be able to set an entire object in set method of ObjectBuilder', async ({ assert }) => {
+  @Test()
+  public async shouldBeAbleToSetAnEntireObjectInSetMethodOfObjectBuilder({ assert }: Context) {
     const me = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 }).get()
 
     assert.deepEqual(me, {
@@ -251,5 +250,5 @@ test.group('Json Class', () => {
       email: 'lenon@athenna.io',
       age: 22,
     })
-  })
-})
+  }
+}
