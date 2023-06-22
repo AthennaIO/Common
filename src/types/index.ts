@@ -16,6 +16,9 @@ export * from '#src/types/json/FileJson'
 export * from '#src/types/json/FolderJson'
 export * from '#src/types/json/ExceptionJson'
 
+export * from '#src/types/pagination/PaginationOptions'
+export * from '#src/types/pagination/PaginatedResponse'
+
 export * from '#src/types/http-client/Body'
 export * from '#src/types/http-client/Query'
 export * from '#src/types/http-client/ReqOptions'

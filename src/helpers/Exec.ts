@@ -7,7 +7,6 @@
  * file that was distributed with this source code.
  */
 
-import type { ExecOptions } from 'node:child_process'
 import { promisify } from 'node:util'
 import { Transform } from 'node:stream'
 import { File } from '#src/helpers/File'
@@ -15,33 +14,12 @@ import { Uuid } from '#src/helpers/Uuid'
 import { Options } from '#src/helpers/Options'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
+import type { ExecOptions } from 'node:child_process'
 import { exec as childProcessExec } from 'node:child_process'
+import type { PaginationOptions, PaginatedResponse } from '#src/types'
 import { NodeCommandException } from '#src/exceptions/NodeCommandException'
 
 const exec = promisify(childProcessExec)
-
-export interface PaginationOptions {
-  page?: number
-  limit?: number
-  resourceUrl?: string
-}
-
-export interface PaginatedResponse<T = any> {
-  data?: T[]
-  meta?: {
-    totalItems: number
-    itemsPerPage: number
-    totalPages: number
-    currentPage: number
-    itemCount: number
-  }
-  links?: {
-    next: string
-    previous: string
-    last: string
-    first: string
-  }
-}
 
 export class Exec {
   /**
