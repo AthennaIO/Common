@@ -9,6 +9,8 @@
 
 import minimatch from 'minimatch'
 
+import type { FolderJson } from '#src/types'
+
 import {
   existsSync,
   mkdirSync,
@@ -27,25 +29,6 @@ import { Parser } from '#src/helpers/Parser'
 import { Options } from '#src/helpers/Options'
 import { isAbsolute, join, parse, resolve, sep } from 'node:path'
 import { NotFoundFolderException } from '#src/exceptions/NotFoundFolderException'
-
-export interface FolderJSON {
-  dir: string
-  name: string
-  base: string
-  path: string
-  files: File[]
-  // eslint-disable-next-line no-use-before-define
-  folders: Folder[]
-  createdAt: Date
-  accessedAt: Date
-  modifiedAt: Date
-  folderSize: string
-  isCopy: boolean
-  originalDir: string
-  originalName: string
-  originalPath: string
-  originalFolderExists: boolean
-}
 
 export class Folder {
   /**
@@ -308,7 +291,7 @@ export class Folder {
   /**
    * Returns the file as a JSON object.
    */
-  public toJSON(): FolderJSON {
+  public toJSON(): FolderJson {
     return Json.copy({
       dir: this.dir,
       name: this.name,

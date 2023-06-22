@@ -8,7 +8,8 @@
  */
 
 import { Number } from '#src'
-import { Test, Context } from '@athenna/test'
+import { Test } from '@athenna/test'
+import type { Context } from '@athenna/test/types'
 
 export default class NumberTest {
   @Test()

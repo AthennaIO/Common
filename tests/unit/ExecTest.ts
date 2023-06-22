@@ -7,7 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { Test, Context, BeforeEach } from '@athenna/test'
+import { Test, BeforeEach } from '@athenna/test'
+import type { Context } from '@athenna/test/types'
 import { Clean, Exec, File, Folder, Module, Path } from '#src'
 import { NodeCommandException } from '#src/exceptions/NodeCommandException'
 

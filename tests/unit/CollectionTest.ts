@@ -8,7 +8,8 @@
  */
 
 import { Collection } from '#src'
-import { Context, Test } from '@athenna/test'
+import { Test } from '@athenna/test'
+import type { Context } from '@athenna/test/types'
 
 export default class CollectionTest {
   @Test()

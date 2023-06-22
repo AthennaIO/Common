@@ -8,7 +8,8 @@
  */
 
 import { Exec, Json } from '#src'
-import { Test, Context } from '@athenna/test'
+import { Test } from '@athenna/test'
+import type { Context } from '@athenna/test/types'
 
 export default class JsonTest {
   @Test()

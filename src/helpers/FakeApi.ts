@@ -9,12 +9,13 @@
 
 import fastifyFormbody from '@fastify/formbody'
 
+import type { FastifyInstance, HTTPMethods, RouteOptions } from 'fastify'
+import { fastify } from 'fastify'
 import { File } from '#src/helpers/File'
 import { Path } from '#src/helpers/Path'
 import { Json } from '#src/helpers/Json'
 import { Debug } from '#src/helpers/Debug'
 import { Folder } from '#src/helpers/Folder'
-import { fastify, FastifyInstance, HTTPMethods, RouteOptions } from 'fastify'
 
 export class FakeApi {
   /**

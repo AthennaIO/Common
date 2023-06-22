@@ -7,10 +7,11 @@
  * file that was distributed with this source code.
  */
 
-import type { RequestError, RetryObject } from 'got'
-
-export type RetryStrategyCallback = (
-  error: RequestError,
-  execCount: number,
-  retryObject: RetryObject,
-) => number | Promise<number>
+export interface ExceptionJson {
+  code?: string
+  name?: string
+  status?: number
+  message?: string
+  help?: any
+  stack?: string
+}

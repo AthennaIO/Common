@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import type { ExecOptions } from 'node:child_process'
 import { promisify } from 'node:util'
 import { Transform } from 'node:stream'
 import { File } from '#src/helpers/File'
@@ -14,7 +15,7 @@ import { Uuid } from '#src/helpers/Uuid'
 import { Options } from '#src/helpers/Options'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
-import { exec as childProcessExec, ExecOptions } from 'node:child_process'
+import { exec as childProcessExec } from 'node:child_process'
 import { NodeCommandException } from '#src/exceptions/NodeCommandException'
 
 const exec = promisify(childProcessExec)

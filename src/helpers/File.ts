@@ -9,6 +9,9 @@
 
 import prependFile from 'prepend-file'
 
+import type { StreamOptions } from 'node:stream'
+import type { FileJson, ObjectBuilderOptions } from '#src/types'
+
 import {
   appendFileSync,
   createReadStream,
@@ -30,33 +33,12 @@ import { pathToFileURL } from 'node:url'
 import { Path } from '#src/helpers/Path'
 import { randomBytes } from 'node:crypto'
 import { Debug } from '#src/helpers/Debug'
-import { StreamOptions } from 'node:stream'
 import { Parser } from '#src/helpers/Parser'
 import { Module } from '#src/helpers/Module'
 import { Options } from '#src/helpers/Options'
 import { isAbsolute, parse, sep } from 'node:path'
+import { Json, ObjectBuilder } from '#src/helpers/Json'
 import { NotFoundFileException } from '#src/exceptions/NotFoundFileException'
-import { Json, ObjectBuilder, ObjectBuilderOptions } from '#src/helpers/Json'
-
-export interface FileJSON {
-  dir: string
-  name: string
-  base: string
-  path: string
-  mime: string
-  createdAt: Date
-  accessedAt: Date
-  modifiedAt: Date
-  fileSize: string
-  extension: string
-  isCopy: boolean
-  originalDir: string
-  originalName: string
-  originalPath: string
-  originalHref: string
-  originalFileExists: boolean
-  content: string
-}
 
 export class File {
   /**
@@ -296,7 +278,7 @@ export class File {
   /**
    * Returns the file as a JSON object.
    */
-  public toJSON(): FileJSON {
+  public toJSON(): FileJson {
     return Json.copy({
       dir: this.dir,
       name: this.name,

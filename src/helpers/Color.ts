@@ -7,9 +7,10 @@
  * file that was distributed with this source code.
  */
 
+import type { ChalkInstance } from 'chalk'
+import { Chalk } from 'chalk'
 import { format } from 'node:util'
 import { Is } from '#src/helpers/Is'
-import { Chalk, ChalkInstance } from 'chalk'
 
 export class Color {
   /**

@@ -8,8 +8,10 @@
  */
 
 import { sep } from 'node:path'
-import { Path, Json, PathDirs } from '#src'
-import { Test, Context, BeforeEach } from '@athenna/test'
+import { Path, Json } from '#src'
+import type { PathDirs } from '#src/types'
+import { Test, BeforeEach } from '@athenna/test'
+import type { Context } from '@athenna/test/types'
 
 export default class PathTest {
   public defaultPathDirs: PathDirs = Json.copy(Path.dirs)

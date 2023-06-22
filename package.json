@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -35,6 +35,7 @@
   "types": "./src/index.d.ts",
   "exports": {
     ".": "./src/index.js",
+    "./types": "./src/types/index.js",
     "./package.json": "./package.json"
   },
   "imports": {
@@ -42,6 +43,7 @@
     "#bin": "./bin/index.js",
     "#src/*": "./src/*.js",
     "#src": "./src/index.js",
+    "#src/types": "./src/types/index.js",
     "#tests/*": "./tests/*.js",
     "#tests": "./tests/index.js"
   },
@@ -71,7 +73,7 @@
     "youch-terminal": "^2.2.0"
   },
   "devDependencies": {
-    "@athenna/test": "^4.0.0",
+    "@athenna/test": "^4.1.0",
     "@types/bytes": "^3.1.1",
     "@types/callsite": "^1.0.31",
     "@types/debug": "^4.1.7",

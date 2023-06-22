@@ -7,6 +7,6 @@
  * file that was distributed with this source code.
  */
 
-import { SearchParameters } from 'got'
+import type { SearchParameters } from 'got'
 
 export type Query = string | SearchParameters | URLSearchParams

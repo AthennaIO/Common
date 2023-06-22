@@ -12,17 +12,9 @@ import * as changeCase from 'change-case'
 import Youch from 'youch'
 import YouchTerminal from 'youch-terminal'
 
+import type { ExceptionJson } from '#src/types'
 import { Color } from '#src/helpers/Color'
 import { Options } from '#src/helpers/Options'
-
-export interface ExceptionJSON {
-  code?: string
-  name?: string
-  status?: number
-  message?: string
-  help?: any
-  stack?: string
-}
 
 export class Exception extends Error {
   public code?: string
@@ -33,7 +25,7 @@ export class Exception extends Error {
   /**
    * Creates a new instance of Exception.
    */
-  public constructor(options?: ExceptionJSON) {
+  public constructor(options?: ExceptionJson) {
     super(options?.message || '')
 
     options = Options.create(options, {
@@ -64,8 +56,8 @@ export class Exception extends Error {
   /**
    * Transform the exception to a valid JSON Object.
    */
-  public toJSON(stack = true): ExceptionJSON {
-    const json: ExceptionJSON = {}
+  public toJSON(stack = true): ExceptionJson {
+    const json: ExceptionJson = {}
 
     json.code = this.code
     json.name = this.name

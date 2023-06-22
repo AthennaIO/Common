@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { Except } from '#src/types/Except'
-import { OptionsInit, ResponseType } from 'got'
+import type { Except } from '#src/types'
+import type { OptionsInit, ResponseType } from 'got'
 
 export type ReqOptions = Except<OptionsInit, 'responseType'> &
   Partial<{

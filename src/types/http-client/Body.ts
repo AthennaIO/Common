@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { FormDataLike } from 'form-data-encoder'
+import type { FormDataLike } from 'form-data-encoder'
 
 export type Body =
   | any
