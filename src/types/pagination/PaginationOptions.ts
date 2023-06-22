@@ -7,10 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import type { RequestError, RetryObject } from 'got'
-
-export type RetryStrategyCallback = (
-  error: RequestError,
-  execCount: number,
-  retryObject: RetryObject,
-) => number | Promise<number>
+export interface PaginationOptions {
+  page?: number
+  limit?: number
+  resourceUrl?: string
+}

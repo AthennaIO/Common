@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Except } from '#src/types/Except'
+import type { Except } from '#src/types'
 
 /**
  * Merge two object types.

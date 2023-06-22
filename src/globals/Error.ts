@@ -9,7 +9,8 @@
 
 import * as changeCase from 'change-case'
 
-import { Exception, ExceptionJSON } from '#src/helpers/Exception'
+import type { ExceptionJson } from '#src/types'
+import { Exception } from '#src/helpers/Exception'
 
 export {}
 
@@ -19,12 +20,12 @@ declare global {
      * Transform your error to an instance of
      * the Athenna exception.
      */
-    toAthennaException(options?: ExceptionJSON): Exception
+    toAthennaException(options?: ExceptionJson): Exception
   }
 }
 
 // eslint-disable-next-line no-extend-native
-Error.prototype.toAthennaException = function (options: ExceptionJSON = {}) {
+Error.prototype.toAthennaException = function (options: ExceptionJson = {}) {
   options.name = options.name || this.name
   options.stack = options.stack || this.stack
   options.message = options.message || this.message

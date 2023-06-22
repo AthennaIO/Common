@@ -7,8 +7,16 @@
  * file that was distributed with this source code.
  */
 
+import got from 'got'
 import CacheableLookup from 'cacheable-lookup'
-import got, {
+
+import { Is } from '#src/helpers/Is'
+import { Json } from '#src/helpers/Json'
+import type { Store } from 'keyv'
+import type { ClientHttp2Session } from 'http2'
+import type { Body, Query, ReqOptions, RetryStrategyCallback } from '#src/types'
+
+import type {
   Hooks,
   Delays,
   Agents,
@@ -32,15 +40,6 @@ import got, {
   StringifyJsonFunction,
   CreateConnectionFunction,
 } from 'got'
-
-import { Store } from 'keyv'
-import { Is } from '#src/helpers/Is'
-import { Json } from '#src/helpers/Json'
-import { ClientHttp2Session } from 'http2'
-import { Body } from '#src/types/http-client/Body'
-import { Query } from '#src/types/http-client/Query'
-import { ReqOptions } from '#src/types/http-client/ReqOptions'
-import { RetryStrategyCallback } from '#src/types/http-client/RetryStrategyCallback'
 
 export class HttpClientBuilder {
   /**
