@@ -105,9 +105,7 @@ export class FakeApi {
     const object = Json.parse(file.content.toString())
 
     if (!object) {
-      debug(
-        `The file ${file.path} is not a valid JSON file and is being ignored.`,
-      )
+      debug('file %s is not a valid JSON file and is being ignored.', file.path)
 
       return
     }
@@ -228,7 +226,7 @@ export class FakeApiBuilder {
     }
 
     if (app.hasRoute({ method, url })) {
-      debug(`Route ${method}::${url} already registered.`, 'api:testing')
+      debug('route %s already registered.', `${method}::${url}`)
 
       return
     }

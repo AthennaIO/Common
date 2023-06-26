@@ -341,7 +341,9 @@ export class File {
     // 200MB
     if (fileStat.size >= 2e8) {
       debug(
-        `File ${this.base} with ${this.fileSize} has been loaded in heap memory.`,
+        `file %s with %s has been loaded in heap memory.`,
+        this.base,
+        this.fileSize,
       )
     }
 
@@ -410,7 +412,9 @@ export class File {
         // 200mb
         if (fileStat.size >= 2e8) {
           debug(
-            `File ${this.base} with ${this.fileSize} has been loaded in heap memory.`,
+            `file %s with %s has been loaded in heap memory.`,
+            this.base,
+            this.fileSize,
           )
         }
 

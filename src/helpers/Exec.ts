@@ -60,19 +60,19 @@ export class Exec {
         execOptions.shell = 'powershell'
       }
 
-      debug('Executing command: %s', command)
+      debug('executing command: %s', command)
 
       const result = await exec(command, execOptions)
 
-      debug('Command executed successfully')
-      debug('Command stdout: %s', result.stdout)
-      debug('Command stderr: %s', result.stderr)
+      debug('command executed successfully')
+      debug('command stdout: %s', result.stdout)
+      debug('command stderr: %s', result.stderr)
 
       return result
     } catch (error) {
-      debug('Command has failed')
-      debug('Command stdout: %s', error.stdout)
-      debug('Command stderr: %s', error.stderr)
+      debug('command has failed')
+      debug('command stdout: %s', error.stdout)
+      debug('command stderr: %s', error.stderr)
       if (options.ignoreErrors) {
         return { stdout: error.stdout, stderr: error.stderr }
       }
