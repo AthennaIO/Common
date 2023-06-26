@@ -9,13 +9,13 @@
 
 import fastifyFormbody from '@fastify/formbody'
 
-import type { FastifyInstance, HTTPMethods, RouteOptions } from 'fastify'
+import { debug } from '#src/debug'
 import { fastify } from 'fastify'
 import { File } from '#src/helpers/File'
 import { Path } from '#src/helpers/Path'
 import { Json } from '#src/helpers/Json'
-import { Debug } from '#src/helpers/Debug'
 import { Folder } from '#src/helpers/Folder'
+import type { FastifyInstance, HTTPMethods, RouteOptions } from 'fastify'
 
 export class FakeApi {
   /**
@@ -105,9 +105,8 @@ export class FakeApi {
     const object = Json.parse(file.content.toString())
 
     if (!object) {
-      Debug.log(
+      debug(
         `The file ${file.path} is not a valid JSON file and is being ignored.`,
-        'api:testing',
       )
 
       return
@@ -229,7 +228,7 @@ export class FakeApiBuilder {
     }
 
     if (app.hasRoute({ method, url })) {
-      Debug.log(`Route ${method}::${url} already registered.`, 'api:testing')
+      debug(`Route ${method}::${url} already registered.`, 'api:testing')
 
       return
     }

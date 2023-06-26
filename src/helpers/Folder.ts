@@ -57,13 +57,13 @@ export class Folder {
   public files: File[]
 
   /**
-   * All the folders inside of the folder.
+   * All the folders inside the folder.
    */
   // eslint-disable-next-line no-use-before-define
   public folders: Folder[]
 
   /**
-   * Set if original or fake folder exists.
+   * Set if the original or fake folder exists.
    */
   public folderExists: boolean
 

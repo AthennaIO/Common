@@ -96,13 +96,7 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToExecuteSomeCallbackConcurrentlyInAllArrayIndexesAndGetTheValue({ assert }: Context) {
-    const paths = [
-      '#src/helpers/Clean',
-      '#src/helpers/Collection',
-      '#src/helpers/Color',
-      '#src/helpers/Debug',
-      '#src/helpers/Exception',
-    ]
+    const paths = ['#src/helpers/Clean', '#src/helpers/Collection', '#src/helpers/Color', '#src/helpers/Exception']
 
     const modules = await Exec.concurrently<string, unknown>(paths, async path => Module.resolve(path, import.meta.url))
 
