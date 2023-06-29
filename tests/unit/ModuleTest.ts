@@ -62,7 +62,7 @@ export default class ModuleTest {
   public async shouldBeAbleToGetAllModulesFirstExportMatchOrDefaultFromAnyPath({ assert }: Context) {
     const modules = await Module.getAllFrom(Path.src('helpers'))
 
-    assert.lengthOf(modules, 20)
+    assert.lengthOf(modules, 19)
     assert.equal(modules[0].name, 'Clean')
   }
 
@@ -70,7 +70,7 @@ export default class ModuleTest {
   public async shouldBeAbleToGetAllModulesFirstExportMatchOrDefaultFromAnyPathWithAlias({ assert }: Context) {
     const modules = await Module.getAllFromWithAlias(Path.src('helpers'), 'App/Helpers')
 
-    assert.lengthOf(modules, 20)
+    assert.lengthOf(modules, 19)
     assert.equal(modules[0].module.name, 'Clean')
     assert.equal(modules[0].alias, 'App/Helpers/Clean')
   }

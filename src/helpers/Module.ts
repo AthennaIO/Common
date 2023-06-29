@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { debug } from '#src/debug'
 import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -24,7 +25,15 @@ export class Module {
       return module.default
     }
 
-    return module[Object.keys(module)[0]]
+    const exported = Object.keys(module)
+
+    debug(
+      'not found a default module, picking the first one %s from %s',
+      exported[0],
+      exported,
+    )
+
+    return module[exported[0]]
   }
 
   /**
@@ -56,7 +65,7 @@ export class Module {
 
   /**
    * Get all modules first export match or default and return
-   * as array.
+   * as an array.
    */
   public static async getAll(modules: any[]): Promise<any[]> {
     const promises = modules.map(m => Module.get(m))
@@ -153,6 +162,12 @@ export class Module {
    * between OS's.
    */
   public static async import(path: string): Promise<any> {
+    debug('trying to import the path: %s', path)
+
+    if (!isAbsolute(path)) {
+      return import(path)
+    }
+
     return import(pathToFileURL(path).href)
   }
 
@@ -163,7 +178,7 @@ export class Module {
    */
   public static async safeImport(path: string): Promise<any | null> {
     try {
-      return await import(path)
+      return await Module.import(path)
     } catch (err) {
       return null
     }
@@ -189,6 +204,13 @@ export class Module {
     if (isAbsolute(path)) {
       path = pathToFileURL(path).href
     }
+
+    debug(
+      'trying to resolve path: %s, with parent URL: %s and query params: %s',
+      path,
+      meta,
+      queries,
+    )
 
     return import.meta
       .resolve(path, meta)

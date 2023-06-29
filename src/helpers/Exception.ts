@@ -12,9 +12,9 @@ import * as changeCase from 'change-case'
 import Youch from 'youch'
 import YouchTerminal from 'youch-terminal'
 
-import type { ExceptionJson } from '#src/types'
 import { Color } from '#src/helpers/Color'
 import { Options } from '#src/helpers/Options'
+import type { ExceptionJson } from '#src/types'
 
 export class Exception extends Error {
   public code?: string

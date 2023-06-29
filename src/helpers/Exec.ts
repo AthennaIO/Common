@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { debug } from '#src/debug'
 import { promisify } from 'node:util'
 import { Transform } from 'node:stream'
 import { File } from '#src/helpers/File'
@@ -59,9 +60,19 @@ export class Exec {
         execOptions.shell = 'powershell'
       }
 
-      // Needs to await explicit because of try catch
-      return await exec(command, execOptions)
+      debug('executing command: %s', command)
+
+      const result = await exec(command, execOptions)
+
+      debug('command executed successfully')
+      debug('command stdout: %s', result.stdout)
+      debug('command stderr: %s', result.stderr)
+
+      return result
     } catch (error) {
+      debug('command has failed')
+      debug('command stdout: %s', error.stdout)
+      debug('command stderr: %s', error.stderr)
       if (options.ignoreErrors) {
         return { stdout: error.stdout, stderr: error.stderr }
       }
@@ -71,7 +82,7 @@ export class Exec {
   }
 
   /**
-   * Download an archive to determined path.
+   * Download an archive to a determined path.
    */
   public static async download(
     name: string,

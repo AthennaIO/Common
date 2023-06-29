@@ -32,13 +32,13 @@ import { Is } from '#src/helpers/Is'
 import { pathToFileURL } from 'node:url'
 import { Path } from '#src/helpers/Path'
 import { randomBytes } from 'node:crypto'
-import { Debug } from '#src/helpers/Debug'
 import { Parser } from '#src/helpers/Parser'
 import { Module } from '#src/helpers/Module'
 import { Options } from '#src/helpers/Options'
 import { isAbsolute, parse, sep } from 'node:path'
 import { Json, ObjectBuilder } from '#src/helpers/Json'
 import { NotFoundFileException } from '#src/exceptions/NotFoundFileException'
+import { debug } from '#src/debug/index'
 
 export class File {
   /**
@@ -340,8 +340,10 @@ export class File {
 
     // 200MB
     if (fileStat.size >= 2e8) {
-      Debug.log(
-        `File ${this.base} with ${this.fileSize} has been loaded in heap memory.`,
+      debug(
+        `file %s with %s has been loaded in heap memory.`,
+        this.base,
+        this.fileSize,
       )
     }
 
@@ -409,8 +411,10 @@ export class File {
 
         // 200mb
         if (fileStat.size >= 2e8) {
-          Debug.log(
-            `File ${this.base} with ${this.fileSize} has been loaded in heap memory.`,
+          debug(
+            `file %s with %s has been loaded in heap memory.`,
+            this.base,
+            this.fileSize,
           )
         }
 
@@ -508,7 +512,7 @@ export class File {
   }
 
   /**
-   * Move the file to other path.
+   * Move the file to another path.
    */
   public moveSync(
     path: string,
