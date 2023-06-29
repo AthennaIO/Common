@@ -8,30 +8,38 @@
  */
 
 import { Is } from '#src/helpers/Is'
+import { Options } from '#src/helpers/Options'
 
 export class Clean {
   /**
-   * Remove all falsy values from array.
+   * Remove all falsy values from an array.
    */
   public static cleanArray(
     array: any[],
-    removeEmpty = false,
-    cleanInsideObjects = false,
+    options: {
+      removeEmpty?: boolean
+      cleanInsideObjects?: boolean
+    } = {},
   ): any[] {
+    options = Options.create(options, {
+      removeEmpty: false,
+      cleanInsideObjects: false,
+    })
+
     return array.filter((item, i) => {
       let returnItem = !!item
 
-      if (removeEmpty && Is.Empty(item)) {
+      if (options.removeEmpty && Is.Empty(item)) {
         returnItem = false
       }
 
       if (
         typeof item === 'object' &&
         !Is.Array(item) &&
-        cleanInsideObjects &&
+        options.cleanInsideObjects &&
         returnItem
       ) {
-        this.cleanObject(item, removeEmpty)
+        this.cleanObject(item, options)
       }
 
       if (!returnItem) {
@@ -47,18 +55,28 @@ export class Clean {
    */
   public static cleanObject(
     object: any,
-    removeEmpty = false,
-    cleanInsideArrays = false,
-  ): any {
+    options: {
+      removeEmpty?: boolean
+      cleanInsideArrays?: boolean
+    } = {},
+  ): void {
+    options = Options.create(options, {
+      removeEmpty: false,
+      cleanInsideArrays: false,
+    })
+
     Object.keys(object).forEach(prop => {
-      if (removeEmpty && Is.Empty(object[prop])) {
+      if (options.removeEmpty && Is.Empty(object[prop])) {
         delete object[prop]
 
         return
       }
 
-      if (Is.Array(object[prop]) && cleanInsideArrays) {
-        this.cleanArray(object[prop], removeEmpty, true)
+      if (Is.Array(object[prop]) && options.cleanInsideArrays) {
+        this.cleanArray(object[prop], {
+          removeEmpty: options.removeEmpty,
+          cleanInsideObjects: true,
+        })
       }
 
       if (!object[prop]) {

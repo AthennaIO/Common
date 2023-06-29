@@ -13,6 +13,8 @@ import bytes from 'bytes'
 import { Is } from '#src/helpers/Is'
 import { String } from '#src/helpers/String'
 import { Options } from '#src/helpers/Options'
+import { ObjectBuilder } from '#src/helpers/Json'
+import type { ObjectBuilderOptions } from '#src/types'
 import { getReasonPhrase, getStatusCode } from 'http-status-codes'
 import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
@@ -261,5 +263,31 @@ export class Parser {
     if (!Is.Empty(options)) url = url.concat(`?${this.jsonToFormData(options)}`)
 
     return url
+  }
+
+  /**
+   * Parse an object to an ObjectBuilder.
+   */
+  public static objectToBuilder(
+    object: Record<string, any>,
+    options: ObjectBuilderOptions = {},
+  ): ObjectBuilder {
+    const objectBuilder = new ObjectBuilder(options)
+
+    Object.keys(object).forEach(key => {
+      objectBuilder.set(key, object[key])
+    })
+
+    return objectBuilder
+  }
+
+  /**
+   * Parse an entire array of objects to an array of ObjectBuilder.
+   */
+  public static arrayObjectToArrayBuilder(
+    objects: Record<string, any>[],
+    options: ObjectBuilderOptions = {},
+  ): ObjectBuilder[] {
+    return objects.map(object => Parser.objectToBuilder(object, options))
   }
 }

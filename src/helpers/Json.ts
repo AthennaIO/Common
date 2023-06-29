@@ -96,7 +96,7 @@ export class ObjectBuilder {
   }
 
   /**
-   * Get the value builded.
+   * Get the value built.
    */
   public get<T = any>(key?: string, defaultValue?: any): T {
     if (key === undefined) {
@@ -106,6 +106,54 @@ export class ObjectBuilder {
     const value = Json.get(this.object, key, defaultValue)
 
     return this.getValue(value)
+  }
+
+  /**
+   * Return an array with the property names.
+   */
+  public keys(): string[] {
+    return Object.keys(this.get())
+  }
+
+  /**
+   * Return an array with the property values.
+   */
+  public values<T = any>(): T[] {
+    return Object.values(this.get())
+  }
+
+  /**
+   * Return an array with the property names and values.
+   */
+  public entries<T = any>(): [string, T][] {
+    return Object.entries(this.get())
+  }
+
+  /**
+   * Execute some operation for each key of the object.
+   */
+  public forEachKey<T = any>(
+    closure: (key: string, index?: number, array?: string[]) => T,
+  ): T[] {
+    return this.keys().map(closure)
+  }
+
+  /**
+   * Execute some operation for each value of the object.
+   */
+  public forEachValue<T = any, K = any>(
+    closure: (value: T, index?: number, array?: T[]) => K,
+  ): K[] {
+    return this.values().map(closure)
+  }
+
+  /**
+   * Execute some operation for each entry of the object.
+   */
+  public forEachEntry<T = any, K = any>(
+    closure: (value: [string, T], index?: number, array?: [string, T][]) => K,
+  ): K[] {
+    return this.entries().map(closure)
   }
 
   /**
@@ -243,11 +291,6 @@ export class Json {
 
   /**
    * Observe changes inside objects.
-   *
-   * @param {any} object
-   * @param {function} func
-   * @param {...any[]} args
-   * @return {any}
    */
   public static observeChanges(object: any, func: any, ...args: any[]): any {
     return new Proxy(object, {
@@ -263,12 +306,11 @@ export class Json {
 
   /**
    * Remove all keys from data that is not inside array keys.
-   *
-   * @param {any} data
-   * @param {any[]} keys
-   * @return {any[]}
    */
-  public static fillable(data: any, keys: any[]): any[] {
+  public static fillable(
+    data: Record<string, any>,
+    keys: string[],
+  ): Record<string, any> {
     return keys.reduce((previous, key) => {
       if (data[key]) {
         previous[key] = data[key]
@@ -279,7 +321,7 @@ export class Json {
   }
 
   /**
-   * Get the object properties based on key.
+   * Get the object properties based on a key.
    */
   public static get<T = any>(
     object: T,

@@ -246,4 +246,22 @@ export default class ParserTest {
 
     assert.equal(connectionUrl, url)
   }
+
+  @Test()
+  public async shouldBeAbleToParseAnObjectToObjectBuilder({ assert }: Context) {
+    const object = { hello: 'world' }
+
+    const builder = Parser.objectToBuilder(object)
+
+    assert.deepEqual(builder.get(), { hello: 'world' })
+  }
+
+  @Test()
+  public async shouldBeAbleToParseAnObjectBuilderToObject({ assert }: Context) {
+    const array = [{ hello: 'world' }, { hello: 'world' }]
+
+    const builders = Parser.arrayObjectToArrayBuilder(array)
+
+    assert.deepEqual(builders[0].get(), { hello: 'world' })
+  }
 }

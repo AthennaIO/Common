@@ -252,4 +252,101 @@ export default class JsonTest {
       age: 22,
     })
   }
+
+  @Test()
+  public async shouldBeAbleToGetTheKeysOfTheObject({ assert }: Context) {
+    const keys = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 }).keys()
+
+    assert.deepEqual(keys, ['name', 'email', 'age'])
+  }
+
+  @Test()
+  public async shouldNotBeAbleToChangeTheObjectKeysChangingTheReturnedValue({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 })
+    const keys = builder.keys()
+
+    keys[0] = 'full_name'
+
+    assert.deepEqual(builder.keys(), ['name', 'email', 'age'])
+  }
+
+  @Test()
+  public async shouldBeAbleToGetTheValuesOfTheObject({ assert }: Context) {
+    const values = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 }).values()
+
+    assert.deepEqual(values, ['João Lenon', 'lenon@athenna.io', 22])
+  }
+
+  @Test()
+  public async shouldNotBeAbleToChangeTheObjectValuesChangingTheReturnedValue({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 })
+    const values = builder.values()
+
+    values[0] = 'Victor Tesoura'
+
+    assert.deepEqual(builder.values(), ['João Lenon', 'lenon@athenna.io', 22])
+  }
+
+  @Test()
+  public async shouldBeAbleToGetTheEntriesOfTheObject({ assert }: Context) {
+    const entries = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 }).entries()
+
+    assert.deepEqual(entries, [
+      ['name', 'João Lenon'],
+      ['email', 'lenon@athenna.io'],
+      ['age', 22],
+    ])
+  }
+
+  @Test()
+  public async shouldNotBeAbleToChangeTheObjectEntriesChangingTheReturnedValue({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 })
+    const entries = builder.entries()
+
+    entries[0] = ['full_name', 'Victor Tesoura']
+
+    assert.deepEqual(builder.entries(), [
+      ['name', 'João Lenon'],
+      ['email', 'lenon@athenna.io'],
+      ['age', 22],
+    ])
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteAClosureForEachKeyInTheObject({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 })
+    const keys = []
+
+    builder.forEachKey(key => keys.push(key))
+
+    assert.deepEqual(keys, ['name', 'email', 'age'])
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteAClosureForEachKeyInTheObjectAndGetTheReturnedValue({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 })
+    const keys = builder.forEachKey(key => key.toUpperCase())
+
+    assert.deepEqual(keys, ['NAME', 'EMAIL', 'AGE'])
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteAClosureForEachValueInTheObjectAndGetTheReturnedValue({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: '22' })
+    const values = builder.forEachValue(value => value.toUpperCase())
+
+    assert.deepEqual(values, ['JOÃO LENON', 'LENON@ATHENNA.IO', '22'])
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteAClosureForEachEntryInTheObject({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'João Lenon', email: 'lenon@athenna.io', age: 22 })
+    const entries = builder.forEachEntry(entry => [entry[0].toUpperCase(), entry[1]])
+
+    assert.deepEqual(entries, [
+      ['NAME', 'João Lenon'],
+      ['EMAIL', 'lenon@athenna.io'],
+      ['AGE', 22],
+    ])
+  }
 }

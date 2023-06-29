@@ -19,7 +19,10 @@ export default class CleanTest {
     Clean.cleanArray(array)
     assert.deepEqual(array, [1, 2, 3, { joao: 'joao', lenon: null }, {}])
 
-    Clean.cleanArray(array, true, true)
+    Clean.cleanArray(array, {
+      removeEmpty: true,
+      cleanInsideObjects: true,
+    })
     assert.deepEqual(array, [1, 2, 3, { joao: 'joao' }])
   }
 
@@ -49,7 +52,10 @@ export default class CleanTest {
       i: [null, 1, { joao: 'joao', lenon: null }, {}],
     })
 
-    Clean.cleanObject(object, true, true)
+    Clean.cleanObject(object, {
+      removeEmpty: true,
+      cleanInsideArrays: true,
+    })
 
     assert.deepEqual(object, {
       a: 'a',
