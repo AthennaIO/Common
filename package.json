@@ -110,6 +110,7 @@
       "src/**/*.ts"
     ],
     "exclude": [
+      "src/types",
       "src/helpers/Color.ts"
     ],
     "reporter": [
