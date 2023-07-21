@@ -55,7 +55,7 @@
     "chalk": "^5.2.0",
     "change-case": "^4.1.2",
     "collect.js": "^4.36.1",
-    "fastify": "^4.16.3",
+    "fastify": "^4.19.0",
     "got": "^12.6.1",
     "http-status-codes": "^2.2.0",
     "is-wsl": "^2.2.0",
