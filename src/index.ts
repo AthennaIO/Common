@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+export * from '#src/types'
+
 export * from '#src/globals/Path'
 export * from '#src/globals/Error'
 export * from '#src/globals/Array'
