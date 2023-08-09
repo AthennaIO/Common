@@ -11,8 +11,8 @@ import callSite from 'callsite'
 
 import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
-import { sep, normalize, dirname } from 'node:path'
 import type { PathDirs } from '#src/types'
+import { sep, normalize, dirname } from 'node:path'
 
 export class Path {
   public static dirs: PathDirs = {
