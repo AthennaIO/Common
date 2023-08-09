@@ -9,9 +9,8 @@
 
 import { promisify } from 'node:util'
 import { pipeline } from 'node:stream'
-import type { Context } from '@athenna/test/types'
-import { Test, AfterAll, BeforeAll, BeforeEach } from '@athenna/test'
 import { File, Path, FakeApi, HttpClient, HttpClientBuilder } from '#src'
+import { Test, AfterAll, BeforeAll, BeforeEach, type Context } from '@athenna/test'
 
 export default class HttpClientTest {
   private pipeline = promisify(pipeline)

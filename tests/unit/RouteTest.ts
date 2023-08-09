@@ -8,8 +8,7 @@
  */
 
 import { Route, Uuid } from '#src'
-import { Test } from '@athenna/test'
-import type { Context } from '@athenna/test/types'
+import { Test, type Context } from '@athenna/test'
 import { RouteMatchException } from '#src/exceptions/RouteMatchException'
 
 export default class RouteTest {

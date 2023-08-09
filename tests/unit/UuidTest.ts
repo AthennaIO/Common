@@ -9,8 +9,7 @@
 
 import { v4 } from 'uuid'
 import { Uuid } from '#src'
-import { Test } from '@athenna/test'
-import type { Context } from '@athenna/test/types'
+import { Test, type Context } from '@athenna/test'
 import { InvalidUuidException } from '#src/exceptions/InvalidUuidException'
 
 export default class UuidTest {

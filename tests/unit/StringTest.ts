@@ -8,8 +8,7 @@
  */
 
 import { String } from '#src'
-import { Test } from '@athenna/test'
-import type { Context } from '@athenna/test/types'
+import { Test, type Context } from '@athenna/test'
 import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
 
 export default class StringTest {

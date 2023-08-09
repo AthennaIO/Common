@@ -8,8 +8,7 @@
  */
 
 import { Module, Path } from '#src'
-import { Test } from '@athenna/test'
-import type { Context } from '@athenna/test/types'
+import { Test, type Context } from '@athenna/test'
 import { NotFoundResolveException } from '#src/exceptions/NotFoundResolveException'
 
 export default class ModuleTest {

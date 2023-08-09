@@ -8,8 +8,7 @@
  */
 
 import { Parser } from '#src'
-import { Test } from '@athenna/test'
-import type { Context } from '@athenna/test/types'
+import { Test, type Context } from '@athenna/test'
 import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
 export default class ParserTest {
