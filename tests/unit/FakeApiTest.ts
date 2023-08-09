@@ -7,9 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import type { Context } from '@athenna/test/types'
 import { FakeApi, Folder, HttpClient, Path } from '#src'
-import { Test, AfterAll, BeforeAll, AfterEach } from '@athenna/test'
+import { Test, AfterAll, BeforeAll, AfterEach, type Context } from '@athenna/test'
 
 export default class FakeApiTest {
   @BeforeAll()

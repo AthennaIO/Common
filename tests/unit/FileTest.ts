@@ -9,8 +9,7 @@
 
 import { sep } from 'node:path'
 import { File, Path, Folder } from '#src'
-import type { Context } from '@athenna/test/types'
-import { Test, AfterEach, BeforeEach } from '@athenna/test'
+import { Test, AfterEach, BeforeEach, type Context } from '@athenna/test'
 import { NotFoundFileException } from '#src/exceptions/NotFoundFileException'
 
 export default class FileTest {
