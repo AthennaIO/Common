@@ -18,70 +18,70 @@ export class Clean {
     array: any[],
     options: {
       removeEmpty?: boolean
-      cleanInsideObjects?: boolean
+      recursive?: boolean
     } = {},
-  ): any[] {
+  ) {
     options = Options.create(options, {
       removeEmpty: false,
-      cleanInsideObjects: false,
+      recursive: false,
     })
 
-    return array.filter((item, i) => {
-      let returnItem = !!item
+    return array
+      .map(item => {
+        if (!item) {
+          return null
+        }
 
-      if (options.removeEmpty && Is.Empty(item)) {
-        returnItem = false
-      }
+        if (options.removeEmpty && Is.Empty(item)) {
+          return null
+        }
 
-      if (
-        typeof item === 'object' &&
-        !Is.Array(item) &&
-        options.cleanInsideObjects &&
-        returnItem
-      ) {
-        this.cleanObject(item, options)
-      }
+        if (options.recursive) {
+          if (Is.Array(item)) return this.cleanArray(item, options)
+          if (Is.Object(item)) return this.cleanObject(item, options)
+        }
 
-      if (!returnItem) {
-        array.splice(i, 1)
-      }
-
-      return returnItem
-    })
+        return item
+      })
+      .filter(Is.Defined)
   }
 
   /**
    * Remove all falsy values from object.
    */
-  public static cleanObject(
-    object: any,
+  public static cleanObject<T = any>(
+    object: T,
     options: {
       removeEmpty?: boolean
-      cleanInsideArrays?: boolean
+      recursive?: boolean
     } = {},
-  ): void {
+  ): T {
     options = Options.create(options, {
       removeEmpty: false,
-      cleanInsideArrays: false,
+      recursive: false,
     })
 
-    Object.keys(object).forEach(prop => {
-      if (options.removeEmpty && Is.Empty(object[prop])) {
-        delete object[prop]
+    const cleanedObject: any = {}
 
+    Object.keys(object).forEach(key => {
+      let value = object[key]
+
+      if (options.recursive) {
+        if (Is.Array(value)) value = this.cleanArray(value, options)
+        if (Is.Object(value)) value = this.cleanObject(value, options)
+      }
+
+      if (!value) {
         return
       }
 
-      if (Is.Array(object[prop]) && options.cleanInsideArrays) {
-        this.cleanArray(object[prop], {
-          removeEmpty: options.removeEmpty,
-          cleanInsideObjects: true,
-        })
+      if (options.removeEmpty && Is.Empty(value)) {
+        return
       }
 
-      if (!object[prop]) {
-        delete object[prop]
-      }
+      cleanedObject[key] = value
     })
+
+    return cleanedObject
   }
 }
