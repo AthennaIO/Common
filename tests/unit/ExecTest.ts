@@ -24,10 +24,6 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToExecuteACommandInTheVMAndGetTheStdout({ assert }: Context) {
-    if (Is.Windows()) {
-      return
-    }
-
     const { stdout } = await Exec.command('ls')
 
     assert.isTrue(stdout.includes('README.md'))
