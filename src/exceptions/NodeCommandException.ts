@@ -19,9 +19,9 @@ export class NodeCommandException extends Exception {
     delete error.stdout
     delete error.stderr
 
-    help = help.concat(
-      `\n\n  Full command error:\n\n    ${JSON.stringify(error)}`,
-    )
+    help = help.concat(`\n\n  Error name:\n\n    ${error.name}}`)
+    help = help.concat(`\n\n  Error message:\n\n    ${error.message}}`)
+    help = help.concat(`\n\n  Error stack:\n\n    ${error.stack}}`)
 
     super({
       help,
