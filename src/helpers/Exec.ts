@@ -65,6 +65,14 @@ export class Exec {
 
       const result = await exec(command, execOptions)
 
+      if (!result.stdout) {
+        result.stdout = ''
+      }
+
+      if (!result.stderr) {
+        result.stderr = ''
+      }
+
       debug('command executed successfully')
       debug('command stdout: %s', result.stdout)
       debug('command stderr: %s', result.stderr)
