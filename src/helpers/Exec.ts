@@ -84,11 +84,7 @@ export class Exec {
   /**
    * Download an archive to a determined path.
    */
-  public static async download(
-    name: string,
-    path: string,
-    url: string,
-  ): Promise<File> {
+  public static async download(path: string, url: string): Promise<File> {
     return new Promise((resolve, reject) => {
       const callback = response => {
         const data = new Transform()
@@ -96,7 +92,7 @@ export class Exec {
         response.on('data', chunk => data.push(chunk))
 
         response.on('end', function () {
-          resolve(new File(`${path}/${name}`, data.read()).loadSync())
+          resolve(new File(path, data.read()).loadSync())
         })
 
         response.on('error', error => reject(error))

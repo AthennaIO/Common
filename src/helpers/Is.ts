@@ -10,8 +10,7 @@
 import kindOf from 'kind-of'
 
 import { isIP } from 'node:net'
-import { validate } from 'uuid'
-import { Exception } from '#src/helpers/Exception'
+import { Uuid, Exception } from '#src'
 import { isCep, isCnpj, isCpf } from 'validator-brazil'
 
 export class Is {
@@ -34,8 +33,11 @@ export class Is {
   /**
    * Verify if is valid Uuid.
    */
-  public static Uuid(value: string): boolean {
-    return validate(value)
+  public static Uuid(
+    value: string,
+    options?: { prefix?: string; ignorePrefix?: boolean },
+  ): boolean {
+    return Uuid.verify(value, options)
   }
 
   /**

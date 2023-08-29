@@ -21,7 +21,7 @@ export default class UuidTest {
 
     const verify = Uuid.verify(this.uuid)
     const verifyError = Uuid.verify('falseUuid')
-    const verifyPrefixed = Uuid.verify(tokenPrefixed, true)
+    const verifyPrefixed = Uuid.verify(tokenPrefixed)
 
     assert.isTrue(verify)
     assert.isFalse(verifyError)

@@ -80,9 +80,6 @@ export class Parser {
 
   /**
    * Parse an object to form data.
-   *
-   * @param {any} object
-   * @return {string}
    */
   public static jsonToFormData(object: any): string {
     return Object.keys(object)
