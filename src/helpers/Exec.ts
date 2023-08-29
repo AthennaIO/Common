@@ -8,6 +8,7 @@
  */
 
 import { debug } from '#src/debug'
+import { Is } from '#src/helpers/Is'
 import { promisify } from 'node:util'
 import { Transform } from 'node:stream'
 import { File } from '#src/helpers/File'
@@ -56,7 +57,7 @@ export class Exec {
     try {
       const execOptions: ExecOptions = {}
 
-      if (process.platform === 'win32' && Uuid.verify(process.env.WT_SESSION)) {
+      if (Is.Windows() && Uuid.verify(process.env.WT_SESSION)) {
         execOptions.shell = 'powershell'
       }
 
@@ -73,6 +74,7 @@ export class Exec {
       debug('command has failed')
       debug('command stdout: %s', error.stdout)
       debug('command stderr: %s', error.stderr)
+
       if (options.ignoreErrors) {
         return { stdout: error.stdout, stderr: error.stderr }
       }

@@ -31,6 +31,27 @@ export class Is {
   }
 
   /**
+   * Verify if the current platform is Linux.
+   */
+  public static Linux() {
+    return process.platform === 'linux'
+  }
+
+  /**
+   * Verify if the current platform is Mac.
+   */
+  public static Mac() {
+    return process.platform === 'darwin'
+  }
+
+  /**
+   * Verify if the current platform is Windows.
+   */
+  public static Windows() {
+    return process.platform === 'win32'
+  }
+
+  /**
    * Verify if is valid Uuid.
    */
   public static Uuid(
