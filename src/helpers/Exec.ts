@@ -74,6 +74,7 @@ export class Exec {
       debug('command has failed')
       debug('command stdout: %s', error.stdout)
       debug('command stderr: %s', error.stderr)
+
       if (options.ignoreErrors) {
         return { stdout: error.stdout, stderr: error.stderr }
       }
