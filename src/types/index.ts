@@ -7,6 +7,24 @@
  * file that was distributed with this source code.
  */
 
+import type {
+  Hooks,
+  RequestError,
+  RetryObject,
+  CacheOptions,
+  ToughCookieJar,
+  PromiseCookieJar,
+} from 'got'
+
+export type {
+  Hooks,
+  RequestError,
+  RetryObject,
+  CacheOptions,
+  ToughCookieJar,
+  PromiseCookieJar,
+}
+
 export * from '#src/types/Merge'
 export * from '#src/types/Except'
 export * from '#src/types/PathDirs'
@@ -21,5 +39,6 @@ export * from '#src/types/pagination/PaginatedResponse'
 
 export * from '#src/types/http-client/Body'
 export * from '#src/types/http-client/Query'
-export * from '#src/types/http-client/ReqOptions'
+export * from '#src/types/http-client/Request'
+export * from '#src/types/http-client/Response'
 export * from '#src/types/http-client/RetryStrategyCallback'

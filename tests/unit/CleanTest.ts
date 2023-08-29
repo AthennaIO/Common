@@ -11,57 +11,87 @@ import { Clean } from '#src'
 import { Test, type Context } from '@athenna/test'
 
 export default class CleanTest {
+  public getArray() {
+    return [1, null, 2, undefined, 3, { joao: 'joao', lenon: null }, '', {}, ['hey', null]]
+  }
+
+  public getObject() {
+    return {
+      key: 'value',
+      emptyArray: [],
+      emptyObject: {},
+      nullValue: null,
+      undefinedValue: undefined,
+      subObject: { joao: 'joao', array: [null] },
+      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]],
+    }
+  }
+
+  @Test()
+  public async shouldCleanAllFalsyValuesFromArray({ assert }: Context) {
+    const array = this.getArray()
+
+    assert.deepEqual(Clean.cleanArray(array), [1, 2, 3, { joao: 'joao', lenon: null }, {}, ['hey', null]])
+  }
+
   @Test()
   public async shouldCleanAllFalsyAndEmptyValuesFromArray({ assert }: Context) {
-    const array = [1, null, 2, undefined, 3, { joao: 'joao', lenon: null }, '', {}]
+    const array = this.getArray()
 
-    Clean.cleanArray(array)
-    assert.deepEqual(array, [1, 2, 3, { joao: 'joao', lenon: null }, {}])
+    assert.deepEqual(Clean.cleanArray(array, { removeEmpty: true }), [
+      1,
+      2,
+      3,
+      { joao: 'joao', lenon: null },
+      ['hey', null],
+    ])
+  }
 
-    Clean.cleanArray(array, {
-      removeEmpty: true,
-      cleanInsideObjects: true,
+  @Test()
+  public async shouldCleanAllFalsyAndEmptyValuesRecursivelyFromArray({ assert }: Context) {
+    const array = this.getArray()
+
+    assert.deepEqual(Clean.cleanArray(array, { removeEmpty: true, recursive: true }), [
+      1,
+      2,
+      3,
+      { joao: 'joao' },
+      ['hey'],
+    ])
+  }
+
+  @Test()
+  public async shouldCleanAllFalsyValuesFromObject({ assert }: Context) {
+    const object = this.getObject()
+
+    assert.deepEqual(Clean.cleanObject(object), {
+      key: 'value',
+      emptyArray: [],
+      emptyObject: {},
+      subObject: { joao: 'joao', array: [null] },
+      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]],
     })
-    assert.deepEqual(array, [1, 2, 3, { joao: 'joao' }])
   }
 
   @Test()
   public async shouldCleanAllFalsyAndEmptyValuesFromObject({ assert }: Context) {
-    const object = {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: {},
-      e: [],
-      f: { joao: 'joao' },
-      g: null,
-      h: undefined,
-      i: [null, 1, { joao: 'joao', lenon: null }, {}],
-    }
+    const object = this.getObject()
 
-    Clean.cleanObject(object)
-
-    assert.deepEqual(object, {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: {},
-      e: [],
-      f: { joao: 'joao' },
-      i: [null, 1, { joao: 'joao', lenon: null }, {}],
+    assert.deepEqual(Clean.cleanObject(object, { removeEmpty: true }), {
+      key: 'value',
+      subObject: { joao: 'joao', array: [null] },
+      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]],
     })
+  }
 
-    Clean.cleanObject(object, {
-      removeEmpty: true,
-      cleanInsideArrays: true,
-    })
+  @Test()
+  public async shouldCleanAllFalsyAndEmptyValuesFromObjectRecursively({ assert }: Context) {
+    const object = this.getObject()
 
-    assert.deepEqual(object, {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      f: { joao: 'joao' },
-      i: [1, { joao: 'joao' }],
+    assert.deepEqual(Clean.cleanObject(object, { removeEmpty: true, recursive: true }), {
+      key: 'value',
+      subObject: { joao: 'joao' },
+      subArray: [1, { joao: 'joao' }, ['hey']],
     })
   }
 }

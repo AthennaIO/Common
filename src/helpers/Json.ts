@@ -73,7 +73,7 @@ export class ObjectBuilder {
   }
 
   /**
-   * Delete the configuration key.
+   * Delete a value from the object by the key.
    */
   public delete(key: string): this {
     if (this.notExists(key)) {

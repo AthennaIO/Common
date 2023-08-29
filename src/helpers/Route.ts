@@ -46,9 +46,6 @@ export class Route {
 
   /**
    * Get array with ?&queryParams name from route.
-   *
-   * @param {string} route
-   * @return {string[]}
    */
   public static getQueryParamsName(route: string): string[] {
     const queryNames = []

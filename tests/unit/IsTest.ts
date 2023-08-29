@@ -35,7 +35,7 @@ export default class IsTest {
     assert.isFalse(Is.Uuid(''))
     assert.isFalse(Is.Uuid(' '))
     assert.isTrue(Is.Uuid('50bc9524-c4b3-11ec-9d64-0242ac120002'))
-    assert.isFalse(Is.Uuid('ath-50bc9524-c4b3-11ec-9d64-0242ac120002'))
+    assert.isTrue(Is.Uuid('ath::50bc9524-c4b3-11ec-9d64-0242ac120002'))
   }
 
   @Test()

@@ -10,7 +10,7 @@
 import type { Except } from '#src/types'
 import type { OptionsInit, ResponseType } from 'got'
 
-export type ReqOptions = Except<OptionsInit, 'responseType'> &
+export type Request = Except<OptionsInit, 'responseType'> &
   Partial<{
     get responseType(): ResponseType | string
     set responseType(value: ResponseType | string)

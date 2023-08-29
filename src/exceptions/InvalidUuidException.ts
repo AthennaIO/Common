@@ -13,8 +13,8 @@ export class InvalidUuidException extends Exception {
   public constructor(value: string) {
     super({
       code: 'E_INVALID_UUID',
-      help: 'Use a valid uuid instead.',
-      message: `The value ${value} is not a valid uuid.`,
+      help: 'Use a valid UUID instead.',
+      message: `The value ${value} is not a valid UUID.`,
     })
   }
 }

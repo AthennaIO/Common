@@ -7,20 +7,35 @@
  * file that was distributed with this source code.
  */
 
-import { v4 } from 'uuid'
-import { Is } from '#src/helpers/Is'
+import { v4, validate } from 'uuid'
+import { Options } from '#src/helpers/Options'
 import { InvalidUuidException } from '#src/exceptions/InvalidUuidException'
 
 export class Uuid {
   /**
    * Verify if string is a valid uuid.
    */
-  public static verify(token: string, isPrefixed = false): boolean {
-    if (isPrefixed) {
-      return Is.Uuid(this.getToken(token))
+  public static verify(
+    token: string,
+    options: { prefix?: string; ignorePrefix?: boolean } = {},
+  ): boolean {
+    options = Options.create(options, { ignorePrefix: true })
+
+    if (options.prefix) {
+      const prefix = this.getPrefix(token)
+
+      if (prefix !== options.prefix) {
+        return false
+      }
+
+      return validate(this.getToken(token))
     }
 
-    return Is.Uuid(token)
+    if (options.ignorePrefix) {
+      return validate(this.getToken(token))
+    }
+
+    return validate(token)
   }
 
   /**
@@ -76,7 +91,7 @@ export class Uuid {
   }
 
   /**
-   * Change the prefix of and uuid token
+   * Change the prefix of an uuid token
    */
   public static changePrefix(newPrefix: string, token: string): string {
     const uuid = this.getToken(token)
