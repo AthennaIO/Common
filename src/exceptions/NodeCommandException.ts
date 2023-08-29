@@ -13,17 +13,15 @@ export class NodeCommandException extends Exception {
   public constructor(command: string, error: any) {
     let help = ''
 
-    if (error.stdout) {
-      help = help.concat(`Command stdout:\n\n${error.stdout}`)
-    }
+    help = help.concat(`Command stdout:\n\n    ${error.stdout}`)
+    help = help.concat(`\n\n  Command stderr:\n\n    ${error.stderr}`)
 
-    if (error.stderr) {
-      help = help.concat(`Command stderr:\n\n${error.stderr}`)
-    }
+    delete error.stdout
+    delete error.stderr
 
-    if (!error.stdout && !error.stdout) {
-      help = `Command error:\n\n${JSON.stringify(error)}`
-    }
+    help = help.concat(
+      `\n\n  Full command error:\n\n    ${JSON.stringify(error)}`,
+    )
 
     super({
       help,
