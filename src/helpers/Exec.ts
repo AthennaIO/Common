@@ -54,15 +54,15 @@ export class Exec {
       ignoreErrors: false,
     })
 
+    const execOptions: ExecOptions = {}
+
+    if (Is.Windows() && Uuid.verify(process.env.WT_SESSION)) {
+      execOptions.shell = 'powershell'
+    }
+
+    debug('executing command: %s', command)
+
     try {
-      const execOptions: ExecOptions = {}
-
-      if (Is.Windows() && Uuid.verify(process.env.WT_SESSION)) {
-        execOptions.shell = 'powershell'
-      }
-
-      debug('executing command: %s', command)
-
       const result = await exec(command, execOptions)
 
       if (!result.stdout) result.stdout = ''
