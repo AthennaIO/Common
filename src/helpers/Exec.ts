@@ -54,24 +54,19 @@ export class Exec {
       ignoreErrors: false,
     })
 
+    const execOptions: ExecOptions = {}
+
+    if (Is.Windows() && Uuid.verify(process.env.WT_SESSION)) {
+      execOptions.shell = 'powershell'
+    }
+
+    debug('executing command: %s', command)
+
     try {
-      const execOptions: ExecOptions = {}
-
-      if (Is.Windows() && Uuid.verify(process.env.WT_SESSION)) {
-        execOptions.shell = 'powershell'
-      }
-
-      debug('executing command: %s', command)
-
       const result = await exec(command, execOptions)
 
-      if (!result.stdout) {
-        result.stdout = ''
-      }
-
-      if (!result.stderr) {
-        result.stderr = ''
-      }
+      if (!result.stdout) result.stdout = ''
+      if (!result.stderr) result.stderr = ''
 
       debug('command executed successfully')
       debug('command stdout: %s', result.stdout)
@@ -79,13 +74,8 @@ export class Exec {
 
       return result
     } catch (error) {
-      if (!error.stdout) {
-        error.stdout = ''
-      }
-
-      if (!error.stderr) {
-        error.stderr = ''
-      }
+      if (!error.stdout) error.stdout = ''
+      if (!error.stderr) error.stderr = ''
 
       debug('command has failed')
       debug('command stdout: %s', error.stdout)
