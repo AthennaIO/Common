@@ -19,6 +19,10 @@ export class Uuid {
     token: string,
     options: { prefix?: string; ignorePrefix?: boolean } = {},
   ): boolean {
+    if (!token) {
+      return false
+    }
+
     options = Options.create(options, { ignorePrefix: true })
 
     if (options.prefix) {
