@@ -79,6 +79,14 @@ export class Exec {
 
       return result
     } catch (error) {
+      if (!error.stdout) {
+        error.stdout = ''
+      }
+
+      if (!error.stderr) {
+        error.stderr = ''
+      }
+
       debug('command has failed')
       debug('command stdout: %s', error.stdout)
       debug('command stderr: %s', error.stderr)
