@@ -8,7 +8,7 @@
  */
 
 import { Test, BeforeEach, type Context } from '@athenna/test'
-import { Clean, Exec, File, Folder, Module, Path } from '#src'
+import { Clean, Exec, File, Folder, Is, Module, Path } from '#src'
 import { NodeCommandException } from '#src/exceptions/NodeCommandException'
 
 export default class ExecTest {
@@ -24,7 +24,9 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToExecuteACommandInTheVMAndGetTheStdout({ assert }: Context) {
-    const { stdout } = await Exec.command('ls')
+    const command = Is.Windows() ? 'dir' : 'ls'
+
+    const { stdout } = await Exec.command(command)
 
     assert.isTrue(stdout.includes('README.md'))
   }
@@ -40,7 +42,7 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToExecuteACommandThatThrowsErrorsAndIgnoreItInUnix({ assert }: Context) {
-    if (process.platform === 'win32') {
+    if (Is.Windows()) {
       return
     }
 
