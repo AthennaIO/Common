@@ -13,7 +13,8 @@ export class NodeCommandException extends Exception {
   public constructor(command: string, error: any) {
     let help = ''
 
-    help = help.concat(`Command stdout:\n\n    ${error.stdout}`)
+    help = help.concat(`Command code:\n\n    ${error.exitCode}`)
+    help = help.concat(`\n\n  Command stdout:\n\n    ${error.stdout}`)
     help = help.concat(`\n\n  Command stderr:\n\n    ${error.stderr}`)
 
     help = help.concat(`\n\n  ${error.stack}`)

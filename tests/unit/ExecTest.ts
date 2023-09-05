@@ -24,8 +24,9 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToExecuteACommandInTheVMAndGetTheStdout({ assert }: Context) {
-    const { stdout } = await Exec.command('ls')
+    const { stdout, exitCode } = await Exec.command('ls')
 
+    assert.equal(exitCode, 0)
     assert.isTrue(stdout.includes('README.md'))
   }
 
@@ -44,8 +45,9 @@ export default class ExecTest {
       return
     }
 
-    const { stdout } = await Exec.command('echo "error thrown" && exit 255', { ignoreErrors: true })
+    const { stdout, exitCode } = await Exec.command('echo "error thrown" && exit 255', { ignoreErrors: true })
 
+    assert.equal(exitCode, 255)
     assert.isTrue(stdout.includes('error thrown'))
   }
 

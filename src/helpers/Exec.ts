@@ -9,19 +9,17 @@
 
 import { debug } from '#src/debug'
 import { Is } from '#src/helpers/Is'
-import { promisify } from 'node:util'
 import { Transform } from 'node:stream'
 import { File } from '#src/helpers/File'
 import { Uuid } from '#src/helpers/Uuid'
+import { exec } from 'node:child_process'
 import { Options } from '#src/helpers/Options'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
 import type { ExecOptions } from 'node:child_process'
-import { exec as childProcessExec } from 'node:child_process'
+import type { CommandOutput } from '#src/types/CommandOutput'
 import type { PaginationOptions, PaginatedResponse } from '#src/types'
 import { NodeCommandException } from '#src/exceptions/NodeCommandException'
-
-const exec = promisify(childProcessExec)
 
 export class Exec {
   /**
@@ -49,7 +47,7 @@ export class Exec {
   public static async command(
     command: string,
     options?: { ignoreErrors?: boolean },
-  ): Promise<{ stdout: string; stderr: string }> {
+  ): Promise<CommandOutput> {
     options = Options.create(options, {
       ignoreErrors: false,
     })
@@ -62,31 +60,40 @@ export class Exec {
 
     debug('executing command: %s', command)
 
-    try {
-      const result = await exec(command, execOptions)
+    return new Promise((resolve, reject) => {
+      let execError = null
 
-      if (!result.stdout) result.stdout = ''
-      if (!result.stderr) result.stderr = ''
-
-      debug('command executed successfully')
-      debug('command stdout: %s', result.stdout)
-      debug('command stderr: %s', result.stderr)
-
-      return result
-    } catch (error) {
-      if (!error.stdout) error.stdout = ''
-      if (!error.stderr) error.stderr = ''
-
-      debug('command has failed')
-      debug('command stdout: %s', error.stdout)
-      debug('command stderr: %s', error.stderr)
-
-      if (options.ignoreErrors) {
-        return { stdout: error.stdout, stderr: error.stderr }
+      const result: CommandOutput = {
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
       }
 
-      throw new NodeCommandException(command, error)
-    }
+      exec(command, execOptions, (error, stdout, stderr) => {
+        if (error) execError = error
+        if (stdout) result.stdout = stdout
+        if (stderr) result.stderr = stderr
+
+        debug('command executed')
+        debug('command stdout: %s', result.stdout)
+        debug('command stderr: %s', result.stderr)
+        debug('command exitCode: %s', result.exitCode)
+
+        if (!execError) {
+          return resolve(result)
+        }
+
+        execError.stdout = result.stdout
+        execError.stderr = result.stderr
+        execError.exitCode = result.exitCode
+
+        if (options.ignoreErrors) {
+          return resolve(result)
+        }
+
+        return reject(new NodeCommandException(command, execError))
+      }).on('exit', exitCode => (result.exitCode = exitCode))
+    })
   }
 
   /**
