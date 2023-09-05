@@ -28,6 +28,7 @@ export type {
 export * from '#src/types/Merge'
 export * from '#src/types/Except'
 export * from '#src/types/PathDirs'
+export * from '#src/types/CommandOutput'
 export * from '#src/types/ObjectBuilderOptions'
 
 export * from '#src/types/json/FileJson'
