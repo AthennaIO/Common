@@ -64,7 +64,7 @@ export class Is {
       return false
     }
 
-    if (value.includes('.js') || value.includes('.ts')) {
+    if (value.endsWith('.js') || value.endsWith('.ts')) {
       return true
     }
 
