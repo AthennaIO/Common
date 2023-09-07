@@ -190,7 +190,7 @@ export default class FileTest {
   @Test()
   public async shouldBeAbleToMakeACopyOfTheFile({ assert }: Context) {
     const copyOfBigFile = await this.bigFile.copy(Path.storage('files/testing/copy-big-file.txt'), {
-      withContent: false,
+      withContent: false
     })
 
     assert.isDefined(await File.exists(this.bigFile.path))
@@ -209,7 +209,7 @@ export default class FileTest {
   @Test()
   public async shouldBeAbleToMoveTheFile({ assert }: Context) {
     const moveOfBigFile = await this.bigFile.move(Path.storage('testing/move-big-file.txt'), {
-      withContent: false,
+      withContent: false
     })
 
     assert.isFalse(await File.exists(this.bigFile.path))

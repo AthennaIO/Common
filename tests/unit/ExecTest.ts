@@ -67,7 +67,7 @@ export default class ExecTest {
     while (i < 10) {
       collection.push({
         joao: 'lenon',
-        hello: 'world',
+        hello: 'world'
       })
 
       i++
@@ -76,7 +76,7 @@ export default class ExecTest {
     const paginatedData = Exec.pagination(collection, collection.length + 1, {
       page: 0,
       limit: 10,
-      resourceUrl: 'https://my-api.com/products',
+      resourceUrl: 'https://my-api.com/products'
     })
 
     assert.deepEqual(paginatedData.data, collection)
@@ -85,13 +85,13 @@ export default class ExecTest {
       totalItems: 11,
       totalPages: 2,
       currentPage: 0,
-      itemsPerPage: 10,
+      itemsPerPage: 10
     })
     assert.deepEqual(paginatedData.links, {
       first: 'https://my-api.com/products?limit=10',
       previous: 'https://my-api.com/products?page=0&limit=10',
       next: 'https://my-api.com/products?page=1&limit=10',
-      last: 'https://my-api.com/products?page=2&limit=10',
+      last: 'https://my-api.com/products?page=2&limit=10'
     })
   }
 

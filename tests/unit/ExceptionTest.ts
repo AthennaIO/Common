@@ -28,7 +28,7 @@ export default class ExceptionTest {
     const exception = new Error('My custom instance error').toAthennaException({
       status: 0,
       code: 'EXCEPTION',
-      name: 'Exception',
+      name: 'Exception'
     })
 
     const errorJson = exception.toJSON()
@@ -66,7 +66,7 @@ export default class ExceptionTest {
           status,
           message: content,
           code: 'E_RUNTIME_EXCEPTION',
-          help: 'Restart your computer, works always. 👍',
+          help: 'Restart your computer, works always. 👍'
         })
       }
     }

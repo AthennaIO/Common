@@ -7,10 +7,21 @@
  * file that was distributed with this source code.
  */
 
-import { Is, Exception } from '#src'
+import { Is, File, Exception } from '#src'
 import { Test, type Context } from '@athenna/test'
 
 export default class IsTest {
+  @Test()
+  public async shouldVerifyIfIsAValidModule({ assert }: Context) {
+    assert.isFalse(Is.Module(''))
+    assert.isFalse(Is.Module('Hello'))
+    assert.isTrue(Is.Module('.js'))
+    assert.isTrue(Is.Module('.ts'))
+    assert.isTrue(Is.Module(Path.src('helpers/Clean.js')))
+    assert.isTrue(Is.Module(Path.src('helpers/Clean.ts')))
+    assert.isTrue(Is.Module(new File(Path.src('helpers/Clean.ts'))))
+  }
+
   @Test()
   public async shouldVerifyIfIsAValidJsonString({ assert }: Context) {
     assert.isFalse(Is.Json(''))
@@ -194,7 +205,7 @@ export default class IsTest {
     assert.isTrue(
       Is.Function(function test() {
         return ''
-      }),
+      })
     )
   }
 
@@ -206,7 +217,7 @@ export default class IsTest {
     assert.isFalse(
       Is.Async(function test() {
         return ''
-      }),
+      })
     )
     assert.isTrue(Is.Async(async () => ''))
     assert.isTrue(Is.Async(() => new Promise(resolve => resolve)))
@@ -235,11 +246,11 @@ export default class IsTest {
   public async shouldVerifyIsIsAValidArrayOfObjects({ assert }: Context) {
     const data = [
       {
-        hello: 'hello',
+        hello: 'hello'
       },
       {
-        hello: 'hello',
-      },
+        hello: 'hello'
+      }
     ]
 
     assert.isFalse(Is.ArrayOfObjects([]))

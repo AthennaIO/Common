@@ -29,9 +29,9 @@ export default class CollectionTest {
   public async shouldBeAbleToExecuteTheToResourceMethodInsideObjectsOfCollections({ assert }: Context) {
     const models = [
       {
-        toResource: () => ({ id: 1 }),
+        toResource: () => ({ id: 1 })
       },
-      { toResource: criterias => criterias },
+      { toResource: criterias => criterias }
     ]
 
     assert.deepEqual(models.toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])

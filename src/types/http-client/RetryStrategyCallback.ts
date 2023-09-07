@@ -12,5 +12,5 @@ import type { RequestError, RetryObject } from 'got'
 export type RetryStrategyCallback = (
   error: RequestError,
   execCount: number,
-  retryObject: RetryObject,
+  retryObject: RetryObject
 ) => number | Promise<number>

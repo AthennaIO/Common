@@ -22,7 +22,7 @@ export class NodeCommandException extends Exception {
     super({
       help,
       code: 'E_NODE_EXEC',
-      message: `Error has occurred when executing the command "${command}"`,
+      message: `Error has occurred when executing the command "${command}"`
     })
   }
 }

@@ -35,7 +35,7 @@ export class Options {
    */
   public static whenDefined<T = any, K = any>(
     statement: T,
-    closure: (statement: T) => K,
+    closure: (statement: T) => K
   ): K {
     if (!Is.Defined(statement)) {
       return

@@ -14,7 +14,7 @@ export class InvalidUuidException extends Exception {
     super({
       code: 'E_INVALID_UUID',
       help: 'Use a valid UUID instead.',
-      message: `The value ${value} is not a valid UUID.`,
+      message: `The value ${value} is not a valid UUID.`
     })
   }
 }

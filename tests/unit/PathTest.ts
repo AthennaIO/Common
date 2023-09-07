@@ -185,6 +185,7 @@ export default class PathTest {
       .setLogs('build/storage/logs')
       .setTests('build/tests')
       .setStubs('build/tests/stubs')
+      .setFixtures('build/tests/fixtures')
 
     assert.isTrue(Path.bin().endsWith(`build${sep}bin`))
     assert.isTrue(Path.src().endsWith(`build${sep}src`))
@@ -219,12 +220,13 @@ export default class PathTest {
     assert.isTrue(Path.logs().endsWith(`build${sep}storage${sep}logs`))
     assert.isTrue(Path.tests().endsWith(`build${sep}tests`))
     assert.isTrue(Path.stubs().endsWith(`build${sep}tests${sep}stubs`))
+    assert.isTrue(Path.fixtures().endsWith(`build${sep}tests${sep}fixtures`))
   }
 
   @Test()
   public shouldBeAbleToMergeCustomDirectoriesWithDefaults({ assert }: Context) {
     Path.mergeDirs({
-      app: 'build/app',
+      app: 'build/app'
     })
 
     assert.isTrue(Path.bin().endsWith('bin'))

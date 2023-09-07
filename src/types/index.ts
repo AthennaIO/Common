@@ -13,7 +13,7 @@ import type {
   RetryObject,
   CacheOptions,
   ToughCookieJar,
-  PromiseCookieJar,
+  PromiseCookieJar
 } from 'got'
 
 export type {
@@ -22,7 +22,7 @@ export type {
   RetryObject,
   CacheOptions,
   ToughCookieJar,
-  PromiseCookieJar,
+  PromiseCookieJar
 }
 
 export * from '#src/types/Merge'

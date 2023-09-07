@@ -19,11 +19,11 @@ export class Clean {
     options: {
       removeEmpty?: boolean
       recursive?: boolean
-    } = {},
+    } = {}
   ) {
     options = Options.create(options, {
       removeEmpty: false,
-      recursive: false,
+      recursive: false
     })
 
     return array
@@ -54,11 +54,11 @@ export class Clean {
     options: {
       removeEmpty?: boolean
       recursive?: boolean
-    } = {},
+    } = {}
   ): T {
     options = Options.create(options, {
       removeEmpty: false,
-      recursive: false,
+      recursive: false
     })
 
     const cleanedObject: any = {}

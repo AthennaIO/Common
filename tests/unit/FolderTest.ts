@@ -150,7 +150,7 @@ export default class FolderTest {
   public async shouldBeAbleToMakeACopyOfFolder({ assert }: Context) {
     const copyOfBigFolder = await this.bigFolder.copy(Path.storage('folders/testing/copy-big-folder'), {
       withSub: true,
-      withContent: false,
+      withContent: false
     })
 
     this.bigFolder.removeSync()
@@ -167,7 +167,7 @@ export default class FolderTest {
     assert.isDefined(copyOfBigFolder.folders[0].files[0].name)
 
     const copyOfNoExistFolder = await this.nonexistentFolder.copy(
-      Path.storage('folders/testing/copy-non-existent-folder'),
+      Path.storage('folders/testing/copy-non-existent-folder')
     )
 
     assert.isTrue(await Folder.exists(copyOfNoExistFolder.path))
@@ -177,7 +177,7 @@ export default class FolderTest {
   public async shouldBeAbleToMakeACopyInSyncModeOfTheFolder({ assert }: Context) {
     const copyOfBigFolder = this.bigFolder.copySync(Path.storage('folders/testing/copy-big-folder'), {
       withSub: true,
-      withContent: false,
+      withContent: false
     })
 
     this.bigFolder.removeSync()
@@ -194,7 +194,7 @@ export default class FolderTest {
     assert.isDefined(copyOfBigFolder.folders[0].files[0].name)
 
     const copyOfNoExistFolder = this.nonexistentFolder.copySync(
-      Path.storage('folders/testing/copy-non-existent-folder'),
+      Path.storage('folders/testing/copy-non-existent-folder')
     )
 
     assert.isTrue(await Folder.exists(copyOfNoExistFolder.path))
@@ -204,7 +204,7 @@ export default class FolderTest {
   public async shouldBeAbleToMoveTheFolder({ assert }: Context) {
     const moveOfBigFolder = await this.bigFolder.move(Path.storage('folders/testing/move-big-folder'), {
       withSub: true,
-      withContent: false,
+      withContent: false
     })
 
     assert.isFalse(await Folder.exists(this.bigFolder.path))
@@ -220,7 +220,7 @@ export default class FolderTest {
     assert.isDefined(moveOfBigFolder.folders[0].files[0].name)
 
     const moveOfNoExistFolder = await this.nonexistentFolder.move(
-      Path.storage('folders/testing/move-non-existent-folder'),
+      Path.storage('folders/testing/move-non-existent-folder')
     )
 
     assert.isFalse(await Folder.exists(this.nonexistentFolder.path))
@@ -231,7 +231,7 @@ export default class FolderTest {
   public async shouldBeAbleToMoveTheFolderInSyncMode({ assert }: Context) {
     const moveOfBigFolder = await this.bigFolder.moveSync(Path.storage('folders/testing/move-big-folder'), {
       withSub: true,
-      withContent: false,
+      withContent: false
     })
 
     assert.isFalse(await Folder.exists(this.bigFolder.path))
@@ -247,7 +247,7 @@ export default class FolderTest {
     assert.isDefined(moveOfBigFolder.folders[0].files[0].name)
 
     const moveOfNoExistFolder = this.nonexistentFolder.moveSync(
-      Path.storage('folders/testing/move-non-existent-folder'),
+      Path.storage('folders/testing/move-non-existent-folder')
     )
 
     assert.isFalse(await Folder.exists(this.nonexistentFolder.path))

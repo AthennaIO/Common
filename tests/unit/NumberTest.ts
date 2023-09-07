@@ -23,11 +23,11 @@ export default class NumberTest {
   public async shouldGetKmRadiusBetweenTwoCoordinates({ assert }: Context) {
     const first = Number.getKmRadius(
       { latitude: -25503207, longitude: -545390592 },
-      { latitude: -25503207, longitude: -545390592 },
+      { latitude: -25503207, longitude: -545390592 }
     )
     const second = Number.getKmRadius(
       { latitude: -25503207, longitude: -545390592 },
-      { latitude: -254957901, longitude: -545671577 },
+      { latitude: -254957901, longitude: -545671577 }
     )
 
     assert.equal(first, 0)

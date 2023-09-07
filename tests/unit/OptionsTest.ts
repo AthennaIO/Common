@@ -16,7 +16,7 @@ export default class OptionsTest {
     const api = (options: { name?: string; age?: number } = {}) => {
       options = Options.create(options, {
         name: 'lenon',
-        age: 22,
+        age: 22
       })
 
       return options
@@ -35,7 +35,7 @@ export default class OptionsTest {
       age: 22,
       getAge() {
         return this.age
-      },
+      }
     }
 
     const closure = Options.bind(object, 'getAge')

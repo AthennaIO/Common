@@ -10,7 +10,7 @@
 import kindOf from 'kind-of'
 
 import { isIP } from 'node:net'
-import { Uuid, Exception } from '#src'
+import { File, Uuid, Exception } from '#src'
 import { isCep, isCnpj, isCpf } from 'validator-brazil'
 
 export class Is {
@@ -33,22 +33,42 @@ export class Is {
   /**
    * Verify if the current platform is Linux.
    */
-  public static Linux() {
+  public static Linux(): boolean {
     return process.platform === 'linux'
   }
 
   /**
    * Verify if the current platform is Mac.
    */
-  public static Mac() {
+  public static Mac(): boolean {
     return process.platform === 'darwin'
   }
 
   /**
    * Verify if the current platform is Windows.
    */
-  public static Windows() {
+  public static Windows(): boolean {
     return process.platform === 'win32'
+  }
+
+  /**
+   * Verify if file path or File instance is a
+   * module or not.
+   */
+  public static Module(value: any): boolean {
+    if (value instanceof File) {
+      return Is.Module(value.extension)
+    }
+
+    if (!value || !Is.String(value)) {
+      return false
+    }
+
+    if (value.includes('.js') || value.includes('.ts')) {
+      return true
+    }
+
+    return false
   }
 
   /**
@@ -56,7 +76,7 @@ export class Is {
    */
   public static Uuid(
     value: string,
-    options?: { prefix?: string; ignorePrefix?: boolean },
+    options?: { prefix?: string; ignorePrefix?: boolean }
   ): boolean {
     return Uuid.verify(value, options)
   }

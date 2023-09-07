@@ -34,7 +34,7 @@ export class Exception extends Error {
       help: null,
       stack: null,
       name: this.constructor.name,
-      code: changeCase.constantCase(this.constructor.name),
+      code: changeCase.constantCase(this.constructor.name)
     })
 
     this.name = options.name
@@ -87,7 +87,7 @@ export class Exception extends Error {
       hideErrorTitle: true,
       hideMessage: false,
       displayMainFrameOnly: false,
-      framesMaxLimit: 3,
+      framesMaxLimit: 3
     })
 
     const separator = Color.cyan('-----')
@@ -98,7 +98,7 @@ export class Exception extends Error {
 
     if (this.help && this.help !== '') {
       this.help = `${helpKey}\n\n  ${Color.green(
-        Color.apply(this.help),
+        Color.apply(this.help)
       )}\n\n  ${separator}`
     } else {
       this.message = this.message.concat(`\n\n${separator}`)

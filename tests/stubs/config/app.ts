@@ -8,5 +8,5 @@
  */
 
 export default {
-  name: 'Athenna',
+  name: 'Athenna'
 }

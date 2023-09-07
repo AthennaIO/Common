@@ -42,4 +42,5 @@ export interface PathDirs {
   logs?: string
   tests?: string
   stubs?: string
+  fixtures?: string
 }
