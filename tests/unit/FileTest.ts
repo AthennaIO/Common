@@ -85,7 +85,7 @@ export default class FileTest {
 
   @Test()
   public async shouldBeAbleToGenerateInstanceOfFilesThatHasDotsInThePath({ assert }: Context) {
-    const file = new File(Path.stubs('controllers/app.controller.ts'))
+    const file = new File(Path.fixtures('controllers/app.controller.ts'))
 
     assert.isTrue(file.fileExists)
     assert.equal(file.extension, '.ts')
@@ -95,7 +95,7 @@ export default class FileTest {
 
   @Test()
   public async shouldBeAbleToGenerateInstanceOfFilesWithJsMapExtension({ assert }: Context) {
-    const file = new File(Path.stubs('extensions/file.js.map'))
+    const file = new File(Path.fixtures('extensions/file.js.map'))
 
     assert.isTrue(file.fileExists)
     assert.equal(file.name, 'file')
@@ -105,7 +105,7 @@ export default class FileTest {
 
   @Test()
   public async shouldBeAbleToGenerateInstanceOfFilesWithDTsExtension({ assert }: Context) {
-    const file = new File(Path.stubs('extensions/file.d.ts'))
+    const file = new File(Path.fixtures('extensions/file.d.ts'))
 
     assert.isTrue(file.fileExists)
     assert.equal(file.name, 'file')
@@ -362,7 +362,7 @@ export default class FileTest {
 
   @Test()
   public async shouldBeAbleToSafeImportSomeFileThatDoesNotExportAnythingWithoutErrors({ assert }: Context) {
-    const notFound = await new File(Path.stubs('no-export.ts')).safeImport()
+    const notFound = await new File(Path.fixtures('no-export.ts')).safeImport()
 
     assert.isNull(notFound)
   }

@@ -13,7 +13,7 @@ import { Test, AfterAll, BeforeAll, AfterEach, type Context } from '@athenna/tes
 export default class FakeApiTest {
   @BeforeAll()
   public async beforeAll() {
-    await new Folder(Path.stubs('resources')).copy(Path.resources())
+    await new Folder(Path.fixtures('resources')).copy(Path.resources())
   }
 
   @AfterAll()
