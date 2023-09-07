@@ -14,7 +14,7 @@ import { NotFoundResolveException } from '#src/exceptions/NotFoundResolveExcepti
 export default class ModuleTest {
   @Test()
   public async shouldBeAbleToGetTheModuleFirstExportMatchOrDefault({ assert }: Context) {
-    const moduleDefault = await Module.get(import('../stubs/config/app.js'))
+    const moduleDefault = await Module.get(import('../fixtures/config/app.js'))
 
     assert.equal(moduleDefault.name, 'Athenna')
 
@@ -25,7 +25,7 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToGetAllModulesFirstExportMatchOrDefault({ assert }: Context) {
-    const modules = [import('../stubs/config/app.js'), import('#src/helpers/Options')]
+    const modules = [import('../fixtures/config/app.js'), import('#src/helpers/Options')]
 
     const modulesResolved = await Module.getAll(modules)
 
@@ -48,7 +48,7 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToGetTheModuleFirstExportMatchOrDefaultFromAnyPath({ assert }: Context) {
-    const moduleDefault = await Module.getFrom(Path.stubs('config/app.ts'))
+    const moduleDefault = await Module.getFrom(Path.fixtures('config/app.ts'))
 
     assert.equal(moduleDefault.name, 'Athenna')
 
@@ -104,7 +104,7 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToResolveImportAliasWithDotsInThePathByMetaUrlAndImportIt({ assert }: Context) {
-    const AppController = await Module.resolve('#tests/stubs/controllers/app.controller', import.meta.url)
+    const AppController = await Module.resolve('#tests/fixtures/controllers/app.controller', import.meta.url)
 
     assert.equal(AppController.name, 'AppController')
   }

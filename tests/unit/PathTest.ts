@@ -124,7 +124,7 @@ export default class PathTest {
   public async shouldGetTheSubOPathsOfTestsMainPath({ assert }: Context) {
     const mainPath = process.cwd().concat(sep, 'tests')
 
-    assert.equal(Path.stubs(), mainPath.concat(sep, 'stubs'))
+    assert.equal(Path.fixtures(), mainPath.concat(sep, 'fixtures'))
   }
 
   @Test()

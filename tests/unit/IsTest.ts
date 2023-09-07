@@ -15,6 +15,8 @@ export default class IsTest {
   public async shouldVerifyIfIsAValidModule({ assert }: Context) {
     assert.isFalse(Is.Module(''))
     assert.isFalse(Is.Module('Hello'))
+    assert.isFalse(Is.Module('.json'))
+    assert.isFalse(Is.Module(Path.pwd('package.json')))
     assert.isTrue(Is.Module('.js'))
     assert.isTrue(Is.Module('.ts'))
     assert.isTrue(Is.Module(Path.src('helpers/Clean.js')))

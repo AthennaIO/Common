@@ -18,7 +18,7 @@ export default class HttpClientTest {
 
   @BeforeAll()
   public async beforeAll() {
-    await FakeApi.start(8989, Path.stubs('resources/fake-api'))
+    await FakeApi.start(8989, Path.fixtures('resources/fake-api'))
   }
 
   @BeforeEach()
@@ -321,7 +321,7 @@ export default class HttpClientTest {
   @Test()
   public async shouldBeAbleToMakeAGetRequestAndGetTheResponseAsStream({ assert }: Context) {
     const requestStream = HttpClient.builder().url('users').stream()
-    const file = new File(Path.stubs('streamed.json'), Buffer.from(''))
+    const file = new File(Path.fixtures('streamed.json'), Buffer.from(''))
 
     await this.pipeline(requestStream, file.createWriteStream())
     await file.load({ withContent: true })
@@ -329,6 +329,6 @@ export default class HttpClientTest {
     assert.isTrue(file.fileExists)
     assert.deepEqual(file.content.toString(), '[{"id":1,"name":"Robson Trasel"},{"id":2,"name":"Victor Tesoura"}]')
 
-    await File.safeRemove(Path.stubs('streamed.json'))
+    await File.safeRemove(Path.fixtures('streamed.json'))
   }
 }
