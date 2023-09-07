@@ -36,7 +36,7 @@ export class Exec {
 
   public static async concurrently<T = any, R = any>(
     array: T[],
-    callback: (value: T, index: number, array: T[]) => Promise<R>,
+    callback: (value: T, index: number, array: T[]) => Promise<R>
   ): Promise<R[]> {
     return Promise.all(array.map(callback))
   }
@@ -46,10 +46,10 @@ export class Exec {
    */
   public static async command(
     command: string,
-    options?: { ignoreErrors?: boolean },
+    options?: { ignoreErrors?: boolean }
   ): Promise<CommandOutput> {
     options = Options.create(options, {
-      ignoreErrors: false,
+      ignoreErrors: false
     })
 
     const execOptions: ExecOptions = {}
@@ -66,7 +66,7 @@ export class Exec {
       const result: CommandOutput = {
         stdout: '',
         stderr: '',
-        exitCode: 0,
+        exitCode: 0
       }
 
       exec(command, execOptions, (error, stdout, stderr) => {
@@ -129,12 +129,12 @@ export class Exec {
   public static pagination<T = any>(
     data: any[],
     total: number,
-    pagination?: PaginationOptions,
+    pagination?: PaginationOptions
   ): PaginatedResponse<T> {
     pagination = Options.create(pagination, {
       page: 0,
       limit: 10,
-      resourceUrl: '/',
+      resourceUrl: '/'
     })
 
     const totalPages = Math.ceil(total / pagination.limit)
@@ -144,7 +144,7 @@ export class Exec {
       totalItems: total,
       totalPages,
       currentPage: pagination.page,
-      itemsPerPage: pagination.limit,
+      itemsPerPage: pagination.limit
     }
 
     let nextPage = 1
@@ -159,7 +159,7 @@ export class Exec {
       first: `${pagination.resourceUrl}?limit=${meta.itemsPerPage}`,
       previous: `${pagination.resourceUrl}?page=${previousPage}&limit=${meta.itemsPerPage}`,
       next: `${pagination.resourceUrl}?page=${nextPage}&limit=${meta.itemsPerPage}`,
-      last: `${pagination.resourceUrl}?page=${totalPages}&limit=${meta.itemsPerPage}`,
+      last: `${pagination.resourceUrl}?page=${totalPages}&limit=${meta.itemsPerPage}`
     }
 
     return { meta, links, data }

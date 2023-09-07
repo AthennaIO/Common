@@ -52,7 +52,7 @@ export class String {
   public static toSnakeCase(value: string, capitalize?: boolean): string {
     if (capitalize) {
       return changeCase.snakeCase(value, {
-        transform: changeCase.capitalCaseTransform,
+        transform: changeCase.capitalCaseTransform
       })
     }
 
@@ -90,7 +90,7 @@ export class String {
   public static toDotCase(value: string, capitalize?: boolean): string {
     if (capitalize) {
       return changeCase.dotCase(value, {
-        transform: changeCase.capitalCaseTransform,
+        transform: changeCase.capitalCaseTransform
       })
     }
 
@@ -134,7 +134,7 @@ export class String {
    */
   public static ordinalize(value: string | number): string {
     const transformedValue = Math.abs(
-      typeof value === 'string' ? parseInt(value) : value,
+      typeof value === 'string' ? parseInt(value) : value
     )
 
     if (!Number.isFinite(transformedValue) || Number.isNaN(transformedValue)) {

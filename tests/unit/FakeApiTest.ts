@@ -84,7 +84,7 @@ export default class FakeApiTest {
     assert.equal(responseOne.statusCode, 200)
     assert.deepEqual(responseOne.body, [
       { id: 1, name: 'Robson Trasel' },
-      { id: 2, name: 'Victor Tesoura' },
+      { id: 2, name: 'Victor Tesoura' }
     ])
 
     const responseTwo = await HttpClient.get('http://localhost:8989/example', options)

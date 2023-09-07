@@ -15,7 +15,7 @@ export default class JsonTest {
   public async shouldReturnADeepCopyFromObject({ assert }: Context) {
     const object = {
       test: 'hello',
-      hello: () => 'hy',
+      hello: () => 'hy'
     }
 
     const objectCopy = Json.copy(object)
@@ -54,7 +54,7 @@ export default class JsonTest {
   public async shouldCleanDataObjectRemovingAllKeysThatAreNotInKeyArray({ assert }: Context) {
     const data = {
       hello: 'hello',
-      world: 'world',
+      world: 'world'
     }
 
     assert.deepEqual(Json.fillable(data, ['world']), { world: 'world' })
@@ -65,7 +65,7 @@ export default class JsonTest {
   public async shouldBeAbleToObserveChangesOfAnObject({ assert }: Context) {
     const object = {
       joao: 'lenon',
-      hello: 'world',
+      hello: 'world'
     }
 
     const objectProxy = Json.observeChanges(
@@ -78,7 +78,7 @@ export default class JsonTest {
       },
       1,
       2,
-      3,
+      3
     )
 
     objectProxy.joao = 'oi'
@@ -92,10 +92,10 @@ export default class JsonTest {
       hello: {
         world: {
           value: {
-            hello: 'Hello World!',
-          },
-        },
-      },
+            hello: 'Hello World!'
+          }
+        }
+      }
     }
 
     const value = Json.get(object, 'hello.world.value.hello')
@@ -138,16 +138,16 @@ export default class JsonTest {
       details: {
         car: {
           color: 'white',
-          name: 'BMW E46 M3',
+          name: 'BMW E46 M3'
         },
         job: 'Software Engineer',
-        favoriteColor: 'black',
+        favoriteColor: 'black'
       },
       createdAt: '2000-12-09T00:00:00.000Z',
       updatedAt: '2022-12-09T00:00:00.000Z',
       deletedAt: null,
       willSetDefaultOne: 'Hello',
-      willSetDefaultTwo: 'Hello',
+      willSetDefaultTwo: 'Hello'
     })
 
     const ignores = Json.builder({ ignoreNull: true, ignoreUndefined: true, defaultValue: 'Global' })
@@ -161,7 +161,7 @@ export default class JsonTest {
       name: 'Global',
       email: 'Global',
       age: 0,
-      createdAt: '2000-12-09T00:00:00.000Z',
+      createdAt: '2000-12-09T00:00:00.000Z'
     })
   }
 
@@ -186,7 +186,7 @@ export default class JsonTest {
     assert.equal(builder.get('deletedAt', new Date('2022-12-09').toISOString()), null)
     assert.equal(
       builder.get('deletedAt.notFound', new Date('2022-12-09').toISOString()),
-      new Date('2022-12-09').toISOString(),
+      new Date('2022-12-09').toISOString()
     )
   }
 
@@ -248,7 +248,7 @@ export default class JsonTest {
     assert.deepEqual(me, {
       name: 'João Lenon',
       email: 'lenon@athenna.io',
-      age: 22,
+      age: 22
     })
   }
 
@@ -293,7 +293,7 @@ export default class JsonTest {
     assert.deepEqual(entries, [
       ['name', 'João Lenon'],
       ['email', 'lenon@athenna.io'],
-      ['age', 22],
+      ['age', 22]
     ])
   }
 
@@ -307,7 +307,7 @@ export default class JsonTest {
     assert.deepEqual(builder.entries(), [
       ['name', 'João Lenon'],
       ['email', 'lenon@athenna.io'],
-      ['age', 22],
+      ['age', 22]
     ])
   }
 
@@ -345,7 +345,7 @@ export default class JsonTest {
     assert.deepEqual(entries, [
       ['NAME', 'João Lenon'],
       ['EMAIL', 'lenon@athenna.io'],
-      ['AGE', 22],
+      ['AGE', 22]
     ])
   }
 }

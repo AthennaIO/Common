@@ -20,7 +20,7 @@ import type {
   Query,
   Request,
   Response,
-  RetryStrategyCallback,
+  RetryStrategyCallback
 } from '#src/types'
 
 import type {
@@ -45,7 +45,7 @@ import type {
   DnsLookupIpVersion,
   BeforeRedirectHook,
   StringifyJsonFunction,
-  CreateConnectionFunction,
+  CreateConnectionFunction
 } from 'got'
 
 export class HttpClientBuilder {
@@ -897,14 +897,14 @@ export class HttpClientBuilder {
       retryAfter,
       attemptCount,
       retryOptions,
-      computedValue,
+      computedValue
     }) => {
       return strategy(error, attemptCount, {
         error,
         retryAfter,
         attemptCount,
         retryOptions,
-        computedValue,
+        computedValue
       })
     }
 
@@ -1004,7 +1004,7 @@ export class HttpClientBuilder {
    * Set pagination options.
    */
   public pagination<ElementType = any, BodyType = any>(
-    options: PaginationOptions<ElementType, BodyType>,
+    options: PaginationOptions<ElementType, BodyType>
   ): HttpClientBuilder {
     this.options.pagination = options
 
@@ -1103,7 +1103,7 @@ export class HttpClientBuilder {
   public patch<T = any>(
     url?: string | URL,
     body?: Response,
-    options: Request = {},
+    options: Request = {}
   ) {
     return this.method('PATCH')
       .url(url || options.url || this.options.url)
@@ -1170,7 +1170,7 @@ export class HttpClient {
   public static post<T = any>(
     url?: string | URL,
     body?: Body,
-    options?: Request,
+    options?: Request
   ) {
     return this._builder.post<T>(url, body, options)
   }
@@ -1181,7 +1181,7 @@ export class HttpClient {
   public static put<T = any>(
     url?: string | URL,
     body?: Body,
-    options?: Request,
+    options?: Request
   ) {
     return this._builder.put<T>(url, body, options)
   }
@@ -1192,7 +1192,7 @@ export class HttpClient {
   public static patch<T = any>(
     url?: string | URL,
     body?: Body,
-    options?: Request,
+    options?: Request
   ) {
     return this._builder.patch<T>(url, body, options)
   }

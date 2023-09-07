@@ -14,7 +14,7 @@ export class NotFoundFolderException extends Exception {
     super({
       code: 'E_NOT_FOUND_FILE',
       message: `The folder ${filePath} doesnt exist.`,
-      help: 'Try using Folder.create method to create the folder.',
+      help: 'Try using Folder.create method to create the folder.'
     })
   }
 }

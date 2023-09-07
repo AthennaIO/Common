@@ -65,7 +65,7 @@ export class FakeApi {
    */
   public static async start(
     port = 8989,
-    folderPath = Path.resources('fake-api'),
+    folderPath = Path.resources('fake-api')
   ): Promise<void> {
     if (folderPath) {
       await this.registerFolder(folderPath)
@@ -92,7 +92,7 @@ export class FakeApi {
     const files = new Folder(path).getFilesByPattern('**/*.json')
 
     const promises = files.map(file =>
-      file.load().then(fileLoaded => this.registerFile(fileLoaded)),
+      file.load().then(fileLoaded => this.registerFile(fileLoaded))
     )
 
     await Promise.all(promises)
@@ -241,7 +241,7 @@ export class FakeApiBuilder {
 
         return response.status(statusCode).headers(headers).send(body)
       },
-      ...options,
+      ...options
     })
   }
 }

@@ -24,7 +24,7 @@ import {
   statSync,
   writeFileSync,
   ReadStream,
-  WriteStream,
+  WriteStream
 } from 'node:fs'
 
 import { lookup } from 'mime-types'
@@ -145,7 +145,7 @@ export class File {
     filePath: string,
     content: string | Buffer = undefined,
     mockedValues = false,
-    isCopy = false,
+    isCopy = false
   ) {
     const { ext, dir, name, base, mime, path } = File.parsePath(filePath)
 
@@ -224,7 +224,7 @@ export class File {
    */
   public static async createFileOfSize(
     filePath: string,
-    size: number,
+    size: number
   ): Promise<typeof File> {
     const { dir, path } = File.parsePath(filePath)
 
@@ -298,7 +298,7 @@ export class File {
       originalPath: this.originalPath,
       originalHref: this.originalHref,
       originalFileExists: this.originalFileExists,
-      content: this.content,
+      content: this.content
     })
   }
 
@@ -311,7 +311,7 @@ export class File {
   }): File {
     options = Options.create(options, {
       withContent: true,
-      isInternalLoad: false,
+      isInternalLoad: false
     })
 
     if (!this.fileExists && this.content) {
@@ -343,7 +343,7 @@ export class File {
       debug(
         `file %s with %s has been loaded in heap memory.`,
         this.base,
-        this.fileSize,
+        this.fileSize
       )
     }
 
@@ -361,7 +361,7 @@ export class File {
   }): Promise<File> {
     options = Options.create(options, {
       withContent: true,
-      isInternalLoad: false,
+      isInternalLoad: false
     })
 
     if (!this.fileExists && this.content) {
@@ -414,7 +414,7 @@ export class File {
           debug(
             `file %s with %s has been loaded in heap memory.`,
             this.base,
-            this.fileSize,
+            this.fileSize
           )
         }
 
@@ -468,13 +468,13 @@ export class File {
    */
   public copySync(
     path: string,
-    options?: { withContent?: boolean; mockedValues?: boolean },
+    options?: { withContent?: boolean; mockedValues?: boolean }
   ): File {
     path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
-      mockedValues: false,
+      mockedValues: false
     })
 
     this.loadSync({ isInternalLoad: true, withContent: options.withContent })
@@ -483,7 +483,7 @@ export class File {
       path,
       this.getContentSync(),
       options.mockedValues,
-      true,
+      true
     ).loadSync(options)
   }
 
@@ -492,13 +492,13 @@ export class File {
    */
   public async copy(
     path: string,
-    options?: { withContent?: boolean; mockedValues?: boolean },
+    options?: { withContent?: boolean; mockedValues?: boolean }
   ): Promise<File> {
     path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
-      mockedValues: false,
+      mockedValues: false
     })
 
     await this.load({ isInternalLoad: true, withContent: options.withContent })
@@ -507,7 +507,7 @@ export class File {
       path,
       await this.getContent(),
       options.mockedValues,
-      true,
+      true
     ).load(options)
   }
 
@@ -516,13 +516,13 @@ export class File {
    */
   public moveSync(
     path: string,
-    options?: { withContent?: boolean; mockedValues?: boolean },
+    options?: { withContent?: boolean; mockedValues?: boolean }
   ): File {
     path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
-      mockedValues: false,
+      mockedValues: false
     })
 
     this.loadSync({ isInternalLoad: true, withContent: options.withContent })
@@ -531,7 +531,7 @@ export class File {
       path,
       this.getContentSync(),
       options.mockedValues,
-      false,
+      false
     ).loadSync(options)
 
     this.removeSync()
@@ -544,13 +544,13 @@ export class File {
    */
   public async move(
     path: string,
-    options?: { withContent?: boolean; mockedValues?: boolean },
+    options?: { withContent?: boolean; mockedValues?: boolean }
   ): Promise<File> {
     path = File.parsePath(path).path
 
     options = Options.create(options, {
       withContent: true,
-      mockedValues: false,
+      mockedValues: false
     })
 
     await this.load({ isInternalLoad: true, withContent: options.withContent })
@@ -559,7 +559,7 @@ export class File {
       path,
       await this.getContent(),
       options.mockedValues,
-      false,
+      false
     ).load(options)
 
     await this.remove()
@@ -626,10 +626,10 @@ export class File {
    */
   public async setContent(
     content: string | Buffer,
-    options?: { withContent?: boolean },
+    options?: { withContent?: boolean }
   ): Promise<File> {
     options = Options.create(options, {
-      withContent: false,
+      withContent: false
     })
 
     await this.load({ isInternalLoad: true, withContent: false })
@@ -654,10 +654,10 @@ export class File {
    */
   public setContentSync(
     content: string | Buffer,
-    options?: { withContent?: boolean },
+    options?: { withContent?: boolean }
   ): File {
     options = Options.create(options, {
-      withContent: false,
+      withContent: false
     })
 
     this.loadSync({ isInternalLoad: true, withContent: false })
@@ -780,7 +780,7 @@ export class File {
     builder?: ObjectBuilderOptions
   }): Promise<ObjectBuilder> {
     return this.getContentAsJson(options).then(content =>
-      new ObjectBuilder().set(content),
+      new ObjectBuilder().set(content)
     )
   }
 
@@ -798,7 +798,7 @@ export class File {
    * Create a readable stream of the file.
    */
   public createReadStream(
-    options?: BufferEncoding | StreamOptions<any>,
+    options?: BufferEncoding | StreamOptions<any>
   ): ReadStream {
     return createReadStream(this.originalPath, options)
   }
@@ -807,7 +807,7 @@ export class File {
    * Create a writable stream of the file.
    */
   public createWriteStream(
-    options?: BufferEncoding | StreamOptions<any>,
+    options?: BufferEncoding | StreamOptions<any>
   ): WriteStream {
     if (!this.fileExists) {
       this.loadSync()

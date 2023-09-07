@@ -14,7 +14,7 @@ export class NotFoundResolveException extends Exception {
     super({
       code: 'E_NOT_FOUND_RESOLVE',
       message: `The importa.meta.resolve function does not exist in import.meta object.`,
-      help: 'The resolve function is not defined because the --experimental-import-meta-resolve option in Node CLI is required when running your application. Try to set up this option when running your application.',
+      help: 'The resolve function is not defined because the --experimental-import-meta-resolve option in Node CLI is required when running your application. Try to set up this option when running your application.'
     })
   }
 }

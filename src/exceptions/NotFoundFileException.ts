@@ -14,7 +14,7 @@ export class NotFoundFileException extends Exception {
     super({
       code: 'E_NOT_FOUND_FILE',
       message: `The file ${filePath} doesnt exist.`,
-      help: 'Try using File.create method to create the file.',
+      help: 'Try using File.create method to create the file.'
     })
   }
 }

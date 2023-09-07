@@ -30,7 +30,7 @@ export class ObjectBuilder {
       ignoreNull: false,
       ignoreUndefined: true,
       defaultValue: null,
-      referencedValues: false,
+      referencedValues: false
     })
 
     this.object = {}
@@ -133,7 +133,7 @@ export class ObjectBuilder {
    * Execute some operation for each key of the object.
    */
   public forEachKey<T = any>(
-    closure: (key: string, index?: number, array?: string[]) => T,
+    closure: (key: string, index?: number, array?: string[]) => T
   ): T[] {
     return this.keys().map(closure)
   }
@@ -142,7 +142,7 @@ export class ObjectBuilder {
    * Execute some operation for each value of the object.
    */
   public forEachValue<T = any, K = any>(
-    closure: (value: T, index?: number, array?: T[]) => K,
+    closure: (value: T, index?: number, array?: T[]) => K
   ): K[] {
     return this.values().map(closure)
   }
@@ -151,7 +151,7 @@ export class ObjectBuilder {
    * Execute some operation for each entry of the object.
    */
   public forEachEntry<T = any, K = any>(
-    closure: (value: [string, T], index?: number, array?: [string, T][]) => K,
+    closure: (value: [string, T], index?: number, array?: [string, T][]) => K
   ): K[] {
     return this.entries().map(closure)
   }
@@ -280,7 +280,7 @@ export class Json {
    */
   public static parse(
     text: string,
-    reviver?: (this: any, key: string, value: any) => any,
+    reviver?: (this: any, key: string, value: any) => any
   ): any {
     try {
       return JSON.parse(text, reviver)
@@ -300,7 +300,7 @@ export class Json {
         target[key] = value
 
         return true
-      },
+      }
     })
   }
 
@@ -309,7 +309,7 @@ export class Json {
    */
   public static fillable(
     data: Record<string, any>,
-    keys: string[],
+    keys: string[]
   ): Record<string, any> {
     return keys.reduce((previous, key) => {
       if (data[key]) {
@@ -326,7 +326,7 @@ export class Json {
   public static get<T = any>(
     object: T,
     key: string,
-    defaultValue: any = undefined,
+    defaultValue: any = undefined
   ): T | undefined {
     if (key === '' && object) {
       return object

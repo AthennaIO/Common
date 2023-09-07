@@ -62,7 +62,7 @@ export default class HttpClientTest {
 
   @Test()
   public async shouldBeOnlyBeAbleToSetOptionsInBuilderAndReuseInNextRequestsUsingTheSetBuildMethod({
-    assert,
+    assert
   }: Context) {
     await HttpClient.builder().responseType('json').url('/users').get().json()
 
@@ -294,7 +294,7 @@ export default class HttpClientTest {
   @Test()
   public async shouldBeAbleToSetupBeforeRetryHooksForRequests({ assert }: Context) {
     const builder = HttpClient.builder().setBeforeRetryHook((error, _retryCount) =>
-      assert.deepEqual(error.name, 'ERR_NON_2XX_3XX_RESPONSE'),
+      assert.deepEqual(error.name, 'ERR_NON_2XX_3XX_RESPONSE')
     )
 
     try {

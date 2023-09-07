@@ -30,7 +30,7 @@ export class Module {
     debug(
       'not found a default module, picking the first one %s from %s',
       exported[0],
-      exported,
+      exported
     )
 
     return module[exported[0]]
@@ -50,7 +50,7 @@ export class Module {
    */
   public static async getWithAlias(
     module: any | Promise<any>,
-    subAlias: string,
+    subAlias: string
   ): Promise<{ alias: string; module: any }> {
     module = await Module.get(module)
 
@@ -87,7 +87,7 @@ export class Module {
    */
   public static async getAllWithAlias(
     modules: any[],
-    subAlias: string,
+    subAlias: string
   ): Promise<{ alias: string; module: any }[]> {
     const promises = modules.map(m => Module.getWithAlias(m, subAlias))
 
@@ -108,7 +108,7 @@ export class Module {
    */
   public static async getFromWithAlias(
     path: string,
-    subAlias: string,
+    subAlias: string
   ): Promise<{ alias: string; module: any }> {
     const module = await Module.import(path)
 
@@ -131,7 +131,7 @@ export class Module {
    */
   public static async getAllFromWithAlias(
     path: string,
-    subAlias: string,
+    subAlias: string
   ): Promise<{ alias: string; module: any }[]> {
     const files = await Module.getAllJSFilesFrom(path)
 
@@ -209,7 +209,7 @@ export class Module {
       'trying to resolve path: %s, with parent URL: %s and query params: %s',
       path,
       meta,
-      queries,
+      queries
     )
 
     return import.meta
@@ -222,7 +222,7 @@ export class Module {
    */
   public static createDirname(
     url = import.meta.url,
-    setInGlobal = false,
+    setInGlobal = false
   ): string {
     const __dirname = dirname(Module.createFilename(url, false))
 
@@ -238,7 +238,7 @@ export class Module {
    */
   public static createFilename(
     url = import.meta.url,
-    setInGlobal = false,
+    setInGlobal = false
   ): string {
     const __filename = fileURLToPath(url)
 
@@ -254,7 +254,7 @@ export class Module {
    */
   public static createRequire(
     url = import.meta.url,
-    setInGlobal = false,
+    setInGlobal = false
   ): NodeRequire {
     const require = createRequire(url)
 

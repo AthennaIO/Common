@@ -23,7 +23,7 @@ export default class CleanTest {
       nullValue: null,
       undefinedValue: undefined,
       subObject: { joao: 'joao', array: [null] },
-      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]],
+      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]]
     }
   }
 
@@ -43,7 +43,7 @@ export default class CleanTest {
       2,
       3,
       { joao: 'joao', lenon: null },
-      ['hey', null],
+      ['hey', null]
     ])
   }
 
@@ -56,7 +56,7 @@ export default class CleanTest {
       2,
       3,
       { joao: 'joao' },
-      ['hey'],
+      ['hey']
     ])
   }
 
@@ -69,7 +69,7 @@ export default class CleanTest {
       emptyArray: [],
       emptyObject: {},
       subObject: { joao: 'joao', array: [null] },
-      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]],
+      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]]
     })
   }
 
@@ -80,7 +80,7 @@ export default class CleanTest {
     assert.deepEqual(Clean.cleanObject(object, { removeEmpty: true }), {
       key: 'value',
       subObject: { joao: 'joao', array: [null] },
-      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]],
+      subArray: [null, 1, { joao: 'joao', lenon: null }, {}, [], ['hey', null]]
     })
   }
 
@@ -91,7 +91,7 @@ export default class CleanTest {
     assert.deepEqual(Clean.cleanObject(object, { removeEmpty: true, recursive: true }), {
       key: 'value',
       subObject: { joao: 'joao' },
-      subArray: [1, { joao: 'joao' }, ['hey']],
+      subArray: [1, { joao: 'joao' }, ['hey']]
     })
   }
 }

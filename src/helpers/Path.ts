@@ -50,6 +50,7 @@ export class Path {
     logs: 'storage/logs',
     tests: 'tests',
     stubs: 'tests/stubs',
+    fixtures: 'tests/fixtures'
   }
 
   /**
@@ -418,6 +419,22 @@ export class Path {
    */
   public static setStubs(directory: string): typeof Path {
     this.dirs.stubs = directory
+
+    return this
+  }
+
+  /**
+   * Return the fixtures' path of your project.
+   */
+  public static fixtures(subPath = sep): string {
+    return this.pwd(this.dirs.fixtures + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of fixtures folder.
+   */
+  public static setFixtures(directory: string): typeof Path {
+    this.dirs.fixtures = directory
 
     return this
   }

@@ -38,16 +38,16 @@ export default class ParserTest {
     assert.equal(
       Parser.arrayToString(['1', '2', '3', '4', '5', '6'], {
         separator: '|',
-        lastSeparator: '|',
+        lastSeparator: '|'
       }),
-      '1|2|3|4|5|6',
+      '1|2|3|4|5|6'
     )
 
     assert.equal(
       Parser.arrayToString(['1', '2'], {
-        pairSeparator: '-',
+        pairSeparator: '-'
       }),
-      '1-2',
+      '1-2'
     )
   }
 
@@ -55,7 +55,7 @@ export default class ParserTest {
   public async shouldParseJsonToFormData({ assert }: Context) {
     const json = {
       name: 'lenon',
-      email: 'lenonSec7@gmail.com',
+      email: 'lenonSec7@gmail.com'
     }
 
     const formData = Parser.jsonToFormData(json)
@@ -71,7 +71,7 @@ export default class ParserTest {
 
     assert.deepEqual(json, {
       name: 'lenon',
-      email: 'lenonSec7@gmail.com',
+      email: 'lenonSec7@gmail.com'
     })
   }
 
@@ -150,7 +150,7 @@ export default class ParserTest {
     assert.deepEqual(connectionObject.options, {
       paramOne: '1',
       paramTwo: '2',
-      paramThree: '3',
+      paramThree: '3'
     })
 
     // connection object to database url
@@ -195,7 +195,7 @@ export default class ParserTest {
     assert.equal(connectionObject.database, 'postgres')
     assert.deepEqual(connectionObject.options, {
       options: '10',
-      test: '10',
+      test: '10'
     })
 
     // connection object to database url

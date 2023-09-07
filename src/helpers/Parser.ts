@@ -35,7 +35,7 @@ export class Parser {
       separator?: string
       pairSeparator?: string
       lastSeparator?: string
-    },
+    }
   ): string {
     if (values.length === 0) {
       return ''
@@ -51,7 +51,7 @@ export class Parser {
 
     const normalized = Options.create(options, {
       separator: ', ',
-      lastSeparator: ' and ',
+      lastSeparator: ' and '
     })
 
     return (
@@ -121,7 +121,7 @@ export class Parser {
    */
   public static sizeToByte(
     value: number,
-    options?: bytes.BytesOptions,
+    options?: bytes.BytesOptions
   ): string {
     return bytes.format(value, options)
   }
@@ -190,7 +190,7 @@ export class Parser {
       host: null,
       port: null,
       database: matcher[8],
-      options: {},
+      options: {}
     }
 
     if (matcher[5].includes(',')) {
@@ -267,7 +267,7 @@ export class Parser {
    */
   public static objectToBuilder(
     object: Record<string, any>,
-    options: ObjectBuilderOptions = {},
+    options: ObjectBuilderOptions = {}
   ): ObjectBuilder {
     const objectBuilder = new ObjectBuilder(options)
 
@@ -283,7 +283,7 @@ export class Parser {
    */
   public static arrayObjectToArrayBuilder(
     objects: Record<string, any>[],
-    options: ObjectBuilderOptions = {},
+    options: ObjectBuilderOptions = {}
   ): ObjectBuilder[] {
     return objects.map(object => Parser.objectToBuilder(object, options))
   }

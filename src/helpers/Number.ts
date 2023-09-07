@@ -23,7 +23,7 @@ export class Number {
    */
   public static getKmRadius(
     centerCord: { latitude: number; longitude: number },
-    pointCord: { latitude: number; longitude: number },
+    pointCord: { latitude: number; longitude: number }
   ): number {
     const deg2rad = deg => deg * (Math.PI / 180)
 

@@ -227,7 +227,7 @@ export class Color {
     return Color.chalk.reset(value).replace(
       // eslint-disable-next-line no-control-regex
       /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
-      '',
+      ''
     )
   }
 
@@ -242,7 +242,7 @@ export class Color {
    * Paint by the http method.
    */
   public static httpMethod(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD',
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD'
   ): ChalkInstance {
     return this[method]
   }
@@ -276,7 +276,7 @@ export class Color {
 
     matches.forEach(match => {
       const [chalkMethodsInBrackets, chalkMethodsString] = match.match(
-        /\{(.*?)}/,
+        /\{(.*?)}/
       ) as any
 
       const message = match

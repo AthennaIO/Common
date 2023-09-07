@@ -18,7 +18,7 @@ import {
   readdirSync,
   rmSync,
   statSync,
-  Dirent,
+  Dirent
 } from 'node:fs'
 
 import { Json } from '#src/helpers/Json'
@@ -152,7 +152,7 @@ export class Folder {
 
     return (await Promise.all(stats)).reduce(
       (accumulator, { size }) => accumulator + size,
-      0,
+      0
     )
   }
 
@@ -244,7 +244,7 @@ export class Folder {
   private static getSubFolders(
     folder: Folder,
     recursive: boolean,
-    pattern?: string,
+    pattern?: string
   ): Folder[] {
     const subFolders = []
 
@@ -307,7 +307,7 @@ export class Folder {
       originalPath: this.originalPath,
       folderExists: this.folderExists,
       isCopy: this.isCopy,
-      originalFolderExists: this.originalFolderExists,
+      originalFolderExists: this.originalFolderExists
     })
   }
 
@@ -322,7 +322,7 @@ export class Folder {
     options = Options.create(options, {
       withSub: true,
       withContent: false,
-      isInternalLoad: false,
+      isInternalLoad: false
     })
 
     if (!this.folderExists) {
@@ -349,7 +349,7 @@ export class Folder {
     this.loadSubSync(
       this.path,
       readdirSync(this.path, { withFileTypes: true }),
-      options.withContent,
+      options.withContent
     )
 
     return this
@@ -366,7 +366,7 @@ export class Folder {
     options = Options.create(options, {
       withSub: true,
       withContent: false,
-      isInternalLoad: false,
+      isInternalLoad: false
     })
 
     if (!this.folderExists) {
@@ -393,7 +393,7 @@ export class Folder {
     await this.loadSub(
       this.path,
       await promises.readdir(this.path, { withFileTypes: true }),
-      options.withContent,
+      options.withContent
     )
 
     return this
@@ -448,30 +448,30 @@ export class Folder {
       withSub?: boolean
       withContent?: boolean
       mockedValues?: boolean
-    },
+    }
   ): Folder {
     path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
       withContent: false,
-      mockedValues: false,
+      mockedValues: false
     })
 
     this.loadSync({
       withSub: options.withSub,
       withContent: options.withContent,
-      isInternalLoad: true,
+      isInternalLoad: true
     })
 
     const folder = new Folder(path, options.mockedValues, true).loadSync(
-      options,
+      options
     )
 
     folder.files = this.files.map(f => {
       return f.copySync(`${folder.path}/${f.base}`, {
         mockedValues: options.mockedValues,
-        withContent: options.withContent,
+        withContent: options.withContent
       })
     })
 
@@ -479,7 +479,7 @@ export class Folder {
       return f.copySync(`${folder.path}/${f.base}`, {
         withSub: options.withSub,
         withContent: options.withContent,
-        mockedValues: options.mockedValues,
+        mockedValues: options.mockedValues
       })
     })
 
@@ -495,33 +495,33 @@ export class Folder {
       withSub?: boolean
       withContent?: boolean
       mockedValues?: boolean
-    },
+    }
   ): Promise<Folder> {
     path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
       withContent: false,
-      mockedValues: false,
+      mockedValues: false
     })
 
     await this.load({
       withSub: options.withSub,
       withContent: options.withContent,
-      isInternalLoad: true,
+      isInternalLoad: true
     })
 
     const folder = await new Folder(path, options.mockedValues, true).load(
-      options,
+      options
     )
 
     folder.files = await Promise.all(
       this.files.map(f => {
         return f.copy(`${folder.path}/${f.base}`, {
           mockedValues: options.mockedValues,
-          withContent: options.withContent,
+          withContent: options.withContent
         })
-      }),
+      })
     )
 
     folder.folders = await Promise.all(
@@ -529,9 +529,9 @@ export class Folder {
         return f.copy(`${folder.path}/${f.name}`, {
           withSub: options.withSub,
           mockedValues: options.mockedValues,
-          withContent: options.withContent,
+          withContent: options.withContent
         })
-      }),
+      })
     )
 
     return folder
@@ -546,30 +546,30 @@ export class Folder {
       withSub?: boolean
       withContent?: boolean
       mockedValues?: boolean
-    },
+    }
   ): Folder {
     path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
       withContent: false,
-      mockedValues: false,
+      mockedValues: false
     })
 
     this.loadSync({
       withSub: options.withSub,
       withContent: options.withContent,
-      isInternalLoad: true,
+      isInternalLoad: true
     })
 
     const folder = new Folder(path, options.mockedValues, true).loadSync(
-      options,
+      options
     )
 
     folder.files = this.files.map(f => {
       return f.moveSync(`${folder.path}/${f.base}`, {
         mockedValues: options.mockedValues,
-        withContent: options.withContent,
+        withContent: options.withContent
       })
     })
 
@@ -577,7 +577,7 @@ export class Folder {
       return f.moveSync(`${folder.path}/${f.name}`, {
         withSub: options.withSub,
         mockedValues: options.mockedValues,
-        withContent: options.withContent,
+        withContent: options.withContent
       })
     })
 
@@ -595,33 +595,33 @@ export class Folder {
       withSub?: boolean
       withContent?: boolean
       mockedValues?: boolean
-    },
+    }
   ): Promise<Folder> {
     path = Folder.parsePath(path).path
 
     options = Options.create(options, {
       withSub: true,
       withContent: false,
-      mockedValues: false,
+      mockedValues: false
     })
 
     await this.load({
       withSub: options.withSub,
       withContent: options.withContent,
-      isInternalLoad: true,
+      isInternalLoad: true
     })
 
     const folder = await new Folder(path, options.mockedValues, true).load(
-      options,
+      options
     )
 
     folder.files = await Promise.all(
       this.files.map(f => {
         return f.move(`${folder.path}/${f.base}`, {
           mockedValues: options.mockedValues,
-          withContent: options.withContent,
+          withContent: options.withContent
         })
-      }),
+      })
     )
 
     folder.folders = await Promise.all(
@@ -629,9 +629,9 @@ export class Folder {
         return f.move(`${folder.path}/${f.name}`, {
           withSub: options.withSub,
           mockedValues: options.mockedValues,
-          withContent: options.withContent,
+          withContent: options.withContent
         })
-      }),
+      })
     )
 
     await this.remove()
@@ -719,7 +719,7 @@ export class Folder {
   private loadSubSync(
     path: string,
     dirents: Dirent[],
-    withContent: boolean,
+    withContent: boolean
   ): void {
     dirents.forEach(dirent => {
       const name = resolve(path, dirent.name)
@@ -728,7 +728,7 @@ export class Folder {
         const folder = new Folder(name).loadSync({
           withSub: true,
           withContent,
-          isInternalLoad: true,
+          isInternalLoad: true
         })
 
         this.folders.push(folder)
@@ -738,7 +738,7 @@ export class Folder {
 
       const file = new File(name).loadSync({
         withContent,
-        isInternalLoad: true,
+        isInternalLoad: true
       })
 
       this.files.push(file)
@@ -751,7 +751,7 @@ export class Folder {
   private async loadSub(
     path: string,
     dirents: Dirent[],
-    withContent?: boolean,
+    withContent?: boolean
   ): Promise<void> {
     const files = []
     const folders = []
@@ -763,7 +763,7 @@ export class Folder {
         const folder = new Folder(name).load({
           withSub: true,
           withContent,
-          isInternalLoad: true,
+          isInternalLoad: true
         })
 
         folders.push(folder)
@@ -773,7 +773,7 @@ export class Folder {
 
       const file = new File(name).load({
         withContent,
-        isInternalLoad: true,
+        isInternalLoad: true
       })
 
       files.push(file)

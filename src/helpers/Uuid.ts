@@ -17,7 +17,7 @@ export class Uuid {
    */
   public static verify(
     token: string,
-    options: { prefix?: string; ignorePrefix?: boolean } = {},
+    options: { prefix?: string; ignorePrefix?: boolean } = {}
   ): boolean {
     if (!token) {
       return false

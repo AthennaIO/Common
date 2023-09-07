@@ -58,7 +58,7 @@ export class Route {
     queryString
       .split('&')
       .forEach(queries =>
-        queryNames.push(decodeURIComponent(queries.split('=')[0])),
+        queryNames.push(decodeURIComponent(queries.split('=')[0]))
       )
 
     return queryNames
@@ -69,7 +69,7 @@ export class Route {
    */
   public static getParamsValue(
     routeWithParams: string,
-    routeWithValues: string,
+    routeWithValues: string
   ): any {
     routeWithParams = this.removeQueryParams(routeWithParams)
     routeWithValues = this.removeQueryParams(routeWithValues)
@@ -87,7 +87,7 @@ export class Route {
       if (!param.startsWith(':')) return
 
       params[decodeURIComponent(param.replace(':', ''))] = decodeURIComponent(
-        routeWithValuesArray[i],
+        routeWithValuesArray[i]
       )
     })
 

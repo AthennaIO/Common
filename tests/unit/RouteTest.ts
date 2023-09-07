@@ -34,7 +34,7 @@ export default class RouteTest {
     assert.deepEqual(Route.getQueryParamsValue(path), {
       page: '1',
       limit: '10',
-      created_at: '1995-12-17T03:24:00',
+      created_at: '1995-12-17T03:24:00'
     })
   }
 
@@ -60,7 +60,7 @@ export default class RouteTest {
 
     assert.deepEqual(Route.getParamsValue(pathWithParams, pathWithValues), {
       id: '1',
-      post_id: '2',
+      post_id: '2'
     })
   }
 
