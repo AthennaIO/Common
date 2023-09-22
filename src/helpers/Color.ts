@@ -175,49 +175,72 @@ export class Color {
    * Paint http method.
    */
   static get GET(): ChalkInstance {
-    return this.purple
+    return Color.chalk.bgHex('#7628c8').bold
   }
 
   /**
    * Paint http method.
    */
   static get HEAD(): ChalkInstance {
-    return this.cyan
+    return Color.chalk.bgCyan.bold
   }
 
   /**
    * Paint http method.
    */
   static get PUT(): ChalkInstance {
-    return this.orange
+    return Color.chalk.bgHex('#f18b0e').bold
   }
 
   /**
    * Paint http method.
    */
   static get PATCH(): ChalkInstance {
-    return this.yellow
+    return Color.chalk.bgYellow.bold
   }
 
   /**
    * Paint http method.
    */
   static get POST(): ChalkInstance {
-    return this.green
+    return Color.chalk.bgGreen.bold
   }
 
   /**
    * Paint http method.
    */
   static get DELETE(): ChalkInstance {
-    return this.red
+    return Color.chalk.bgRed.bold
   }
 
   /**
    * Paint http method.
    */
   static get OPTIONS(): ChalkInstance {
-    return this.cyan
+    return Color.chalk.bgCyan.bold
+  }
+
+  /**
+   * Get the color by status code.
+   */
+  public static statusCode(statusCode: number): ChalkInstance {
+    if (statusCode >= 200 && statusCode < 300) {
+      return Color.chalk.green
+    }
+
+    if (statusCode >= 300 && statusCode < 400) {
+      return Color.chalk.cyan
+    }
+
+    if (statusCode >= 400 && statusCode < 500) {
+      return Color.chalk.yellow
+    }
+
+    if (statusCode >= 500) {
+      return Color.chalk.red
+    }
+
+    return Color.chalk.grey
   }
 
   /**
