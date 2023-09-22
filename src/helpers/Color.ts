@@ -20,227 +20,227 @@ export class Color {
   /**
    * Paint as bold.
    */
-  static get bold(): ChalkInstance {
+  public static get bold(): ChalkInstance {
     return Color.chalk.bold
   }
 
   /**
    * Paint as dim.
    */
-  static get dim(): ChalkInstance {
+  public static get dim(): ChalkInstance {
     return Color.chalk.dim
   }
 
   /**
    * Paint as italic.
    */
-  static get italic(): ChalkInstance {
+  public static get italic(): ChalkInstance {
     return Color.chalk.italic
   }
 
   /**
    * Paint as underline.
    */
-  static get underline(): ChalkInstance {
+  public static get underline(): ChalkInstance {
     return Color.chalk.underline
   }
 
   /**
    * Paint as inverse.
    */
-  static get inverse(): ChalkInstance {
+  public static get inverse(): ChalkInstance {
     return Color.chalk.inverse
   }
 
   /**
    * Paint as strikethrough.
    */
-  static get strikethrough(): ChalkInstance {
+  public static get strikethrough(): ChalkInstance {
     return Color.chalk.strikethrough
   }
 
   /**
    * Paint as black.
    */
-  static get black(): ChalkInstance {
+  public static get black(): ChalkInstance {
     return Color.chalk.black
   }
 
   /**
    * Paint as gray.
    */
-  static get gray(): ChalkInstance {
+  public static get gray(): ChalkInstance {
     return Color.chalk.gray
   }
 
   /**
    * Paint as purple.
    */
-  static get purple(): ChalkInstance {
+  public static get purple(): ChalkInstance {
     return Color.chalk.hex('#7628c8')
   }
 
   /**
    * Paint as yellow.
    */
-  static get yellow(): ChalkInstance {
+  public static get yellow(): ChalkInstance {
     return Color.chalk.yellow
   }
 
   /**
    * Paint as cyan.
    */
-  static get cyan(): ChalkInstance {
+  public static get cyan(): ChalkInstance {
     return Color.chalk.cyan
   }
 
   /**
    * Paint as white.
    */
-  static get white(): ChalkInstance {
+  public static get white(): ChalkInstance {
     return Color.chalk.white
   }
 
   /**
    * Paint as orange.
    */
-  static get orange(): ChalkInstance {
+  public static get orange(): ChalkInstance {
     return Color.chalk.hex('#f18b0e')
   }
 
   /**
    * Paint as green.
    */
-  static get green(): ChalkInstance {
+  public static get green(): ChalkInstance {
     return Color.chalk.green
   }
 
   /**
    * Paint as red.
    */
-  static get red(): ChalkInstance {
+  public static get red(): ChalkInstance {
     return Color.chalk.red
   }
 
   /**
    * Paint debugs.
    */
-  static get trace(): ChalkInstance {
+  public static get trace(): ChalkInstance {
     return this.gray
   }
 
   /**
    * Paint debugs.
    */
-  static get debug(): ChalkInstance {
+  public static get debug(): ChalkInstance {
     return this.purple
   }
 
   /**
    * Paint infos.
    */
-  static get info(): ChalkInstance {
+  public static get info(): ChalkInstance {
     return this.cyan
   }
 
   /**
    * Paint success.
    */
-  static get success(): ChalkInstance {
+  public static get success(): ChalkInstance {
     return this.green
   }
 
   /**
    * Paint warning.
    */
-  static get warn(): ChalkInstance {
+  public static get warn(): ChalkInstance {
     return this.orange
   }
 
   /**
    * Paint error.
    */
-  static get error(): ChalkInstance {
+  public static get error(): ChalkInstance {
     return this.red
   }
 
   /**
    * Paint fatal.
    */
-  static get fatal(): ChalkInstance {
+  public static get fatal(): ChalkInstance {
     return Color.chalk.bgRed
   }
 
   /**
    * Paint http method.
    */
-  static get GET(): ChalkInstance {
+  public static get GET(): ChalkInstance {
     return Color.chalk.bgHex('#7628c8').bold
   }
 
   /**
    * Paint http method.
    */
-  static get HEAD(): ChalkInstance {
+  public static get HEAD(): ChalkInstance {
     return Color.chalk.bgCyan.bold
   }
 
   /**
    * Paint http method.
    */
-  static get PUT(): ChalkInstance {
+  public static get PUT(): ChalkInstance {
     return Color.chalk.bgHex('#f18b0e').bold
   }
 
   /**
    * Paint http method.
    */
-  static get PATCH(): ChalkInstance {
+  public static get PATCH(): ChalkInstance {
     return Color.chalk.bgYellow.bold
   }
 
   /**
    * Paint http method.
    */
-  static get POST(): ChalkInstance {
+  public static get POST(): ChalkInstance {
     return Color.chalk.bgGreen.bold
   }
 
   /**
    * Paint http method.
    */
-  static get DELETE(): ChalkInstance {
+  public static get DELETE(): ChalkInstance {
     return Color.chalk.bgRed.bold
   }
 
   /**
    * Paint http method.
    */
-  static get OPTIONS(): ChalkInstance {
+  public static get OPTIONS(): ChalkInstance {
     return Color.chalk.bgCyan.bold
   }
 
   /**
    * Get the color by status code.
    */
-  public static statusCode(statusCode: number): ChalkInstance {
+  public static statusCode(statusCode: number): string {
     if (statusCode >= 200 && statusCode < 300) {
-      return Color.chalk.green
+      return Color.chalk.bgGreen.bold(statusCode)
     }
 
     if (statusCode >= 300 && statusCode < 400) {
-      return Color.chalk.cyan
+      return Color.chalk.bgCyan.bold(statusCode)
     }
 
     if (statusCode >= 400 && statusCode < 500) {
-      return Color.chalk.yellow
+      return Color.chalk.bgHex('#f18b0e').bold(statusCode)
     }
 
     if (statusCode >= 500) {
-      return Color.chalk.red
+      return Color.chalk.bgRed.bold(statusCode)
     }
 
-    return Color.chalk.grey
+    return Color.chalk.bgGray.bold(statusCode)
   }
 
   /**
@@ -264,10 +264,10 @@ export class Color {
   /**
    * Paint by the http method.
    */
-  public static httpMethod(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD'
-  ): ChalkInstance {
-    return this[method]
+  public static httpMethod(method: string): string {
+    const methodToBeExecuted = method.replace(/ /g, '').toUpperCase()
+
+    return this[methodToBeExecuted](method)
   }
 
   /**
