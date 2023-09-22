@@ -225,22 +225,22 @@ export class Color {
    */
   public static statusCode(statusCode: number): string {
     if (statusCode >= 200 && statusCode < 300) {
-      return Color.chalk.bgGreen.bold(statusCode)
+      return Color.chalk.bgGreen.bold(` ${statusCode} `)
     }
 
     if (statusCode >= 300 && statusCode < 400) {
-      return Color.chalk.bgCyan.bold(statusCode)
+      return Color.chalk.bgCyan.bold(` ${statusCode} `)
     }
 
     if (statusCode >= 400 && statusCode < 500) {
-      return Color.chalk.bgHex('#f18b0e').bold(statusCode)
+      return Color.chalk.bgHex('#f18b0e').bold(` ${statusCode} `)
     }
 
     if (statusCode >= 500) {
-      return Color.chalk.bgRed.bold(statusCode)
+      return Color.chalk.bgRed.bold(` ${statusCode} `)
     }
 
-    return Color.chalk.bgGray.bold(statusCode)
+    return Color.chalk.bgGray.bold(` ${statusCode} `)
   }
 
   /**
@@ -265,9 +265,7 @@ export class Color {
    * Paint by the http method.
    */
   public static httpMethod(method: string): string {
-    const methodToBeExecuted = method.replace(/ /g, '').toUpperCase()
-
-    return this[methodToBeExecuted](method)
+    return this[method](` ${method} `)
   }
 
   /**
