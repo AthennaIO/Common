@@ -12,6 +12,8 @@ import * as changeCase from 'change-case'
 import Youch from 'youch'
 import YouchTerminal from 'youch-terminal'
 
+import { readFile } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { Color } from '#src/helpers/Color'
 import { Options } from '#src/helpers/Options'
 import type { ExceptionJson } from '#src/types'

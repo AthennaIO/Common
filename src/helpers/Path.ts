@@ -675,7 +675,13 @@ export class Path {
    */
   public static this(subPath = sep, stackIndex = 1): string {
     const stack = callSite()
-    const requester = dirname(fileURLToPath(stack[stackIndex].getFileName()))
+    let fileName = stack[stackIndex].getFileName()
+
+    if (fileName.startsWith('file:')) {
+      fileName = fileURLToPath(fileName)
+    }
+
+    const requester = dirname(fileName)
     const execDir = normalize(requester.concat(sep, normalize(subPath)))
 
     return this.removeSlashes(execDir)
