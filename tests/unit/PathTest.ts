@@ -233,4 +233,28 @@ export default class PathTest {
     assert.isTrue(Path.src().endsWith('src'))
     assert.isTrue(Path.app().endsWith('app'))
   }
+
+  @Test()
+  public shouldBeAbleToRemoveExtensionOfFilePath({ assert }: Context) {
+    assert.equal(Path.removeExt('file.ts'), 'file')
+    assert.equal(Path.removeExt('file.js'), 'file')
+    assert.equal(Path.removeExt('file'), 'file')
+    assert.equal(Path.removeExt(Path.app('hello.js')), Path.app('hello'))
+    assert.equal(Path.removeExt(Path.app('hello.java')), Path.app('hello'))
+    assert.equal(Path.removeExt(Path.app('hello')), Path.app('hello'))
+    assert.equal(Path.removeExt(Path.app('hello.service.js')), Path.app('hello.service'))
+    assert.equal(Path.removeExt(Path.app('hello.service.ts')), Path.app('hello.service'))
+  }
+
+  @Test()
+  public shouldBeAbleToParseExtensionOfFilePathUsingPathExt({ assert }: Context) {
+    assert.equal(Path.parseExt('file.ts'), 'file.ts')
+    assert.equal(Path.parseExt('file.js'), 'file.ts')
+    assert.equal(Path.parseExt('file'), 'file')
+    assert.equal(Path.parseExt(Path.app('hello.js')), Path.app('hello.ts'))
+    assert.equal(Path.parseExt(Path.app('hello.java')), Path.app('hello.ts'))
+    assert.equal(Path.parseExt(Path.app('hello')), Path.app('hello'))
+    assert.equal(Path.parseExt(Path.app('hello.service.js')), Path.app('hello.service.ts'))
+    assert.equal(Path.parseExt(Path.app('hello.service.ts')), Path.app('hello.service.ts'))
+  }
 }
