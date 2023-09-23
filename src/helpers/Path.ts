@@ -12,7 +12,7 @@ import callSite from 'callsite'
 import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
 import type { PathDirs } from '#src/types'
-import { sep, normalize, dirname } from 'node:path'
+import { sep, normalize, dirname, parse } from 'node:path'
 
 export class Path {
   public static dirs: PathDirs = {
@@ -66,16 +66,50 @@ export class Path {
    * Return js or ts extension depending on IS_TS.
    */
   public static ext(): string {
-    const isTs = !!(
-      process.env.IS_TS &&
-      (process.env.IS_TS === 'true' || process.env.IS_TS === '(true)')
-    )
+    const isTs = !!(process.env.IS_TS && process.env.IS_TS === 'true')
 
     if (isTs) {
       return 'ts'
     }
 
     return 'js'
+  }
+
+  /**
+   * Remove the extension from a path.
+   */
+  public static removeExt(path: string): string {
+    const parsedPath = parse(path)
+
+    if (!parsedPath.dir) {
+      return parsedPath.name
+    }
+
+    return parsedPath.dir.concat(sep, parsedPath.name)
+  }
+
+  /**
+   * Parse the extension of a path using the `Path.ext()` method.
+   * If the path ends with .js and `Path.ext()` returns .ts, the
+   * path will be parsed to end with .ts. The same happens when
+   * the path ends with .ts and `Path.ext()` returns .js.
+   */
+  public static parseExt(path: string): string {
+    if (path.endsWith('.d.ts')) {
+      return path
+    }
+
+    const { ext } = parse(path)
+
+    if (!ext) {
+      return path
+    }
+
+    if (ext === `.${Path.ext()}`) {
+      return path
+    }
+
+    return `${Path.removeExt(path)}.${Path.ext()}`
   }
 
   /**
