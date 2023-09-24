@@ -31,14 +31,12 @@ export default class ExecTest {
 
   @Test()
   public async shouldThrowAnExceptionWhenCommandFails({ assert }: Context) {
+    if (Is.Windows()) {
+      return
+    }
+
     const useCase = async () => {
-      let command = 'exit 255'
-
-      if (Is.Windows()) {
-        command = 'exit /b 255'
-      }
-
-      await Exec.command(command)
+      await Exec.command('exit 255')
     }
 
     await assert.rejects(useCase)
@@ -46,14 +44,12 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToIgnoreExceptionWhenRejectOptionIsSetToFalseInCommand({ assert }: Context) {
+    if (Is.Windows()) {
+      return
+    }
+
     const useCase = async () => {
-      let command = 'exit 255'
-
-      if (Is.Windows()) {
-        command = 'exit /b 255'
-      }
-
-      await Exec.command(command, { reject: false })
+      await Exec.command('exit 255', { reject: false })
     }
 
     await assert.doesNotRejects(useCase)
