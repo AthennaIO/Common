@@ -12,15 +12,14 @@ import { File } from '#src/helpers/File'
 import { Options } from '#src/helpers/Options'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
-import type { PaginationOptions, PaginatedResponse } from '#src/types'
-import {
-  execa,
-  execaNode,
-  execaCommand,
-  type Options as CommandOptions,
-  type NodeOptions as NodeCommandOptions,
-  type ExecaChildProcess as CommandOutput
-} from 'execa'
+import { execa, execaNode, execaCommand } from 'execa'
+import type {
+  CommandInput,
+  CommandOutput,
+  NodeCommandInput,
+  PaginationOptions,
+  PaginatedResponse
+} from '#src/types'
 
 export class Exec {
   /**
@@ -47,7 +46,7 @@ export class Exec {
    */
   public static async shell(
     command: string,
-    options: CommandOptions = {}
+    options: CommandInput = {}
   ): Promise<CommandOutput> {
     return execa('sh', ['-c', command], options)
   }
@@ -57,7 +56,7 @@ export class Exec {
    */
   public static async command(
     command: string,
-    options: CommandOptions = {}
+    options: CommandInput = {}
   ): Promise<CommandOutput> {
     return execaCommand(command, options)
   }
@@ -68,7 +67,7 @@ export class Exec {
   public static async node(
     path: string,
     argv: string[] = [],
-    options: NodeCommandOptions = {}
+    options: NodeCommandInput = {}
   ): Promise<CommandOutput> {
     return execaNode(path, argv, options)
   }
@@ -78,7 +77,7 @@ export class Exec {
    */
   public static async artisan(
     path: string,
-    options: NodeCommandOptions = {}
+    options: NodeCommandInput = {}
   ): Promise<void> {
     options = Options.create(options, {
       preferLocal: true,
