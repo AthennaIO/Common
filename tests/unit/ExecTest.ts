@@ -9,7 +9,6 @@
 
 import { Test, BeforeEach, type Context } from '@athenna/test'
 import { Clean, Exec, File, Folder, Is, Module, Path } from '#src'
-import { NodeCommandException } from '#src/exceptions/NodeCommandException'
 
 export default class ExecTest {
   @BeforeEach()
@@ -31,24 +30,88 @@ export default class ExecTest {
   }
 
   @Test()
-  public async shouldThrowAnNodeExecExceptionWhenCommandFails({ assert }: Context) {
+  public async shouldThrowAnExceptionWhenCommandFails({ assert }: Context) {
     const useCase = async () => {
-      await Exec.command('echo "error thrown" && exit 255')
+      await Exec.command('exit 255')
     }
 
-    await assert.rejects(useCase, NodeCommandException)
+    await assert.rejects(useCase)
   }
 
   @Test()
-  public async shouldBeAbleToExecuteACommandThatThrowsErrorsAndIgnoreItInUnix({ assert }: Context) {
+  public async shouldBeAbleToIgnoreExceptionWhenRejectOptionIsSetToFalseInCommand({ assert }: Context) {
+    const useCase = async () => {
+      await Exec.command('exit 255', { reject: false })
+    }
+
+    await assert.doesNotRejects(useCase)
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteAShellCommandInTheVMAndGetTheStdout({ assert }: Context) {
+    const { stdout, exitCode } = await Exec.shell('ls && cat README.md')
+
+    assert.equal(exitCode, 0)
+    assert.isTrue(stdout.includes('README.md'))
+    assert.isTrue(stdout.includes('# Common'))
+  }
+
+  @Test()
+  public async shouldThrowAnExceptionWhenShellCommandFails({ assert }: Context) {
+    const useCase = async () => {
+      await Exec.shell('exit 255')
+    }
+
+    await assert.rejects(useCase)
+  }
+
+  @Test()
+  public async shouldBeAbleToIgnoreExceptionWhenRejectOptionIsSetToFalseInShellCommand({ assert }: Context) {
+    const useCase = async () => {
+      await Exec.shell('exit 255', { reject: false })
+    }
+
+    await assert.doesNotRejects(useCase)
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteMultipleShellCommandsAtOnce({ assert }: Context) {
     if (Is.Windows()) {
       return
     }
 
-    const { stdout, exitCode } = await Exec.command('echo "error thrown" && exit 255', { ignoreErrors: true })
+    const { stdout, stderr, exitCode } = await Exec.shell('echo "error thrown" && exit 255', { reject: false })
 
+    assert.equal(stderr, '')
     assert.equal(exitCode, 255)
     assert.isTrue(stdout.includes('error thrown'))
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteANodeScriptInTheVMAndGetTheStdout({ assert }: Context) {
+    const { stdout, stderr, exitCode } = await Exec.node(Path.fixtures('node-script.ts'))
+
+    assert.equal(exitCode, 0)
+    assert.equal(stdout, 'hello')
+    assert.equal(stderr, 'hello')
+  }
+
+  @Test()
+  public async shouldThrowAnExceptionWhenNodeScriptFails({ assert }: Context) {
+    const useCase = async () => {
+      await Exec.node(Path.fixtures('node-script-throw.ts'))
+    }
+
+    await assert.rejects(useCase)
+  }
+
+  @Test()
+  public async shouldBeAbleToIgnoreExceptionWhenRejectOptionIsSetToFalseInNodeScript({ assert }: Context) {
+    const useCase = async () => {
+      await Exec.node(Path.fixtures('node-script-throw.ts'), [], { reject: false })
+    }
+
+    await assert.doesNotRejects(useCase)
   }
 
   @Test()

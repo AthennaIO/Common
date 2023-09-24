@@ -7,19 +7,20 @@
  * file that was distributed with this source code.
  */
 
-import { debug } from '#src/debug'
-import { Is } from '#src/helpers/Is'
 import { Transform } from 'node:stream'
 import { File } from '#src/helpers/File'
-import { Uuid } from '#src/helpers/Uuid'
-import { exec } from 'node:child_process'
 import { Options } from '#src/helpers/Options'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
-import type { ExecOptions } from 'node:child_process'
-import type { CommandOutput } from '#src/types/CommandOutput'
 import type { PaginationOptions, PaginatedResponse } from '#src/types'
-import { NodeCommandException } from '#src/exceptions/NodeCommandException'
+import {
+  execa,
+  execaNode,
+  execaCommand,
+  type Options as CommandOptions,
+  type NodeOptions as NodeCommandOptions,
+  type ExecaChildProcess as CommandOutput
+} from 'execa'
 
 export class Exec {
   /**
@@ -42,58 +43,60 @@ export class Exec {
   }
 
   /**
-   * Execute a command of child process exec as promise.
+   * Execute a shell command as a child process.
+   */
+  public static async shell(
+    command: string,
+    options: CommandOptions = {}
+  ): Promise<CommandOutput> {
+    return execa('sh', ['-c', command], options)
+  }
+
+  /**
+   * Execute one specific command as a child process.
    */
   public static async command(
     command: string,
-    options?: { ignoreErrors?: boolean }
+    options: CommandOptions = {}
   ): Promise<CommandOutput> {
+    return execaCommand(command, options)
+  }
+
+  /**
+   * Execute a node script as a child process.
+   */
+  public static async node(
+    path: string,
+    argv: string[] = [],
+    options: NodeCommandOptions = {}
+  ): Promise<CommandOutput> {
+    return execaNode(path, argv, options)
+  }
+
+  /**
+   * Execute an Artisan file in a child process.
+   */
+  public static async artisan(
+    path: string,
+    options: NodeCommandOptions = {}
+  ): Promise<void> {
     options = Options.create(options, {
-      ignoreErrors: false
+      preferLocal: true,
+      windowsHide: false,
+      localDir: Path.pwd(),
+      cwd: Path.pwd(),
+      buffer: false,
+      stdio: 'inherit'
     })
 
-    const execOptions: ExecOptions = {}
+    const child = Exec.node(path, process.argv.slice(2), options)
 
-    if (Is.Windows() && Uuid.verify(process.env.WT_SESSION)) {
-      execOptions.shell = 'powershell'
+    try {
+      const result = await child
+      process.exitCode = result.exitCode
+    } catch (error) {
+      process.exitCode = 1
     }
-
-    debug('executing command: %s', command)
-
-    return new Promise((resolve, reject) => {
-      let execError = null
-
-      const result: CommandOutput = {
-        stdout: '',
-        stderr: '',
-        exitCode: 0
-      }
-
-      exec(command, execOptions, (error, stdout, stderr) => {
-        if (error) execError = error
-        if (stdout) result.stdout = stdout
-        if (stderr) result.stderr = stderr
-
-        debug('command executed')
-        debug('command stdout: %s', result.stdout)
-        debug('command stderr: %s', result.stderr)
-        debug('command exitCode: %s', result.exitCode)
-
-        if (!execError) {
-          return resolve(result)
-        }
-
-        execError.stdout = result.stdout
-        execError.stderr = result.stderr
-        execError.exitCode = result.exitCode
-
-        if (options.ignoreErrors) {
-          return resolve(result)
-        }
-
-        return reject(new NodeCommandException(command, execError))
-      }).on('exit', exitCode => (result.exitCode = exitCode))
-    })
   }
 
   /**
