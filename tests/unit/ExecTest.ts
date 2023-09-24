@@ -32,7 +32,13 @@ export default class ExecTest {
   @Test()
   public async shouldThrowAnExceptionWhenCommandFails({ assert }: Context) {
     const useCase = async () => {
-      await Exec.command('exit 255')
+      let command = 'exit 255'
+
+      if (Is.Windows()) {
+        command = 'exit /b 255'
+      }
+
+      await Exec.command(command)
     }
 
     await assert.rejects(useCase)
@@ -41,7 +47,13 @@ export default class ExecTest {
   @Test()
   public async shouldBeAbleToIgnoreExceptionWhenRejectOptionIsSetToFalseInCommand({ assert }: Context) {
     const useCase = async () => {
-      await Exec.command('exit 255', { reject: false })
+      let command = 'exit 255'
+
+      if (Is.Windows()) {
+        command = 'exit /b 255'
+      }
+
+      await Exec.command(command, { reject: false })
     }
 
     await assert.doesNotRejects(useCase)
@@ -49,6 +61,10 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToExecuteAShellCommandInTheVMAndGetTheStdout({ assert }: Context) {
+    if (Is.Windows()) {
+      return
+    }
+
     const { stdout, exitCode } = await Exec.shell('ls && cat README.md')
 
     assert.equal(exitCode, 0)
@@ -58,6 +74,10 @@ export default class ExecTest {
 
   @Test()
   public async shouldThrowAnExceptionWhenShellCommandFails({ assert }: Context) {
+    if (Is.Windows()) {
+      return
+    }
+
     const useCase = async () => {
       await Exec.shell('exit 255')
     }
@@ -67,6 +87,10 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToIgnoreExceptionWhenRejectOptionIsSetToFalseInShellCommand({ assert }: Context) {
+    if (Is.Windows()) {
+      return
+    }
+
     const useCase = async () => {
       await Exec.shell('exit 255', { reject: false })
     }
