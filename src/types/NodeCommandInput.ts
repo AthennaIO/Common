@@ -7,6 +7,6 @@
  * file that was distributed with this source code.
  */
 
-import type { ExecaChildProcess } from 'execa'
+import type { NodeOptions } from 'execa'
 
-export type CommandOutput = ExecaChildProcess
+export type NodeCommandInput = NodeOptions
