@@ -12,7 +12,7 @@ import { File } from '#src/helpers/File'
 import { Options } from '#src/helpers/Options'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
-import { execa, execaNode, execaCommand } from 'execa'
+import { execa, execaNode, execaCommand, type ExecaChildProcess } from 'execa'
 import type {
   CommandInput,
   CommandOutput,
@@ -41,6 +41,16 @@ export class Exec {
     return Promise.all(array.map(callback))
   }
 
+  public static shell(
+    command: string,
+    options?: CommandInput
+  ): ExecaChildProcess<string>
+
+  public static shell(
+    command: string,
+    options?: CommandInput
+  ): Promise<CommandOutput>
+
   /**
    * Execute a shell command as a child process.
    */
@@ -51,24 +61,43 @@ export class Exec {
     return execa('sh', ['-c', command], options)
   }
 
+  public static command(
+    command: string,
+    options?: CommandInput
+  ): ExecaChildProcess<string>
+
+  public static command(
+    command: string,
+    options?: CommandInput
+  ): Promise<CommandOutput>
+
   /**
    * Execute one specific command as a child process.
    */
-  public static async command(
-    command: string,
-    options: CommandInput = {}
-  ): Promise<CommandOutput> {
+  public static command(command: string, options: CommandInput = {}) {
     return execaCommand(command, options)
   }
+
+  public static node(
+    path: string,
+    argv?: string[],
+    options?: NodeCommandInput
+  ): ExecaChildProcess<string>
+
+  public static node(
+    path: string,
+    argv?: string[],
+    options?: NodeCommandInput
+  ): Promise<CommandOutput>
 
   /**
    * Execute a node script as a child process.
    */
-  public static async node(
+  public static node(
     path: string,
     argv: string[] = [],
     options: NodeCommandInput = {}
-  ): Promise<CommandOutput> {
+  ) {
     return execaNode(path, argv, options)
   }
 

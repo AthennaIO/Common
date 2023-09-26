@@ -9,9 +9,9 @@
 
 import callSite from 'callsite'
 
-import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
 import type { PathDirs } from '#src/types'
+import { pathToFileURL, fileURLToPath } from 'node:url'
 import { sep, normalize, dirname, parse } from 'node:path'
 
 export class Path {
@@ -110,6 +110,27 @@ export class Path {
     }
 
     return `${Path.removeExt(path)}.${Path.ext()}`
+  }
+
+  /**
+   * Convert a path to URL.
+   */
+  public static toURL(path: string): URL {
+    return pathToFileURL(path)
+  }
+
+  /**
+   * Convert URL or URL href to path.
+   */
+  public static toPath(url: string | URL): string {
+    return fileURLToPath(url)
+  }
+
+  /**
+   * Convert a path to URL href.
+   */
+  public static toHref(path: string): string {
+    return pathToFileURL(path).href
   }
 
   /**
@@ -712,7 +733,7 @@ export class Path {
     let fileName = stack[stackIndex].getFileName()
 
     if (fileName.startsWith('file:')) {
-      fileName = fileURLToPath(fileName)
+      fileName = Path.toPath(fileName)
     }
 
     const requester = dirname(fileName)
