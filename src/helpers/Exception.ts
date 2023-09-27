@@ -12,8 +12,6 @@ import * as changeCase from 'change-case'
 import Youch from 'youch'
 import YouchTerminal from 'youch-terminal'
 
-import { readFile } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import { Color } from '#src/helpers/Color'
 import { Options } from '#src/helpers/Options'
 import type { ExceptionJson } from '#src/types'
@@ -96,61 +94,27 @@ export class Exception extends Error {
     const helpKey = Color.gray.bold.bgGreen(' HELP ')
     const title = Color.gray.bold.bgRed(` ${this.code || this.name} `)
 
-    this.message = `${title}\n\n${Color.apply(this.message)}`
+    let help = ''
+    let message = `${title}\n\n${Color.apply(this.message)}`
 
     if (this.help && this.help !== '') {
-      this.help = `${helpKey}\n\n  ${Color.green(
+      help = `${helpKey}\n\n  ${Color.green(
         Color.apply(this.help)
       )}\n\n  ${separator}`
     } else {
-      this.message = this.message.concat(`\n\n${separator}`)
+      message = this.message.concat(`\n\n${separator}`)
     }
 
-    const youch = new Youch(this, {})
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    youch._getFrameSource = function (frame) {
-      let path = frame.file
-        .replace(/dist\/webpack:\//g, '') // unix
-        .replace(/dist\\webpack:\\/g, '') // windows
-
-      /**
-       * We ignore the error when "fileURLToPath" is unable to parse
-       * the path, since returning the frame source is an optional
-       * thing
-       */
-      try {
-        path = path.startsWith('file:') ? fileURLToPath(path) : path
-      } catch {}
-
-      return new Promise(resolve => {
-        if (!path) {
-          resolve(null)
-          return
-        }
-        readFile(path, 'utf-8', (error, contents) => {
-          if (error) {
-            resolve(null)
-            return
-          }
-
-          const lines = contents.split(/\r?\n/)
-          const lineNumber = frame.line
-
-          resolve({
-            pre: lines.slice(
-              Math.max(0, lineNumber - (this.options.preLines + 1)),
-              lineNumber - 1
-            ),
-            line: lines[lineNumber - 1],
-            post: lines.slice(lineNumber, lineNumber + this.options.postLines)
-          })
-        })
-      })
-    }
-
-    const pretty = await youch.toJSON()
+    const pretty = await new Youch(
+      {
+        help,
+        message,
+        code: this.code,
+        stack: this.stack,
+        status: this.status
+      },
+      {}
+    ).toJSON()
 
     pretty.error.frames = pretty.error.frames.map(frame => {
       frame.isApp = true
