@@ -102,7 +102,7 @@ export class Exception extends Error {
         Color.apply(this.help)
       )}\n\n  ${separator}`
     } else {
-      message = this.message.concat(`\n\n${separator}`)
+      message = message.concat(`\n\n${separator}`)
     }
 
     const pretty = await new Youch(
