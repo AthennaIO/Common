@@ -20,7 +20,7 @@
     "build": "node node_modules/@athenna/tsconfig/src/build.js",
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
     "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
-    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.js",
+    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.ts",
     "test:coverage": "c8 npm run --silent test"
   },
   "files": [
