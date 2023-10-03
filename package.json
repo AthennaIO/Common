@@ -17,10 +17,10 @@
     "standalone"
   ],
   "scripts": {
-    "build": "rimraf build && tsc --project bin/tsconfig.build.json",
+    "build": "node node_modules/@athenna/tsconfig/src/build.js",
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
     "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
-    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect bin/test.js",
+    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.js",
     "test:coverage": "c8 npm run --silent test"
   },
   "files": [
@@ -37,6 +37,7 @@
   "exports": {
     ".": "./src/index.js",
     "./types": "./src/types/index.js",
+    "./package": "./package.json",
     "./package.json": "./package.json"
   },
   "imports": {
@@ -76,7 +77,7 @@
   },
   "devDependencies": {
     "@athenna/test": "^4.9.1",
-    "@athenna/tsconfig": "^4.5.0",
+    "@athenna/tsconfig": "^4.7.0",
     "@types/bytes": "^3.1.1",
     "@types/callsite": "^1.0.31",
     "@types/debug": "^4.1.7",
@@ -85,11 +86,10 @@
     "@types/ms": "^0.7.31",
     "@types/pluralize": "^0.0.29",
     "@types/uuid": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "c8": "^8.0.0",
     "commitizen": "^4.3.0",
-    "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
@@ -101,11 +101,7 @@
     "husky": "^3.1.0",
     "lint-staged": "^12.5.0",
     "minimist": "^1.2.7",
-    "prettier": "^2.8.7",
-    "reflect-metadata": "^0.1.13",
-    "rimraf": "^5.0.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.2"
+    "prettier": "^2.8.7"
   },
   "c8": {
     "all": true,

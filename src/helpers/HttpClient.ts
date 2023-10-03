@@ -10,6 +10,7 @@
 import got from 'got'
 import CacheableLookup from 'cacheable-lookup'
 
+import type { URL } from 'node:url'
 import { Is } from '#src/helpers/Is'
 import { Json } from '#src/helpers/Json'
 
@@ -518,7 +519,7 @@ export class HttpClientBuilder {
    * Set the request url.
    */
   public url(url: string | URL): HttpClientBuilder {
-    if (url instanceof URL) {
+    if (!Is.String(url)) {
       this.options.url = url
 
       return this
