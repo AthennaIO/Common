@@ -71,7 +71,7 @@
     "prepend-file": "^2.0.1",
     "uuid": "^8.3.2",
     "validator-brazil": "^1.2.2",
-    "youch": "^3.2.3",
+    "youch": "^3.3.1",
     "youch-terminal": "^2.2.2"
   },
   "devDependencies": {
