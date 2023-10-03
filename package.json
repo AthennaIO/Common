@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "4.15.5",
+  "version": "4.16.0",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -19,8 +19,8 @@
   "scripts": {
     "build": "rimraf build && tsc --project bin/tsconfig.build.json",
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
-    "test": "npm run --silent lint:fix && sh node bin/test.ts",
-    "test:debug": "cross-env NODE_DEBUG=athenna:* sh node --inspect bin/test.ts",
+    "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
+    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect bin/test.js",
     "test:coverage": "c8 npm run --silent test"
   },
   "files": [
@@ -75,7 +75,8 @@
     "youch-terminal": "^2.2.2"
   },
   "devDependencies": {
-    "@athenna/test": "^4.7.0",
+    "@athenna/test": "^4.9.1",
+    "@athenna/tsconfig": "^4.5.0",
     "@types/bytes": "^3.1.1",
     "@types/callsite": "^1.0.31",
     "@types/debug": "^4.1.7",

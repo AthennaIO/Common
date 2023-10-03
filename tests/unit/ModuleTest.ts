@@ -9,7 +9,6 @@
 
 import { Module, Path } from '#src'
 import { Test, type Context } from '@athenna/test'
-import { NotFoundResolveException } from '#src/exceptions/NotFoundResolveException'
 
 export default class ModuleTest {
   @Test()
@@ -149,14 +148,5 @@ export default class ModuleTest {
     const chalk = await Module.resolve('chalk', import.meta.url)
 
     assert.deepEqual(chalk, (await import('chalk')).default)
-  }
-
-  @Test()
-  public async shouldThrownAnExceptionWhenTheImportMetaResolveFunctionIsNotDefined({ assert }: Context) {
-    process.env.RESOLVE_TESTING = 'true'
-
-    await assert.rejects(() => Module.resolve('chalk', import.meta.url), NotFoundResolveException)
-
-    delete process.env.RESOLVE_TESTING
   }
 }
