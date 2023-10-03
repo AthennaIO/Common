@@ -109,11 +109,7 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToExecuteANodeScriptInTheVMAndGetTheStdout({ assert }: Context) {
-    const { stdout, stderr, exitCode } = await Exec.node(Path.fixtures('node-script.ts'), [
-      'node',
-      '--loader=ts-node/esm',
-      Path.fixtures('node-script.ts')
-    ])
+    const { stdout, stderr, exitCode } = await Exec.node(Path.fixtures('node-script.ts'))
 
     assert.equal(exitCode, 0)
     assert.equal(stdout, 'hello')
