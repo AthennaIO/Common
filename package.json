@@ -16,12 +16,15 @@
     "helpers",
     "standalone"
   ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "node node_modules/@athenna/tsconfig/src/build.js",
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
     "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
     "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.ts",
-    "test:coverage": "npm run --silent lint:fix && c8 node --loader=ts-node/esm --no-warnings bin/test.ts"
+    "test:coverage": "npm run test"
   },
   "files": [
     "src/*.js",
