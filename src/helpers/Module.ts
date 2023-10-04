@@ -207,8 +207,17 @@ export class Module {
       queries
     )
 
-    // `await` is not needed for `import.meta.resolve` method, but TypeScript complains on it.
-    return Module.get(import(await import.meta.resolve(path, meta)))
+    // `await` is not needed for `import.meta.resolve` method,
+    // but TypeScript complains on it.
+    let resolvedPath = await import.meta.resolve(path, meta)
+
+    debug('resolved path: %s', resolvedPath)
+
+    if (queries) {
+      resolvedPath = resolvedPath.concat('?', queries)
+    }
+
+    return Module.get(import(resolvedPath))
   }
 
   /**
