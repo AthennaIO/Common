@@ -24,7 +24,7 @@
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
     "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
     "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.ts",
-    "test:coverage": "npm run test"
+    "test:coverage": "c8 npm run --silent test"
   },
   "files": [
     "src/*.js",
