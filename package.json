@@ -24,7 +24,7 @@
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
     "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
     "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.ts",
-    "test:coverage": "npm run --silent test"
+    "test:coverage": "c8 npm run --silent test"
   },
   "files": [
     "src/*.js",
@@ -79,7 +79,7 @@
     "youch-terminal": "^2.2.2"
   },
   "devDependencies": {
-    "@athenna/test": "^4.9.1",
+    "@athenna/test": "^4.10.0",
     "@athenna/tsconfig": "^4.7.0",
     "@types/bytes": "^3.1.1",
     "@types/callsite": "^1.0.31",
@@ -91,7 +91,6 @@
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "c8": "^8.0.1",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.36.0",
