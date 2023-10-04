@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "4.15.5",
+  "version": "4.16.0",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -16,11 +16,14 @@
     "helpers",
     "standalone"
   ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
-    "build": "rimraf build && tsc --project bin/tsconfig.build.json",
+    "build": "node node_modules/@athenna/tsconfig/src/build.js",
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
-    "test": "npm run --silent lint:fix && sh node bin/test.ts",
-    "test:debug": "cross-env NODE_DEBUG=athenna:* sh node --inspect bin/test.ts",
+    "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
+    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.ts",
     "test:coverage": "c8 npm run --silent test"
   },
   "files": [
@@ -37,6 +40,7 @@
   "exports": {
     ".": "./src/index.js",
     "./types": "./src/types/index.js",
+    "./package": "./package.json",
     "./package.json": "./package.json"
   },
   "imports": {
@@ -71,11 +75,12 @@
     "prepend-file": "^2.0.1",
     "uuid": "^8.3.2",
     "validator-brazil": "^1.2.2",
-    "youch": "^3.2.3",
+    "youch": "^3.3.1",
     "youch-terminal": "^2.2.2"
   },
   "devDependencies": {
-    "@athenna/test": "^4.7.0",
+    "@athenna/test": "^4.10.0",
+    "@athenna/tsconfig": "^4.7.0",
     "@types/bytes": "^3.1.1",
     "@types/callsite": "^1.0.31",
     "@types/debug": "^4.1.7",
@@ -84,11 +89,9 @@
     "@types/ms": "^0.7.31",
     "@types/pluralize": "^0.0.29",
     "@types/uuid": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "c8": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "commitizen": "^4.3.0",
-    "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
@@ -100,11 +103,7 @@
     "husky": "^3.1.0",
     "lint-staged": "^12.5.0",
     "minimist": "^1.2.7",
-    "prettier": "^2.8.7",
-    "reflect-metadata": "^0.1.13",
-    "rimraf": "^5.0.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.2"
+    "prettier": "^2.8.7"
   },
   "c8": {
     "all": true,

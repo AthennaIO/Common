@@ -13,8 +13,8 @@ export class NotFoundFolderException extends Exception {
   public constructor(filePath: string) {
     super({
       code: 'E_NOT_FOUND_FILE',
-      message: `The folder ${filePath} doesnt exist.`,
-      help: 'Try using Folder.create method to create the folder.'
+      message: `The folder ${filePath} doesn't exist.`,
+      help: 'Use folder.load() or folder.loadSync() method to create the folder.'
     })
   }
 }

@@ -12,7 +12,6 @@ import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { extname, dirname, resolve, isAbsolute } from 'node:path'
-import { NotFoundResolveException } from '#src/exceptions/NotFoundResolveException'
 
 export class Module {
   /**
@@ -188,14 +187,10 @@ export class Module {
    * Resolve the module path by meta url and import it.
    */
   public static async resolve(path: string, meta: string): Promise<any> {
-    if (!import.meta.resolve || process.env.RESOLVE_TESTING) {
-      throw new NotFoundResolveException()
-    }
+    const splitted = path.split('?')
+    const queries = splitted[1] || ''
 
-    const splited = path.split('?')
-    const queries = splited[1] || ''
-
-    path = splited[0]
+    path = splitted[0]
 
     if (!path.startsWith('#') && extname(path)) {
       path = resolve(path)
@@ -212,9 +207,8 @@ export class Module {
       queries
     )
 
-    return import.meta
-      .resolve(path, meta)
-      .then(resolved => Module.get(import(`${resolved}?${queries}`)))
+    // `await` is not needed for `import.meta.resolve` method, but TypeScript complains on it.
+    return Module.get(import(await import.meta.resolve(path, meta)))
   }
 
   /**

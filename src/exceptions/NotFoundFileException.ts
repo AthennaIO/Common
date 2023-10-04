@@ -13,8 +13,8 @@ export class NotFoundFileException extends Exception {
   public constructor(filePath: string) {
     super({
       code: 'E_NOT_FOUND_FILE',
-      message: `The file ${filePath} doesnt exist.`,
-      help: 'Try using File.create method to create the file.'
+      message: `The file ${filePath} doesn't exist.`,
+      help: `If your file doesn't exist, you will need to add a content to it as second parameter of File constructor: new File('${filePath}', 'Hello World!'). Also try using file.load() or file.loadSync() method to create the file.`
     })
   }
 }
