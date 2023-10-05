@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "4.17.1",
+  "version": "4.17.2",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -22,8 +22,8 @@
   "scripts": {
     "build": "node node_modules/@athenna/tsconfig/src/build.js",
     "lint:fix": "eslint \"{bin,src,tests}/**/*.ts\" --fix",
-    "test": "npm run --silent lint:fix && node --import=@athenna/tsconfig bin/test.ts",
-    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --import=@athenna/tsconfig bin/test.ts",
+    "test": "npm run --silent lint:fix && node --enable-source-maps --import=@athenna/tsconfig bin/test.ts",
+    "test:debug": "cross-env NODE_DEBUG=athenna:* node --inspect --enable-source-maps --import=@athenna/tsconfig bin/test.ts",
     "test:coverage": "c8 npm run --silent test"
   },
   "files": [

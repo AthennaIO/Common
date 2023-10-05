@@ -7,10 +7,17 @@
  * file that was distributed with this source code.
  */
 
-import { Module, Path } from '#src'
-import { Test, type Context } from '@athenna/test'
+import { Exception, Module, Path } from '#src'
+import { Test, type Context, AfterEach } from '@athenna/test'
 
 export default class ModuleTest {
+  @AfterEach()
+  public afterEach() {
+    if (process.argv.includes('--experimental-import-meta-resolve')) {
+      process.argv.splice(process.argv.indexOf('--experimental-import-meta-resolve'), 1)
+    }
+  }
+
   @Test()
   public async shouldBeAbleToGetTheModuleFirstExportMatchOrDefault({ assert }: Context) {
     const moduleDefault = await Module.get(import('../fixtures/config/app.js'))
@@ -95,58 +102,172 @@ export default class ModuleTest {
   }
 
   @Test()
-  public async shouldBeAbleToResolveImportAliasByMetaUrlAndImportIt({ assert }: Context) {
+  public async shouldBeAbleToResolveImportAliasByParentURLUsingRequireResolveAndImportIt({ assert }: Context) {
     const Exception = await Module.resolve('#src/helpers/Exception', import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   }
 
   @Test()
-  public async shouldBeAbleToResolveImportAliasWithDotsInThePathByMetaUrlAndImportIt({ assert }: Context) {
+  public async shouldBeAbleToResolveImportAliasByParentURLUsingImportMetaResolveAndImportIt({ assert }: Context) {
+    process.argv.push('--experimental-import-meta-resolve')
+
+    const Exception = await Module.resolve('#src/helpers/Exception', import.meta.url)
+
+    assert.equal(Exception.name, 'Exception')
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveImportAliasWithDotsInThePathByParentURLUsingRequireResolveAndImportIt({
+    assert
+  }: Context) {
     const AppController = await Module.resolve('#tests/fixtures/controllers/app.controller', import.meta.url)
 
     assert.equal(AppController.name, 'AppController')
   }
 
   @Test()
-  public async shouldBeAbleToResolvePartialPathsByMetaUrlAndImportIt({ assert }: Context) {
-    const Exception = await Module.resolve('./src/helpers/Exception.js', import.meta.url)
+  public async shouldBeAbleToResolveImportAliasWithDotsInThePathByParentURLUsingImportMetaResolveAndImportIt({
+    assert
+  }: Context) {
+    process.argv.push('--experimental-import-meta-resolve')
+
+    const AppController = await Module.resolve('#tests/fixtures/controllers/app.controller', import.meta.url)
+
+    assert.equal(AppController.name, 'AppController')
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveRelativePathsByParentURLUsingURLAndImportIt({ assert }: Context) {
+    const Exception = await Module.resolve('../../src/helpers/Exception.js', import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   }
 
   @Test()
-  public async shouldBeAbleToResolveAbsolutePathsByMetaUrlAndImportIt({ assert }: Context) {
+  public async shouldBeAbleToResolveRelativePathsWithDotsByParentURLUsingURLAndImportIt({ assert }: Context) {
+    const AppController = await Module.resolve('../fixtures/controllers/app.controller.js', import.meta.url)
+
+    assert.equal(AppController.name, 'AppController')
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveAbsolutePathsByParentURLAndImportIt({ assert }: Context) {
     const Exception = await Module.resolve(Path.src('helpers/Exception.js'), import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   }
 
   @Test()
-  public async shouldBeAbleToResolveVersionedImportAliasByMetaUrlAndImportIt({ assert }: Context) {
+  public async shouldBeAbleToResolveAbsolutePathsWithDotsByParentURLAndImportIt({ assert }: Context) {
+    const AppController = await Module.resolve(Path.fixtures('controllers/app.controller.js'), import.meta.url)
+
+    assert.equal(AppController.name, 'AppController')
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveVersionedImportAliasByParentURLAndImportIt({ assert }: Context) {
     const Exception = await Module.resolve(`#src/helpers/Exception?version=${Math.random()}`, import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   }
 
   @Test()
-  public async shouldBeAbleToResolveVersionedPartialPAthsByMetaUrlAndImportIt({ assert }: Context) {
-    const Exception = await Module.resolve(`./src/helpers/Exception.js?version=${Math.random()}`, import.meta.url)
+  public async shouldBeAbleToResolveVersionedRelativePathsByParentURLAndImportIt({ assert }: Context) {
+    const Exception = await Module.resolve(`../../src/helpers/Exception.js?version=${Math.random()}`, import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   }
 
   @Test()
-  public async shouldBeAbleToResolveVersionedAbsolutePathsByMetaUrlAndImportIt({ assert }: Context) {
+  public async shouldBeAbleToResolveVersionedAbsolutePathsByParentURLAndImportIt({ assert }: Context) {
     const Exception = await Module.resolve(Path.src(`helpers/Exception.js?version=${Math.random()}`), import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   }
 
   @Test()
-  public async shouldBeAbleToResolveModulesFromNodeModulesUsingResolve({ assert }: Context) {
+  public async shouldBeAbleToResolveModulesFromNodeModulesUsingRequireResolve({ assert }: Context) {
     const chalk = await Module.resolve('chalk', import.meta.url)
 
     assert.deepEqual(chalk, (await import('chalk')).default)
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveModulesFromNodeModulesUsingImportMetaResolve({ assert }: Context) {
+    process.argv.push('--experimental-import-meta-resolve')
+
+    const chalk = await Module.resolve('chalk', import.meta.url)
+
+    assert.deepEqual(chalk, (await import('chalk')).default)
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveImportAliasPathAndGetThePathAsResult({ assert }: Context) {
+    const path = await Module.resolve('#src/helpers/Exception', import.meta.url, { import: false })
+
+    assert.isTrue(path.startsWith('file:'))
+    assert.isTrue(path.includes('src/helpers/Exception.js'))
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveRelativePathAndGetThePathAsResult({ assert }: Context) {
+    const path = await Module.resolve('../../src/helpers/Exception.js', import.meta.url, { import: false })
+
+    assert.isTrue(path.startsWith('file:'))
+    assert.isTrue(path.includes('src/helpers/Exception.js'))
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveAbsolutePathAndGetThePathAsResult({ assert }: Context) {
+    const path = await Module.resolve(Path.src('helpers/Exception.js'), import.meta.url, { import: false })
+
+    assert.isTrue(path.startsWith('file:'))
+    assert.isTrue(path.includes('src/helpers/Exception.js'))
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveLibsFromNodeModulesAndGetThePathAsResult({ assert }: Context) {
+    const path = await Module.resolve('chalk', import.meta.url, { import: false })
+
+    assert.isTrue(path.startsWith('file:'))
+    assert.isTrue(path.includes('node_modules/chalk/source/index.js'))
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveImportAliasPathAndGetAllTheModuleAsResult({ assert }: Context) {
+    const module = await Module.resolve('#src/helpers/Exception', import.meta.url, { import: true, getModule: false })
+
+    assert.deepEqual(module.Exception, Exception)
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveRelativePathAndGetAllTheModuleAsResult({ assert }: Context) {
+    const module = await Module.resolve('../../src/helpers/Exception.js', import.meta.url, {
+      import: true,
+      getModule: false
+    })
+
+    assert.deepEqual(module.Exception, Exception)
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveAbsolutePathAndGetAllTheModuleAsResult({ assert }: Context) {
+    const module = await Module.resolve(Path.src('helpers/Exception.js'), import.meta.url, {
+      import: true,
+      getModule: false
+    })
+
+    assert.deepEqual(module.Exception, Exception)
+  }
+
+  @Test()
+  public async shouldBeAbleToResolveLibsFromNodeModulesAndGetAllTheModuleThePathAsResult({ assert }: Context) {
+    const module = await Module.resolve('chalk', import.meta.url, {
+      import: true,
+      getModule: false
+    })
+
+    assert.deepEqual(module, await import('chalk'))
   }
 }

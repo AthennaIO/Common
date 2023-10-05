@@ -37,6 +37,7 @@ export * from '#src/types/json/FileJson'
 export * from '#src/types/json/FolderJson'
 export * from '#src/types/json/ExceptionJson'
 
+export * from '#src/types/ModuleResolveOptions'
 export * from '#src/types/pagination/PaginationOptions'
 export * from '#src/types/pagination/PaginatedResponse'
 
