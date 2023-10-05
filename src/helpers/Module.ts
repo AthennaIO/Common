@@ -8,16 +8,16 @@
  */
 
 import { debug } from '#src/debug'
-import { Path, File, Folder } from '#src'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { extname, dirname, resolve, isAbsolute } from 'node:path'
+import { dirname, extname, isAbsolute } from 'node:path'
+import { Path, File, Folder, type ModuleResolveOptions, Options } from '#src'
 
 export class Module {
   /**
    * Get the module first export match or default.
    */
-  public static async get(module: any | Promise<any>): Promise<any> {
+  public static async get<T = any>(module: any | Promise<any>): Promise<T> {
     module = await module
 
     if (module.default) {
@@ -47,10 +47,10 @@ export class Module {
    *  console.log(alias) // 'App/Services/MyService'
    *  console.log(module) // [class MyService]
    */
-  public static async getWithAlias(
+  public static async getWithAlias<T = any>(
     module: any | Promise<any>,
     subAlias: string
-  ): Promise<{ alias: string; module: any }> {
+  ): Promise<{ alias: string; module: T }> {
     module = await Module.get(module)
 
     if (!subAlias.endsWith('/')) {
@@ -96,7 +96,7 @@ export class Module {
   /**
    * Same as get method, but import the path directly.
    */
-  public static async getFrom(path: string): Promise<any> {
+  public static async getFrom<T = any>(path: string): Promise<T> {
     const module = await Module.import(path)
 
     return Module.get(module)
@@ -105,10 +105,10 @@ export class Module {
   /**
    * Same as getWithAlias method, but import the path directly.
    */
-  public static async getFromWithAlias(
+  public static async getFromWithAlias<T = any>(
     path: string,
     subAlias: string
-  ): Promise<{ alias: string; module: any }> {
+  ): Promise<{ alias: string; module: T }> {
     const module = await Module.import(path)
 
     return Module.getWithAlias(module, subAlias)
@@ -160,7 +160,7 @@ export class Module {
    * Import a full path using the path href to ensure compatibility
    * between OS's.
    */
-  public static async import(path: string): Promise<any> {
+  public static async import<T = any>(path: string): Promise<T> {
     debug('trying to import the path: %s', path)
 
     if (!isAbsolute(path)) {
@@ -175,7 +175,7 @@ export class Module {
    * module does not exist, catching the error throw from bad
    * import.
    */
-  public static async safeImport(path: string): Promise<any | null> {
+  public static async safeImport<T = any>(path: string): Promise<T | null> {
     try {
       return await Module.import(path)
     } catch (err) {
@@ -184,40 +184,87 @@ export class Module {
   }
 
   /**
-   * Resolve the module path by meta url and import it.
+   * Resolve the module path by parent URL.
    */
-  public static async resolve(path: string, meta: string): Promise<any> {
+  public static async resolve<T = any>(
+    path: string,
+    parentURL: string,
+    options: ModuleResolveOptions = {}
+  ): Promise<T> {
+    options = Options.create(options, {
+      import: true,
+      getModule: true
+    })
+
     const splitted = path.split('?')
     const queries = splitted[1] || ''
 
     path = splitted[0]
 
-    if (!path.startsWith('#') && extname(path)) {
-      path = resolve(path)
+    const resolve = async (path: string) => {
+      if (queries) {
+        path = path.concat('?', queries)
+      }
+
+      if (!options.import) {
+        return path
+      }
+
+      if (!options.getModule) {
+        return import(path)
+      }
+
+      return Module.get(import(path))
     }
 
     if (isAbsolute(path)) {
-      path = pathToFileURL(path).href
+      debug(
+        "path is absolute and don't need to be resolved, importing path: %s and query params: %s",
+        path,
+        queries
+      )
+
+      return resolve(pathToFileURL(path).href)
     }
 
+    if (!path.startsWith('#') && extname(path)) {
+      debug(
+        'trying to resolve relative path: %s, with parent URL: %s and query params: %s',
+        path,
+        parentURL,
+        queries
+      )
+
+      return resolve(new URL(path, parentURL).href)
+    }
+
+    if (process.argv.includes('--experimental-import-meta-resolve')) {
+      debug(
+        'trying to resolve import alias path: %s with parent URL: %s and query params: %s using import.meta.resolve',
+        path,
+        parentURL,
+        queries
+      )
+
+      return resolve(await import.meta.resolve(path, parentURL))
+    }
+
+    const require = Module.createRequire(parentURL)
+
     debug(
-      'trying to resolve path: %s, with parent URL: %s and query params: %s',
+      'trying to resolve import alias path: %s with parent URL: %s and query params: %s using require.resolve',
       path,
-      meta,
+      parentURL,
       queries
     )
 
-    // `await` is not needed for `import.meta.resolve` method,
-    // but TypeScript complains on it.
-    let resolvedPath = await import.meta.resolve(path, meta)
-
-    debug('resolved path: %s', resolvedPath)
-
-    if (queries) {
-      resolvedPath = resolvedPath.concat('?', queries)
+    try {
+      path = require.resolve(path)
+    } catch (error) {
+      path = error.message.match(/'(.*?)'/)[1]
     }
 
-    return Module.get(import(resolvedPath))
+    return resolve(pathToFileURL(path).href)
   }
 
   /**
