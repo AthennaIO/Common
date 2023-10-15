@@ -106,13 +106,13 @@ export class Exception extends Error {
     }
 
     const pretty = await new Youch(
-      {
+      new Exception({
         help,
         message,
         code: this.code,
         stack: this.stack,
         status: this.status
-      },
+      }),
       {}
     ).toJSON()
 
