@@ -116,14 +116,6 @@ export class Exception extends Error {
       {}
     ).toJSON()
 
-    pretty.error.frames = pretty.error.frames.map(frame => {
-      frame.isApp = true
-      frame.isNative = true
-      frame.isModule = true
-
-      return frame
-    })
-
     return YouchTerminal(pretty, options)
   }
 }
