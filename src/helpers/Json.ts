@@ -109,6 +109,20 @@ export class ObjectBuilder {
   }
 
   /**
+   * Omit data from object.
+   */
+  public omit(keys: string[]) {
+    return Json.omit(this.object, keys)
+  }
+
+  /**
+   * Omit data from object.
+   */
+  public pick(keys: string[]) {
+    return Json.pick(this.object, keys)
+  }
+
+  /**
    * Return an array with the property names.
    */
   public keys(): string[] {
@@ -229,7 +243,7 @@ export class ObjectBuilder {
 
   /**
    * Get the value referenced or not depending on
-   * "options.referecendValues". Also will auto set
+   * "options.referencedValues". Also will auto set
    * the "options.defaultValue" if any value is set.
    */
   private getValue(value: any, defaultValue = this.options.defaultValue): any {
@@ -255,8 +269,48 @@ export class Json {
   /**
    * Deep copy any object properties without reference.
    */
-  public static copy(object: any): any {
+  public static copy<T = any>(object: T): T {
     return lodash.cloneDeep(object)
+  }
+
+  /**
+   * Omit data from an object.
+   *
+   * @example
+   * ```ts
+   * const obj = {
+   *  name: 'Lenon',
+   *  age: 22
+   * }
+   *
+   * const omitted = Json.omit(obj, ['name']) // { age: 22 }
+   * ```
+   */
+  public static omit<T extends object = any, K extends keyof T = any>(
+    object: T,
+    keys: K[]
+  ): Omit<T, K> {
+    return lodash.omit(object, keys)
+  }
+
+  /**
+   * Pick data from an object.
+   *
+   * @example
+   * ```ts
+   * const obj = {
+   *  name: 'Lenon',
+   *  age: 22
+   * }
+   *
+   * const picked = Json.pick(obj, ['name']) // { name: 'Lenon' }
+   * ```
+   */
+  public static pick<T extends object = any, K extends keyof T = any>(
+    object: T,
+    keys: K[]
+  ): Pick<T, K> {
+    return lodash.pick(object, keys)
   }
 
   /**
