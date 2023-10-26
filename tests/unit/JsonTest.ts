@@ -348,4 +348,60 @@ export default class JsonTest {
       ['AGE', 22]
     ])
   }
+
+  @Test()
+  public async shouldBeAbleToOmitValuesFromObject({ assert }: Context) {
+    const object = {
+      name: 'Lenon',
+      age: 22
+    }
+
+    const omitted = Json.omit(object, ['age'])
+
+    assert.deepEqual(omitted, { name: 'Lenon' })
+  }
+
+  @Test()
+  public async shouldBeAbleToPickValuesFromObject({ assert }: Context) {
+    const object = {
+      name: 'Lenon',
+      age: 22
+    }
+
+    const picked = Json.pick(object, ['age'])
+
+    assert.deepEqual(picked, { age: 22 })
+  }
+
+  @Test()
+  public async shouldBeAbleToPickValuesFromBuilder({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'Lenon', age: 22 })
+    const picked = builder.pick(['name'])
+
+    assert.deepEqual(picked, { name: 'Lenon' })
+  }
+
+  @Test()
+  public async shouldBeAbleToOmitValuesFromBuilder({ assert }: Context) {
+    const builder = Json.builder().set({ name: 'Lenon', age: 22 })
+    const omitted = builder.omit(['name'])
+
+    assert.deepEqual(omitted, { age: 22 })
+  }
+
+  @Test()
+  public async shouldBeAbleToPickAdvancedKeyValuesFromBuilder({ assert }: Context) {
+    const builder = Json.builder().set({ users: [{ name: 'Lenon', age: 22 }] })
+    const picked = builder.pick(['users[0].name'])
+
+    assert.deepEqual(picked, { users: [{ name: 'Lenon' }] })
+  }
+
+  @Test()
+  public async shouldBeAbleToOmitAdvancedKeyValuesFromBuilder({ assert }: Context) {
+    const builder = Json.builder().set({ users: [{ name: 'Lenon', age: 22 }] })
+    const omitted = builder.omit(['users[0].name'])
+
+    assert.deepEqual(omitted, { users: [{ age: 22 }] })
+  }
 }
