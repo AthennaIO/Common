@@ -17,7 +17,7 @@
     "standalone"
   ],
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=21.0.0"
   },
   "scripts": {
     "build": "node node_modules/@athenna/tsconfig/src/build.js",
