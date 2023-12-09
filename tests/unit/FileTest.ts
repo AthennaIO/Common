@@ -331,6 +331,20 @@ export default class FileTest {
   }
 
   @Test()
+  public async shouldBeAbleToGetTheFileContentAsYaml({ assert }: Context) {
+    const bigFileContent = await this.bigFile.setContentSync('hello: world').getContentAsYaml()
+
+    assert.deepEqual(bigFileContent, { hello: 'world' })
+  }
+
+  @Test()
+  public async shouldBeAbleToGetTheFileContentAsYamlSync({ assert }: Context) {
+    const bigFileContent = this.bigFile.setContentSync('hello: world').getContentAsYamlSync()
+
+    assert.deepEqual(bigFileContent, { hello: 'world' })
+  }
+
+  @Test()
   public async shouldBeAbleToImportSomeFileThatIsAValidModule({ assert }: Context) {
     const Folder = await new File(Path.src('helpers/Folder.ts')).import()
 
