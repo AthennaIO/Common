@@ -9,6 +9,7 @@
 
 import ms from 'ms'
 import bytes from 'bytes'
+import yaml from 'js-yaml'
 
 import { Is } from '#src/helpers/Is'
 import { String } from '#src/helpers/String'
@@ -104,6 +105,20 @@ export class Parser {
     })
 
     return object
+  }
+
+  /**
+   * Parse object to yaml string.
+   */
+  public static objectToYamlString(object: any): string {
+    return yaml.dump(object)
+  }
+
+  /**
+   * Parse yaml string to object.
+   */
+  public static yamlStringToObject(text: string): any {
+    return yaml.load(text)
   }
 
   /**
