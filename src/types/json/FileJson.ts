@@ -24,5 +24,5 @@ export interface FileJson {
   originalPath: string
   originalHref: string
   originalFileExists: boolean
-  content: string
+  content: Buffer | string
 }

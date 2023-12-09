@@ -27,6 +27,7 @@ import {
   WriteStream
 } from 'node:fs'
 
+import { debug } from '#src/debug'
 import { lookup } from 'mime-types'
 import { Is } from '#src/helpers/Is'
 import { pathToFileURL } from 'node:url'
@@ -38,7 +39,6 @@ import { Options } from '#src/helpers/Options'
 import { isAbsolute, parse, sep } from 'node:path'
 import { Json, ObjectBuilder } from '#src/helpers/Json'
 import { NotFoundFileException } from '#src/exceptions/NotFoundFileException'
-import { debug } from '#src/debug/index'
 
 export class File {
   /**
@@ -770,6 +770,32 @@ export class File {
     const content = this.getContentAsStringSync(options)
 
     return Json.parse(content)
+  }
+
+  /**
+   * Get only the content of the file as yaml.
+   */
+  public async getContentAsYaml(options?: {
+    saveContent?: boolean
+  }): Promise<any | any[]> {
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    const content = await this.getContentAsString(options)
+
+    return Parser.yamlStringToObject(content)
+  }
+
+  /**
+   * Get only the content of the file as yaml.
+   */
+  public getContentAsYamlSync(options?: {
+    saveContent?: boolean
+  }): any | any[] {
+    this.loadSync({ isInternalLoad: true, withContent: false })
+
+    const content = this.getContentAsStringSync(options)
+
+    return Parser.yamlStringToObject(content)
   }
 
   /**

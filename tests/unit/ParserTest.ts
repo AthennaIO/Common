@@ -263,4 +263,20 @@ export default class ParserTest {
 
     assert.deepEqual(builders[0].get(), { hello: 'world' })
   }
+
+  @Test()
+  public async shouldBeAbleToParseAnObjectToYamlString({ assert }: Context) {
+    const string = Parser.objectToYamlString({ hello: 'world' })
+
+    assert.deepEqual(string, 'hello: world\n')
+  }
+
+  @Test()
+  public async shouldBeAbleToParseYamlStringToObject({ assert }: Context) {
+    const string = 'version: 3'
+
+    const object = Parser.yamlStringToObject(string)
+
+    assert.deepEqual(object, { version: 3 })
+  }
 }
