@@ -75,6 +75,7 @@ export default class PathTest {
 
     assert.equal(Path.http(), mainPath.concat(sep, 'http'))
     assert.equal(Path.console(), mainPath.concat(sep, 'console'))
+    assert.equal(Path.models(), mainPath.concat(sep, 'models'))
     assert.equal(Path.services(), mainPath.concat(sep, 'services'))
     assert.equal(Path.exceptions(), mainPath.concat(sep, 'exceptions'))
     assert.equal(Path.repositories(), mainPath.concat(sep, 'repositories'))
@@ -154,6 +155,7 @@ export default class PathTest {
     Path.setBin('build/bin')
       .setSrc('build/src')
       .setApp('build/app')
+      .setModels('build/app/models')
       .setServices('build/app/services')
       .setExceptions('build/app/exceptions')
       .setRepositories('build/app/repositories')
@@ -190,6 +192,7 @@ export default class PathTest {
     assert.isTrue(Path.bin().endsWith(`build${sep}bin`))
     assert.isTrue(Path.src().endsWith(`build${sep}src`))
     assert.isTrue(Path.app().endsWith(`build${sep}app`))
+    assert.isTrue(Path.models().endsWith(`build${sep}app${sep}models`))
     assert.isTrue(Path.services().endsWith(`build${sep}app${sep}services`))
     assert.isTrue(Path.exceptions().endsWith(`build${sep}app${sep}exceptions`))
     assert.isTrue(Path.repositories().endsWith(`build${sep}app${sep}repositories`))

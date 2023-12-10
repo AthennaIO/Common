@@ -11,6 +11,7 @@ export interface PathDirs {
   bin?: string
   src?: string
   app?: string
+  models?: string
   services?: string
   exceptions?: string
   repositories?: string

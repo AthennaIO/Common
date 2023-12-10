@@ -19,6 +19,7 @@ export class Path {
     bin: 'bin',
     src: 'src',
     app: 'app',
+    models: 'app/models',
     services: 'app/services',
     exceptions: 'app/exceptions',
     repositories: 'app/repositories',
@@ -522,6 +523,22 @@ export class Path {
    */
   public static setConsole(directory: string): typeof Path {
     this.dirs.console = directory
+
+    return this
+  }
+
+  /**
+   * Return the models' path of your project.
+   */
+  public static models(subPath: string = sep): string {
+    return this.pwd(this.dirs.models + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of models folder.
+   */
+  public static setModels(directory: string): typeof Path {
+    this.dirs.models = directory
 
     return this
   }
