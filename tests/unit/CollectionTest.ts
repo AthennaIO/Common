@@ -26,16 +26,33 @@ export default class CollectionTest {
   }
 
   @Test()
+  public async shouldBeAbleToExecuteTheToJSONMethodInsideObjectsOfCollections({ assert }: Context) {
+    const models = [
+      undefined,
+      {},
+      {
+        toJSON: () => ({ id: 1 })
+      }
+    ]
+
+    assert.deepEqual(models.toAthennaJSON(), [{ id: 1 }])
+    assert.deepEqual(models.toAthennaCollection().toJSON(), [{ id: 1 }])
+    assert.deepEqual(new Collection(models).toJSON(), [{ id: 1 }])
+  }
+
+  @Test()
   public async shouldBeAbleToExecuteTheToResourceMethodInsideObjectsOfCollections({ assert }: Context) {
     const models = [
+      undefined,
+      {},
       {
         toResource: () => ({ id: 1 })
       },
       { toResource: criterias => criterias }
     ]
 
-    assert.deepEqual(models.toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
-    assert.deepEqual(models.toCollection().toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
+    assert.deepEqual(models.toAthennaResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
+    assert.deepEqual(models.toAthennaCollection().toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
     assert.deepEqual(new Collection(models).toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
   }
 }

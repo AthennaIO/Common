@@ -30,12 +30,21 @@ export class Collection<T = any> extends CollectJS<T> {
   }
 
   /**
+   * Execute the toJSON method inside objects if exists.
+   */
+  public toJSON(): Record<string, any>[] {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.all().toAthennaJSON()
+  }
+
+  /**
    * Execute the toResource method inside objects if exists.
    */
   public toResource(criterias = {}): T[] {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return this.all().map(item => item.toResource(criterias))
+    return this.all().toAthennaResource(criterias)
   }
 }
 
