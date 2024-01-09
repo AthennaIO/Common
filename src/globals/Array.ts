@@ -14,24 +14,47 @@ export {}
 declare global {
   interface Array<T> {
     /**
+     * Call the toJSON method of each item
+     * inside the array.
+     */
+    toAthennaJSON(): Record<string, any>[]
+
+    /**
      * Call the toResource method of each item
      * inside the array.
      */
-    toResource(criterias?: any): T[]
+    toAthennaResource(criterias?: any): T[]
 
     /**
      * Transform the array to an Athenna collection.
      */
-    toCollection(): Collection<T>
+    toAthennaCollection(): Collection<T>
   }
 }
 
 // eslint-disable-next-line no-extend-native
-Array.prototype.toResource = function (criterias = {}) {
-  return this.map(model => model.toResource(criterias))
+Array.prototype.toAthennaJSON = function () {
+  return this.map(model => {
+    if (model && model.toJSON) {
+      return model.toJSON()
+    }
+
+    return null
+  }).filter(Boolean)
 }
 
 // eslint-disable-next-line no-extend-native
-Array.prototype.toCollection = function () {
+Array.prototype.toAthennaResource = function (criterias = {}) {
+  return this.map(model => {
+    if (model && model.toResource) {
+      return model.toResource(criterias)
+    }
+
+    return null
+  }).filter(Boolean)
+}
+
+// eslint-disable-next-line no-extend-native
+Array.prototype.toAthennaCollection = function () {
   return new Collection(this)
 }
