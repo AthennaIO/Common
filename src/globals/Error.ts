@@ -30,6 +30,7 @@ Error.prototype.toAthennaException = function (options: ExceptionJson = {}) {
   options.stack = options.stack || this.stack
   options.message = options.message || this.message
   options.code = options.code || changeCase.constantCase(options.name)
+  options.details = options.details || this.details || this.errors
 
   return new Exception(options)
 }
