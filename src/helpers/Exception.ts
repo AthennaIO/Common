@@ -15,11 +15,13 @@ import YouchTerminal from 'youch-terminal'
 import { Color } from '#src/helpers/Color'
 import { Options } from '#src/helpers/Options'
 import type { ExceptionJson } from '#src/types'
+import { Is } from '@athenna/common'
 
 export class Exception extends Error {
   public code?: string
   public help?: any
   public status?: number
+  public details?: any[]
   public isAthennaException = true
 
   /**
@@ -46,6 +48,10 @@ export class Exception extends Error {
       this.help = options.help
     }
 
+    if (options.details) {
+      this.details = options.details
+    }
+
     if (options.stack) {
       this.stack = options.stack
     } else {
@@ -65,6 +71,7 @@ export class Exception extends Error {
     json.message = this.message
 
     if (this.help) json.help = this.help
+    if (this.details) json.details = this.details
     if (stack) json.stack = this.stack
 
     return json
@@ -92,10 +99,23 @@ export class Exception extends Error {
 
     const separator = Color.cyan('-----')
     const helpKey = Color.gray.bold.bgGreen(' HELP ')
+    const detailsKey = Color.gray.bold.bgHex('#f18b0e')(' DETAILS ')
     const title = Color.gray.bold.bgRed(` ${this.code || this.name} `)
 
     let help = ''
     let message = `${title}\n\n${Color.apply(this.message)}`
+
+    if (this.details && this.details.length) {
+      message = `${message}\n\n${detailsKey}\n\n${this.details
+        .map(detail => {
+          if (Is.String(detail)) {
+            return Color.orange(Color.apply(detail))
+          }
+
+          return Color.orange(JSON.stringify(detail, null, 2))
+        })
+        .join('\n')}`
+    }
 
     if (this.help && this.help !== '') {
       help = `${helpKey}\n\n  ${Color.green(
@@ -111,7 +131,8 @@ export class Exception extends Error {
         message,
         code: this.code,
         stack: this.stack,
-        status: this.status
+        status: this.status,
+        details: this.details
       }),
       {}
     ).toJSON()

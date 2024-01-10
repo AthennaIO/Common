@@ -75,6 +75,31 @@ export default class ExceptionTest {
 
     const prettyError = await exception.prettify()
 
+    console.log(prettyError)
+
+    assert.isDefined(prettyError)
+    assert.typeOf(prettyError, 'string')
+  }
+
+  @Test()
+  public async shouldBeAbleToPrettifyTheExceptionWithDetails({ assert }: Context) {
+    class InternalServerException extends Exception {
+      constructor(content = 'Internal Server Error.', status = 500) {
+        super({
+          status,
+          message: content,
+          details: ['Machine error', 'Runtime error'],
+          code: 'E_RUNTIME_EXCEPTION',
+          help: 'Restart your computer, works always. 👍'
+        })
+      }
+    }
+
+    const exception = new InternalServerException()
+    const prettyError = await exception.prettify()
+
+    console.log(prettyError)
+
     assert.isDefined(prettyError)
     assert.typeOf(prettyError, 'string')
   }
