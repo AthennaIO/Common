@@ -14,5 +14,6 @@ export interface ExceptionJson {
   message?: string
   help?: any
   details?: any[]
+  otherInfos?: any
   stack?: string
 }

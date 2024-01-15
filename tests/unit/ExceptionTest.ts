@@ -103,4 +103,59 @@ export default class ExceptionTest {
     assert.isDefined(prettyError)
     assert.typeOf(prettyError, 'string')
   }
+
+  @Test()
+  public async shouldBeAbleToPrettifyTheExceptionWithDetailsAndAdditionalErrorInfos({ assert }: Context) {
+    const error = new Error()
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.code = 'E_RUNTIME_EXCEPTION'
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.line = 0
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.column = 0
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.filename = 'test.js'
+
+    const exception = error.toAthennaException()
+    const prettyError = await exception.prettify()
+
+    console.log(prettyError)
+
+    assert.isDefined(prettyError)
+    assert.typeOf(prettyError, 'string')
+  }
+
+  @Test()
+  public async shouldBeAbleToPrettifyTheExceptionMergingInfosAndAdditionalErrorInfos({ assert }: Context) {
+    const error = new Error()
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.code = 'E_RUNTIME_EXCEPTION'
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.line = 0
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.column = 0
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.filename = 'test.js'
+    // eslint-disable-next-line
+    // @ts-ignore
+    error.details = ['Machine error']
+
+    const exception = error.toAthennaException({ otherInfos: { hello: 'world' } })
+    const prettyError = await exception.prettify()
+
+    console.log(prettyError)
+
+    assert.isDefined(prettyError)
+    assert.typeOf(prettyError, 'string')
+  }
 }
