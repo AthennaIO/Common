@@ -9,6 +9,8 @@
 
 import * as changeCase from 'change-case'
 
+import { Is } from '#src/helpers/Is'
+import { Json } from '#src/helpers/Json'
 import type { ExceptionJson } from '#src/types'
 import { Exception } from '#src/helpers/Exception'
 
@@ -29,8 +31,41 @@ Error.prototype.toAthennaException = function (options: ExceptionJson = {}) {
   options.name = options.name || this.name
   options.stack = options.stack || this.stack
   options.message = options.message || this.message
-  options.code = options.code || changeCase.constantCase(options.name)
-  options.details = options.details || this.details || this.errors
+  options.code =
+    options.code || this.code || changeCase.constantCase(options.name)
+  options.otherInfos = {
+    ...options.otherInfos,
+    ...Json.omit(this, [
+      'name',
+      'stack',
+      'message',
+      'code',
+      'details',
+      'errors'
+    ])
+  }
+
+  if (!Is.Undefined(options.details)) {
+    return new Exception(options)
+  }
+
+  options.details = []
+
+  if (!Is.Empty(this.details)) {
+    if (Is.Array(this.details)) {
+      options.details.push(...this.details)
+    } else {
+      options.details.push(this.details)
+    }
+  }
+
+  if (!Is.Empty(this.errors)) {
+    if (Is.Array(this.errors)) {
+      options.details.push(...this.errors)
+    } else {
+      options.details.push(this.errors)
+    }
+  }
 
   return new Exception(options)
 }

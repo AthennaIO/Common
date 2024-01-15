@@ -12,16 +12,17 @@ import * as changeCase from 'change-case'
 import Youch from 'youch'
 import YouchTerminal from 'youch-terminal'
 
+import { Is } from '@athenna/common'
 import { Color } from '#src/helpers/Color'
 import { Options } from '#src/helpers/Options'
 import type { ExceptionJson } from '#src/types'
-import { Is } from '@athenna/common'
 
 export class Exception extends Error {
   public code?: string
   public help?: any
   public status?: number
   public details?: any[]
+  public otherInfos?: any
   public isAthennaException = true
 
   /**
@@ -52,6 +53,10 @@ export class Exception extends Error {
       this.details = options.details
     }
 
+    if (options.otherInfos) {
+      this.otherInfos = options.otherInfos
+    }
+
     if (options.stack) {
       this.stack = options.stack
     } else {
@@ -72,6 +77,7 @@ export class Exception extends Error {
 
     if (this.help) json.help = this.help
     if (this.details) json.details = this.details
+    if (this.otherInfos) json.otherInfos = this.otherInfos
     if (stack) json.stack = this.stack
 
     return json
@@ -100,6 +106,7 @@ export class Exception extends Error {
     const separator = Color.cyan('-----')
     const helpKey = Color.gray.bold.bgGreen(' HELP ')
     const detailsKey = Color.gray.bold.bgHex('#f18b0e')(' DETAILS ')
+    const otherInfosKey = Color.gray.bold.bgHex('#f18b0e')(' OTHER INFOS ')
     const title = Color.gray.bold.bgRed(` ${this.code || this.name} `)
 
     let help = ''
@@ -117,6 +124,14 @@ export class Exception extends Error {
         .join('\n')}`
     }
 
+    if (this.otherInfos && !Is.Empty(this.otherInfos)) {
+      message = `${message}\n\n${otherInfosKey}\n\n${
+        Is.String(this.otherInfos)
+          ? Color.orange(Color.apply(this.otherInfos))
+          : Color.orange(JSON.stringify(this.otherInfos, null, 2))
+      }`
+    }
+
     if (this.help && this.help !== '') {
       help = `${helpKey}\n\n  ${Color.green(
         Color.apply(this.help)
@@ -132,7 +147,8 @@ export class Exception extends Error {
         code: this.code,
         stack: this.stack,
         status: this.status,
-        details: this.details
+        details: this.details,
+        otherInfos: this.otherInfos
       }),
       {}
     ).toJSON()
