@@ -143,21 +143,21 @@ export default class HttpClientTest {
 
   @Test()
   public async shouldBeAbleToMakeAPOSTRequestUsingHttpClient({ assert }: Context) {
-    const userCreated = await HttpClient.post('/users', { name: 'Robson Trasel' }).json()
+    const userCreated = await HttpClient.post('/users', { body: { name: 'Robson Trasel' } }).json()
 
     assert.deepEqual(userCreated, { id: 1, name: 'Robson Trasel' })
   }
 
   @Test()
   public async shouldBeAbleToMakeAPUTRequestUsingHttpClient({ assert }: Context) {
-    const userUpdated = await HttpClient.put('/users/1', { name: 'Robson Trasel Updated' }).json()
+    const userUpdated = await HttpClient.put('/users/1', { body: { name: 'Robson Trasel Updated' } }).json()
 
     assert.deepEqual(userUpdated, { id: 1, name: 'Robson Trasel Updated' })
   }
 
   @Test()
   public async shouldBeAbleToMakeAPATCHRequestUsingHttpClient({ assert }: Context) {
-    const userUpdated = await HttpClient.patch('/users/1', { name: 'Robson Trasel Updated Patch' }).json()
+    const userUpdated = await HttpClient.patch('/users/1', { body: { name: 'Robson Trasel Updated Patch' } }).json()
 
     assert.deepEqual(userUpdated, { id: 1, name: 'Robson Trasel Updated Patch' })
   }
@@ -275,7 +275,7 @@ export default class HttpClientTest {
       options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     })
 
-    await builder.post('users', '{"payload":"old"}')
+    await builder.body('{"payload":"old"}').post('users')
   }
 
   @Test()
@@ -330,5 +330,166 @@ export default class HttpClientTest {
     assert.deepEqual(file.content.toString(), '[{"id":1,"name":"Robson Trasel"},{"id":2,"name":"Victor Tesoura"}]')
 
     await File.safeRemove(Path.fixtures('streamed.json'))
+  }
+
+  @Test()
+  public async shouldBeAbleToSetAJsonBodyInARequest({ assert }: Context) {
+    assert.plan(2)
+
+    const user = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(options.body, '{"name":"Robson Trasel"}')
+      })
+      .body({ name: 'Robson Trasel' })
+      .post('/users')
+      .json()
+
+    assert.deepEqual(user, { id: 1, name: 'Robson Trasel' })
+  }
+
+  @Test()
+  public async shouldBeAbleToSetAJsonUsingInputMethodInARequest({ assert }: Context) {
+    assert.plan(2)
+
+    const user = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(options.body, '{"name":"Robson Trasel"}')
+      })
+      .input('name', 'Robson Trasel')
+      .post('/users')
+      .json()
+
+    assert.deepEqual(user, { id: 1, name: 'Robson Trasel' })
+  }
+
+  @Test()
+  public async shouldBeAbleToSetMultipleBodyValuesInRequest({ assert }: Context) {
+    assert.plan(2)
+
+    const user = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(options.body, '{"id":1,"name":"Robson Trasel"}')
+      })
+      .body('id', 1)
+      .body('name', 'Robson Trasel')
+      .post('/users')
+      .json()
+
+    assert.deepEqual(user, { id: 1, name: 'Robson Trasel' })
+  }
+
+  @Test()
+  public async shouldBeAbleToOverwriteTheBodySettingOnlyOneValue({ assert }: Context) {
+    assert.plan(2)
+
+    const user = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(options.body, '{"name":"Robson Trasel"}')
+      })
+      .body('id', 1)
+      .body('name', 'Robson Trasel')
+      .body({ name: 'Robson Trasel' })
+      .post('/users')
+      .json()
+
+    assert.deepEqual(user, { id: 1, name: 'Robson Trasel' })
+  }
+
+  @Test()
+  public async shouldBeAbleToSetAQueryParamInRequest({ assert }: Context) {
+    assert.plan(2)
+
+    const users = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(
+          options.searchParams,
+          new URLSearchParams([
+            ['page', '1'],
+            ['limit', '10']
+          ])
+        )
+      })
+      .query('page', '1')
+      .query('limit', '10')
+      .get('/users')
+      .json()
+
+    assert.deepEqual(users, [
+      { id: 1, name: 'Robson Trasel' },
+      { id: 2, name: 'Victor Tesoura' }
+    ])
+  }
+
+  @Test()
+  public async shouldBeAbleToOverwriteTheQueryInRequest({ assert }: Context) {
+    assert.plan(2)
+
+    const users = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(
+          options.searchParams,
+          new URLSearchParams([
+            ['page', '1'],
+            ['limit', '10']
+          ])
+        )
+      })
+      .query('page', '1')
+      .query('limit', '10')
+      .query({ page: '1', limit: '10' })
+      .get('/users')
+      .json()
+
+    assert.deepEqual(users, [
+      { id: 1, name: 'Robson Trasel' },
+      { id: 2, name: 'Victor Tesoura' }
+    ])
+  }
+
+  @Test()
+  public async shouldBeAbleToExecuteClosureWhenFirstValueIsDefined({ assert }: Context) {
+    assert.plan(3)
+
+    const users = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(
+          options.searchParams,
+          new URLSearchParams([
+            ['page', '1'],
+            ['limit', '10']
+          ])
+        )
+      })
+      .when(true, (builder, value) => {
+        assert.isTrue(value)
+        builder.query({ page: '1', limit: '10' })
+      })
+      .get('/users')
+      .json()
+
+    assert.deepEqual(users, [
+      { id: 1, name: 'Robson Trasel' },
+      { id: 2, name: 'Victor Tesoura' }
+    ])
+  }
+
+  @Test()
+  public async shouldNotExecuteClosureWhenFirstValueIsFalse({ assert }: Context) {
+    assert.plan(2)
+
+    const users = await HttpClient.builder()
+      .setBeforeRequestHook(options => {
+        assert.deepEqual(options.searchParams, new URLSearchParams())
+      })
+      .when(false, builder => {
+        builder.query({ page: '1', limit: '10' })
+      })
+      .get('/users')
+      .json()
+
+    assert.deepEqual(users, [
+      { id: 1, name: 'Robson Trasel' },
+      { id: 2, name: 'Victor Tesoura' }
+    ])
   }
 }

@@ -16,13 +16,7 @@ import { Json } from '#src/helpers/Json'
 
 import type { Store } from 'keyv'
 import type { ClientHttp2Session } from 'http2'
-import type {
-  Body,
-  Query,
-  Request,
-  Response,
-  RetryStrategyCallback
-} from '#src/types'
+import type { Request, Response, RetryStrategyCallback } from '#src/types'
 
 import type {
   Hooks,
@@ -404,25 +398,42 @@ export class HttpClientBuilder {
   }
 
   /**
-   * Set the request body.
+   * Set a key value to the request body.
    */
-  public body(body: Body): HttpClientBuilder {
-    if (Is.Object(body)) {
-      this.options.json = body
+  public body(key: any, value?: any): HttpClientBuilder {
+    if (!this.options.body) {
+      this.options.body = {} as any
+    }
+
+    if (Is.Undefined(value)) {
+      this.options.body = key
 
       return this
     }
 
-    this.options.body = body as any
+    this.options.body[key] = value
 
     return this
   }
 
   /**
-   * Set the request form.
+   * Set a key value to the request body.
    */
-  public form(form: any | Record<string, any>): HttpClientBuilder {
-    this.options.form = form
+  public input(key: string, value: any): HttpClientBuilder {
+    return this.body(key, value)
+  }
+
+  /**
+   * Execute the given closure only when the value is
+   * truthy.
+   */
+  public when<T = any>(
+    value: T,
+    closure: (builder?: HttpClientBuilder, value?: T) => any
+  ): HttpClientBuilder {
+    if (value) {
+      closure(this, value)
+    }
 
     return this
   }
@@ -430,9 +441,15 @@ export class HttpClientBuilder {
   /**
    * Set a header at the request.
    */
-  public header(key: string, value: string): HttpClientBuilder {
+  public header(key: any, value?: any): HttpClientBuilder {
     if (!this.options.headers) {
       this.options.headers = {}
+    }
+
+    if (Is.Undefined(value)) {
+      this.options.headers = key
+
+      return this
     }
 
     this.options.headers[key] = value
@@ -444,7 +461,7 @@ export class HttpClientBuilder {
    * Set a header at the request only if is not already
    * defined.
    */
-  public safeHeader(key: string, value: string): HttpClientBuilder {
+  public safeHeader(key: string, value: any): HttpClientBuilder {
     if (!this.options.headers) {
       this.options.headers = {}
     }
@@ -453,9 +470,7 @@ export class HttpClientBuilder {
       return this
     }
 
-    this.options.headers[key] = value
-
-    return this
+    return this.header(key, value)
   }
 
   /**
@@ -463,14 +478,14 @@ export class HttpClientBuilder {
    */
   public removeHeader(key: string): HttpClientBuilder {
     if (!this.options.headers) {
-      this.options.headers = {}
+      return this
     }
 
     if (!this.options.headers[key]) {
       return this
     }
 
-    delete this.options.headers[key]
+    this.options.headers = Json.omit(this.options.headers, [key])
 
     return this
   }
@@ -595,8 +610,18 @@ export class HttpClientBuilder {
    * //=> 'key=a&key=b'
    * ```
    */
-  public searchParams(value: Query): HttpClientBuilder {
-    this.options.searchParams = value
+  public searchParams(key: any, value?: any): HttpClientBuilder {
+    if (!this.options.searchParams) {
+      this.options.searchParams = {}
+    }
+
+    if (Is.Undefined(value)) {
+      this.options.searchParams = key
+
+      return this
+    }
+
+    this.options.searchParams[key] = value
 
     return this
   }
@@ -604,8 +629,39 @@ export class HttpClientBuilder {
   /**
    * Alias for the searchParams method.
    */
-  public queryParams(value: Query): HttpClientBuilder {
-    return this.searchParams(value)
+  public query(key: any, value?: any): HttpClientBuilder {
+    return this.searchParams(key, value)
+  }
+
+  /**
+   * Set a query at the request only if is not already
+   * defined.
+   */
+  public safeQuery(key: string, value: any): HttpClientBuilder {
+    if (this.options.searchParams[key]) {
+      return this
+    }
+
+    return this.searchParams(key, value)
+  }
+
+  /**
+   * Remove a query from the request.
+   */
+  public removeQuery(key: string): HttpClientBuilder {
+    if (!this.options.searchParams) {
+      return this
+    }
+
+    if (!this.options.searchParams[key]) {
+      return this
+    }
+
+    this.options.searchParams = Json.omit(this.options.searchParams as any, [
+      key
+    ])
+
+    return this
   }
 
   /**
@@ -1066,7 +1122,14 @@ export class HttpClientBuilder {
    * Execute the request using all the options defined.
    */
   public request<T = any>(options: Request = {}): Response<T> {
-    return got<T>({ ...this.options, ...options } as any)
+    options = { ...this.options, ...options }
+
+    if (options.body && Is.Object(options.body)) {
+      options.json = Json.copy(options.body)
+      options.body = undefined
+    }
+
+    return got<T>(options as any)
   }
 
   /**
@@ -1081,34 +1144,27 @@ export class HttpClientBuilder {
   /**
    * Make a POST request.
    */
-  public post<T = any>(url?: string | URL, body?: Body, options: Request = {}) {
+  public post<T = any>(url?: string | URL, options: Request = {}) {
     return this.method('POST')
       .url(url || options.url || this.options.url)
-      .body(body || options.body || this.options.body || {})
       .request<T>(options)
   }
 
   /**
    * Make a PUT request.
    */
-  public put<T = any>(url?: string | URL, body?: Body, options: Request = {}) {
+  public put<T = any>(url?: string | URL, options: Request = {}) {
     return this.method('PUT')
       .url(url || options.url || this.options.url)
-      .body(body || options.body || this.options.body || {})
       .request<T>(options)
   }
 
   /**
    * Make a PATCH request.
    */
-  public patch<T = any>(
-    url?: string | URL,
-    body?: Response,
-    options: Request = {}
-  ) {
+  public patch<T = any>(url?: string | URL, options: Request = {}) {
     return this.method('PATCH')
       .url(url || options.url || this.options.url)
-      .body(body || options.body || this.options.body || {})
       .request<T>(options)
   }
 
@@ -1168,34 +1224,22 @@ export class HttpClient {
   /**
    * Make a POST request.
    */
-  public static post<T = any>(
-    url?: string | URL,
-    body?: Body,
-    options?: Request
-  ) {
-    return this._builder.post<T>(url, body, options)
+  public static post<T = any>(url?: string | URL, options?: Request) {
+    return this._builder.post<T>(url, options)
   }
 
   /**
    * Make a PUT request.
    */
-  public static put<T = any>(
-    url?: string | URL,
-    body?: Body,
-    options?: Request
-  ) {
-    return this._builder.put<T>(url, body, options)
+  public static put<T = any>(url?: string | URL, options?: Request) {
+    return this._builder.put<T>(url, options)
   }
 
   /**
    * Make a PATCH request.
    */
-  public static patch<T = any>(
-    url?: string | URL,
-    body?: Body,
-    options?: Request
-  ) {
-    return this._builder.patch<T>(url, body, options)
+  public static patch<T = any>(url?: string | URL, options?: Request) {
+    return this._builder.patch<T>(url, options)
   }
 
   /**
