@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Parser } from '#src'
+import { File, Parser } from '#src'
 import { Test, type Context } from '@athenna/test'
 import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
@@ -278,5 +278,48 @@ export default class ParserTest {
     const object = Parser.yamlStringToObject(string)
 
     assert.deepEqual(object, { version: 3 })
+  }
+
+  @Test()
+  public async shouldBeAbleToParseObjectToCsv({ assert }: Context) {
+    const csv = Parser.jsonToCsv({ id: 1, name: 'lenon' })
+
+    assert.deepEqual(csv, 'id,name\n1,lenon')
+  }
+
+  @Test()
+  public async shouldBeAbleToParseObjectToCsvWithoutHeaders({ assert }: Context) {
+    const csv = Parser.jsonToCsv({ id: 1, name: 'lenon' }, { headers: [] })
+
+    assert.deepEqual(csv, '1,lenon')
+  }
+
+  @Test()
+  public async shouldBeAbleToParseObjectToCsvOnlyWithDefinedHeaders({ assert }: Context) {
+    const csv = Parser.jsonToCsv({ id: 1, name: 'lenon' }, { headers: ['id'] })
+
+    assert.deepEqual(csv, 'id\n1')
+  }
+
+  @Test()
+  public async shouldBeAbleToParseACsvFileToJson({ assert }: Context) {
+    const getCsvData = async () => {
+      return new Promise(resolve => {
+        const data = []
+
+        new File(Path.fixtures('resources/data.csv'))
+          .createReadStream()
+          .pipe(Parser.stream().csvToJson())
+          .on('data', user => data.push(user))
+          .on('end', () => resolve(data))
+      })
+    }
+
+    const data = await getCsvData()
+
+    assert.deepEqual(data, [
+      { id: '1', name: 'lenon' },
+      { id: '2', name: 'victor' }
+    ])
   }
 }

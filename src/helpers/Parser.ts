@@ -10,6 +10,7 @@
 import ms from 'ms'
 import bytes from 'bytes'
 import yaml from 'js-yaml'
+import csvParser from 'csv-parser'
 
 import { Is } from '#src/helpers/Is'
 import { String } from '#src/helpers/String'
@@ -20,6 +21,21 @@ import { getReasonPhrase, getStatusCode } from 'http-status-codes'
 import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
 export class Parser {
+  /**
+   * Parse using Node.js streams, useful for
+   * parsing multiple values in files.
+   */
+  public static stream() {
+    return {
+      /**
+       * Parse a csv chunk to json object.
+       */
+      csvToJson: (options?: csvParser.Options | string[]) => {
+        return csvParser(options)
+      }
+    }
+  }
+
   /**
    * Parse a string to array.
    */
@@ -50,14 +66,14 @@ export class Parser {
       return `${values[0]}${options?.pairSeparator || ' and '}${values[1]}`
     }
 
-    const normalized = Options.create(options, {
+    options = Options.create(options, {
       separator: ', ',
       lastSeparator: ' and '
     })
 
     return (
-      values.slice(0, -1).join(normalized.separator) +
-      normalized.lastSeparator +
+      values.slice(0, -1).join(options.separator) +
+      options.lastSeparator +
       values[values.length - 1]
     )
   }
@@ -160,6 +176,47 @@ export class Parser {
    */
   public static msToTime(value: number, long = false): string {
     return ms(value, { long })
+  }
+
+  /**
+   * Parses a json to a csv string.
+   */
+  public static jsonToCsv(
+    value: Record<string, any>,
+    options: { headers?: string[] } = {}
+  ) {
+    options = Options.create(options, {
+      headers: Object.keys(value)
+    })
+
+    let csv = ''
+
+    if (!Is.Empty(options.headers)) {
+      csv +=
+        Parser.arrayToString(options.headers, {
+          separator: ',',
+          pairSeparator: ',',
+          lastSeparator: ','
+        }) + '\n'
+    }
+
+    const values = []
+
+    Object.keys(value).forEach(key => {
+      if (!Is.Empty(options.headers) && !options.headers.includes(key)) {
+        return
+      }
+
+      values.push(value[key])
+    })
+
+    csv += Parser.arrayToString(values, {
+      separator: ',',
+      pairSeparator: ',',
+      lastSeparator: ','
+    })
+
+    return csv
   }
 
   /**
