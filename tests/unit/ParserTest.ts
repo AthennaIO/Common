@@ -281,35 +281,70 @@ export default class ParserTest {
   }
 
   @Test()
-  public async shouldBeAbleToParseObjectToCsv({ assert }: Context) {
-    const csv = Parser.jsonToCsv({ id: 1, name: 'lenon' })
+  public async shouldBeAbleToParseArrayToCsv({ assert }: Context) {
+    const csv = Parser.arrayToCsv([{ id: 1, name: 'lenon' }])
 
     assert.deepEqual(csv, 'id,name\n1,lenon')
   }
 
   @Test()
-  public async shouldBeAbleToParseObjectToCsvWithoutHeaders({ assert }: Context) {
-    const csv = Parser.jsonToCsv({ id: 1, name: 'lenon' }, { headers: [] })
+  public async shouldBeAbleToParseArrayWithKeysThatGotCommaToCsv({ assert }: Context) {
+    const csv = Parser.arrayToCsv([{ id: 1, 'name, sur': 'lenon' }])
+
+    assert.deepEqual(csv, 'id,"""name, sur"""\n1,lenon')
+  }
+
+  @Test()
+  public async shouldBeAbleToParseArrayWithValuesThatGotCommaToCsv({ assert }: Context) {
+    const csv = Parser.arrayToCsv([{ id: 1, name: 'lenon, lopes' }])
+
+    assert.deepEqual(csv, 'id,name\n1,"lenon, lopes"')
+  }
+
+  @Test()
+  public async shouldBeAbleToParseArrayToCsvWithoutHeaders({ assert }: Context) {
+    const csv = Parser.arrayToCsv([{ id: 1, name: 'lenon' }], { prependHeader: false })
 
     assert.deepEqual(csv, '1,lenon')
   }
 
   @Test()
-  public async shouldBeAbleToParseObjectToCsvOnlyWithDefinedHeaders({ assert }: Context) {
-    const csv = Parser.jsonToCsv({ id: 1, name: 'lenon' }, { headers: ['id'] })
+  public async shouldBeAbleToParseArrayToCsvOnlyWithDefinedHeaders({ assert }: Context) {
+    const csv = Parser.arrayToCsv([{ id: 1, name: 'lenon' }], { keys: ['id'] })
 
     assert.deepEqual(csv, 'id\n1')
   }
 
   @Test()
-  public async shouldBeAbleToParseACsvFileToJson({ assert }: Context) {
+  public async shouldBeAbleToParseCsvToAnArrayOfObjects({ assert }: Context) {
+    const array = Parser.csvToArray('id,name\n1,lenon')
+
+    assert.deepEqual(array, [{ id: 1, name: 'lenon' }])
+  }
+
+  @Test()
+  public async shouldBeAbleToParseCsvWithKeysThatGotCommaToArray({ assert }: Context) {
+    const array = Parser.csvToArray('id,"name, sur"\n1,lenon')
+
+    assert.deepEqual(array, [{ id: 1, 'name, sur': 'lenon' }])
+  }
+
+  @Test()
+  public async shouldBeAbleToParseCsvWithValuesThatGotCommaToArray({ assert }: Context) {
+    const array = Parser.csvToArray('id,name\n1,"lenon, lopes"')
+
+    assert.deepEqual(array, [{ id: 1, name: 'lenon, lopes' }])
+  }
+
+  @Test()
+  public async shouldBeAbleToParseACsvFileToAnArrayOfJsonObjects({ assert }: Context) {
     const getCsvData = async () => {
       return new Promise(resolve => {
         const data = []
 
         new File(Path.fixtures('resources/data.csv'))
           .createReadStream()
-          .pipe(Parser.stream().csvToJson())
+          .pipe(Parser.stream().csvToArray())
           .on('data', user => data.push(user))
           .on('end', () => resolve(data))
       })

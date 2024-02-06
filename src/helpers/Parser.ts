@@ -20,6 +20,13 @@ import type { ObjectBuilderOptions } from '#src/types'
 import { getReasonPhrase, getStatusCode } from 'http-status-codes'
 import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
+import {
+  json2csv,
+  type Json2CsvOptions,
+  csv2json,
+  type Csv2JsonOptions
+} from 'json-2-csv'
+
 export class Parser {
   /**
    * Parse using Node.js streams, useful for
@@ -28,9 +35,9 @@ export class Parser {
   public static stream() {
     return {
       /**
-       * Parse a csv chunk to json object.
+       * Parse a csv chunk to an array of json objects.
        */
-      csvToJson: (options?: csvParser.Options | string[]) => {
+      csvToArray: (options?: csvParser.Options | string[]) => {
         return csvParser(options)
       }
     }
@@ -181,42 +188,15 @@ export class Parser {
   /**
    * Parses a json to a csv string.
    */
-  public static jsonToCsv(
-    value: Record<string, any>,
-    options: { headers?: string[] } = {}
-  ) {
-    options = Options.create(options, {
-      headers: Object.keys(value)
-    })
+  public static arrayToCsv(values: any[], options: Json2CsvOptions = {}) {
+    return json2csv(values, options)
+  }
 
-    let csv = ''
-
-    if (!Is.Empty(options.headers)) {
-      csv +=
-        Parser.arrayToString(options.headers, {
-          separator: ',',
-          pairSeparator: ',',
-          lastSeparator: ','
-        }) + '\n'
-    }
-
-    const values = []
-
-    Object.keys(value).forEach(key => {
-      if (!Is.Empty(options.headers) && !options.headers.includes(key)) {
-        return
-      }
-
-      values.push(value[key])
-    })
-
-    csv += Parser.arrayToString(values, {
-      separator: ',',
-      pairSeparator: ',',
-      lastSeparator: ','
-    })
-
-    return csv
+  /**
+   * Parses a csv string to an array of json objects.
+   */
+  public static csvToArray(value: string, options: Csv2JsonOptions = {}) {
+    return csv2json(value, options)
   }
 
   /**
