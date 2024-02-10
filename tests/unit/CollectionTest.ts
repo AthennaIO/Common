@@ -35,8 +35,8 @@ export default class CollectionTest {
       }
     ]
 
-    assert.deepEqual(models.toAthennaJSON(), [{ id: 1 }])
-    assert.deepEqual(models.toAthennaCollection().toJSON(), [{ id: 1 }])
+    assert.deepEqual(models.athenna.toJSON(), [{ id: 1 }])
+    assert.deepEqual(models.athenna.toCollection().toJSON(), [{ id: 1 }])
     assert.deepEqual(new Collection(models).toJSON(), [{ id: 1 }])
   }
 
@@ -51,8 +51,8 @@ export default class CollectionTest {
       { toResource: criterias => criterias }
     ]
 
-    assert.deepEqual(models.toAthennaResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
-    assert.deepEqual(models.toAthennaCollection().toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
+    assert.deepEqual(models.athenna.toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
+    assert.deepEqual(models.athenna.toCollection().toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
     assert.deepEqual(new Collection(models).toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
   }
 }
