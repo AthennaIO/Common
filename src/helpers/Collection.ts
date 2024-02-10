@@ -35,7 +35,7 @@ export class Collection<T = any> extends CollectJS<T> {
   public toJSON(): Record<string, any>[] {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return this.all().toAthennaJSON()
+    return this.all().athenna.toJSON()
   }
 
   /**
@@ -44,7 +44,7 @@ export class Collection<T = any> extends CollectJS<T> {
   public toResource(criterias = {}): T[] {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return this.all().toAthennaResource(criterias)
+    return this.all().athenna.toResource(criterias)
   }
 }
 
