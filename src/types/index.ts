@@ -33,6 +33,9 @@ export * from '#src/types/CommandOutput'
 export * from '#src/types/NodeCommandInput'
 export * from '#src/types/ObjectBuilderOptions'
 
+export * from '#src/types/LinkPackageOptions'
+export * from '#src/types/InstallPackageOptions'
+
 export * from '#src/types/json/FileJson'
 export * from '#src/types/json/FolderJson'
 export * from '#src/types/json/ExceptionJson'

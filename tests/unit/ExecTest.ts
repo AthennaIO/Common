@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { Test, BeforeEach, type Context } from '@athenna/test'
 import { Clean, Exec, File, Folder, Is, Module, Path } from '#src'
+import { Test, Cleanup, BeforeEach, type Context, Timeout } from '@athenna/test'
 
 export default class ExecTest {
   @BeforeEach()
@@ -52,7 +52,7 @@ export default class ExecTest {
       await Exec.command('exit 255', { reject: false })
     }
 
-    await assert.doesNotRejects(useCase)
+    await assert.doesNotReject(useCase)
   }
 
   @Test()
@@ -91,7 +91,7 @@ export default class ExecTest {
       await Exec.shell('exit 255', { reject: false })
     }
 
-    await assert.doesNotRejects(useCase)
+    await assert.doesNotReject(useCase)
   }
 
   @Test()
@@ -105,6 +105,90 @@ export default class ExecTest {
     assert.equal(stderr, '')
     assert.equal(exitCode, 255)
     assert.isTrue(stdout.includes('error thrown'))
+  }
+
+  @Test()
+  @Timeout(30000)
+  @Cleanup(async () => Exec.link('@athenna/common'))
+  public async shouldBeAbleToExecuteAInstallCommandWithNpm({ assert }: Context) {
+    const { stdout, stderr, exitCode } = await Exec.install('execa')
+
+    assert.isUndefined(stderr)
+    assert.isUndefined(stdout)
+    assert.equal(exitCode, 0)
+  }
+
+  @Test()
+  @Timeout(30000)
+  @Cleanup(async () => Exec.link('@athenna/common'))
+  public async shouldBeAbleToExecuteAInstallCommandWithNpmInCacheMode({ assert }: Context) {
+    const { stdout, stderr, exitCode } = await Exec.install('execa', { cached: true })
+
+    assert.isUndefined(stderr)
+    assert.isUndefined(stdout)
+    assert.equal(exitCode, 0)
+  }
+
+  @Test()
+  @Timeout(30000)
+  @Cleanup(async () => Exec.link('@athenna/common'))
+  public async shouldBeAbleToExecuteAInstallCommandWithNpmForDevMode({ assert }: Context) {
+    const { stdout, stderr, exitCode } = await Exec.install('@athenna/test', { dev: true })
+
+    assert.isUndefined(stderr)
+    assert.isUndefined(stdout)
+    assert.equal(exitCode, 0)
+  }
+
+  @Test()
+  @Timeout(30000)
+  @Cleanup(async () => Exec.link('@athenna/common'))
+  public async shouldBeAbleToExecuteAInstallCommandWithNpmAndAddAdditionalArgs({ assert }: Context) {
+    const { stdout, stderr, exitCode } = await Exec.install('@athenna/test', { args: ['-D'] })
+
+    assert.isUndefined(stderr)
+    assert.isUndefined(stdout)
+    assert.equal(exitCode, 0)
+  }
+
+  @Test()
+  @Timeout(30000)
+  @Cleanup(async () => Exec.link('@athenna/common'))
+  public async shouldBeAbleToExecuteAInstallCommandWithNpmAndRejectIfCommandFails({ assert }: Context) {
+    await assert.rejects(() => Exec.install('@athenna/not-found-pkg', { reject: true }))
+  }
+
+  @Test()
+  @Timeout(30000)
+  @Cleanup(async () => Exec.link('@athenna/common'))
+  public async shouldBeAbleToExecuteAInstallCommandWithNpmAndDontRejectIfCommandFails({ assert }: Context) {
+    await assert.doesNotReject(() => Exec.install('@athenna/not-found-pkg', { reject: false }))
+  }
+
+  @Test()
+  public async shouldThrowAnExceptionWhenInstallCommandWithNpmFails({ assert }: Context) {
+    if (Is.Windows()) {
+      return
+    }
+
+    const useCase = async () => {
+      await Exec.shell('exit 255')
+    }
+
+    await assert.rejects(useCase)
+  }
+
+  @Test()
+  public async shouldBeAbleToIgnoreExceptionWhenRejectOptionIsSetToFalseInNpmInstallCommand({ assert }: Context) {
+    if (Is.Windows()) {
+      return
+    }
+
+    const useCase = async () => {
+      await Exec.shell('exit 255', { reject: false })
+    }
+
+    await assert.doesNotReject(useCase)
   }
 
   @Test()
@@ -131,7 +215,7 @@ export default class ExecTest {
       await Exec.node(Path.fixtures('node-script-throw.ts'), [], { reject: false })
     }
 
-    await assert.doesNotRejects(useCase)
+    await assert.doesNotReject(useCase)
   }
 
   @Test()
