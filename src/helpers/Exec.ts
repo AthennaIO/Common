@@ -7,19 +7,24 @@
  * file that was distributed with this source code.
  */
 
-import { Transform } from 'node:stream'
-import { File } from '#src/helpers/File'
-import { Options } from '#src/helpers/Options'
-import { request as requestHttp } from 'node:http'
-import { request as requestHttps } from 'node:https'
-import { execa, execaNode, execaCommand, type ExecaChildProcess } from 'execa'
 import type {
   CommandInput,
   CommandOutput,
   NodeCommandInput,
   PaginationOptions,
-  PaginatedResponse
+  PaginatedResponse,
+  InstallPackageOptions,
+  LinkPackageOptions
 } from '#src/types'
+
+import { Is } from '#src/helpers/Is'
+import { Transform } from 'node:stream'
+import { File } from '#src/helpers/File'
+import { Path } from '#src/helpers/Path'
+import { Options } from '#src/helpers/Options'
+import { request as requestHttp } from 'node:http'
+import { request as requestHttps } from 'node:https'
+import { execa, execaNode, execaCommand, type ExecaChildProcess } from 'execa'
 
 export class Exec {
   /**
@@ -59,6 +64,82 @@ export class Exec {
     options: CommandInput = {}
   ): Promise<CommandOutput> {
     return execa('sh', ['-c', command], options)
+  }
+
+  /**
+   * Install libraries into a path using a registry as a child process.
+   */
+  public static async install(
+    libraries: string | string[],
+    options: InstallPackageOptions = {}
+  ): Promise<CommandOutput> {
+    options = Options.create(options, {
+      args: [],
+      dev: false,
+      reject: true,
+      silent: true,
+      cached: false,
+      registry: 'npm',
+      cwd: Path.pwd()
+    })
+
+    if (Is.String(libraries)) {
+      libraries = [libraries]
+    }
+
+    const args = ['install']
+
+    if (options.registry === 'yarn') {
+      args[0] = 'add'
+    }
+
+    if (options.dev) {
+      args.push('-D')
+    }
+
+    if (options.cached) {
+      args.push('--prefer-offline')
+    }
+
+    args.push(...options.args)
+    args.push(...libraries)
+
+    return execa(options.registry, args, {
+      reject: options.reject,
+      stdio: options.silent ? 'ignore' : 'inherit',
+      cwd: options.cwd
+    })
+  }
+
+  /**
+   * Link libraries into a path using a registry as a child process.
+   */
+  public static async link(
+    libraries: string | string[],
+    options: LinkPackageOptions = {}
+  ): Promise<CommandOutput> {
+    options = Options.create(options, {
+      args: [],
+      reject: true,
+      silent: true,
+      registry: 'npm',
+      cwd: Path.pwd()
+    })
+
+    if (Is.String(libraries)) {
+      libraries = [libraries]
+    }
+
+    const args = ['link']
+
+    args.push(...options.args)
+    args.push(...libraries)
+
+    return execa(options.registry, args, {
+      reject: options.reject,
+      stdio: options.silent ? 'ignore' : 'inherit',
+      cwd: options.cwd
+    })
   }
 
   public static command(
