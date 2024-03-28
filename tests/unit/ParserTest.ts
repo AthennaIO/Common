@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { File, Parser } from '#src'
+import { File, Path, Parser } from '#src'
 import { Test, type Context } from '@athenna/test'
 import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
