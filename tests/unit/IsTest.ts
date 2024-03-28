@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Is, File, Exception } from '#src'
+import { Is, Path, File, Exception } from '#src'
 import { Test, type Context } from '@athenna/test'
 
 export default class IsTest {
