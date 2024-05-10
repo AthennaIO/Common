@@ -30,6 +30,7 @@ export class Path {
     middlewares: 'app/http/middlewares',
     interceptors: 'app/http/interceptors',
     terminators: 'app/http/terminators',
+    validators: 'app/validators',
     bootstrap: 'bootstrap',
     config: 'config',
     database: 'database',
@@ -667,6 +668,22 @@ export class Path {
    */
   public static setTerminators(directory: string): typeof Path {
     this.dirs.terminators = directory
+
+    return this
+  }
+
+  /**
+   * Return the validators' path of your project.
+   */
+  public static validators(subPath: string = sep): string {
+    return this.pwd(this.dirs.validators + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of validators folder.
+   */
+  public static setValidators(directory: string): typeof Path {
+    this.dirs.validators = directory
 
     return this
   }

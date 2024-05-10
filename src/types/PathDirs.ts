@@ -22,6 +22,7 @@ export interface PathDirs {
   middlewares?: string
   interceptors?: string
   terminators?: string
+  validators?: string
   bootstrap?: string
   config?: string
   database?: string
