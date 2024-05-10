@@ -203,6 +203,7 @@ export default class PathTest {
     assert.isTrue(Path.middlewares().endsWith(`build${sep}app${sep}http${sep}middlewares`))
     assert.isTrue(Path.interceptors().endsWith(`build${sep}app${sep}http${sep}interceptors`))
     assert.isTrue(Path.terminators().endsWith(`build${sep}app${sep}http${sep}terminators`))
+    assert.isTrue(Path.validators().endsWith(`build${sep}app${sep}validators`))
     assert.isTrue(Path.bootstrap().endsWith(`build${sep}bootstrap`))
     assert.isTrue(Path.config().endsWith(`build${sep}config`))
     assert.isTrue(Path.database().endsWith(`build${sep}database`))
