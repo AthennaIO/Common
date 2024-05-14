@@ -13,6 +13,8 @@ export interface PathDirs {
   app?: string
   models?: string
   services?: string
+  jobs?: string
+  workers?: string
   exceptions?: string
   repositories?: string
   console?: string

@@ -21,6 +21,8 @@ export class Path {
     app: 'app',
     models: 'app/models',
     services: 'app/services',
+    jobs: 'app/jobs',
+    workers: 'app/workers',
     exceptions: 'app/exceptions',
     repositories: 'app/repositories',
     console: 'app/console',
@@ -556,6 +558,38 @@ export class Path {
    */
   public static setServices(directory: string): typeof Path {
     this.dirs.services = directory
+
+    return this
+  }
+
+  /**
+   * Return the jobs' path of your project.
+   */
+  public static jobs(subPath: string = sep): string {
+    return this.pwd(this.dirs.jobs + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of jobs folder.
+   */
+  public static setJobs(directory: string): typeof Path {
+    this.dirs.jobs = directory
+
+    return this
+  }
+
+  /**
+   * Return the workers' path of your project.
+   */
+  public static workers(subPath: string = sep): string {
+    return this.pwd(this.dirs.workers + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of workers folder.
+   */
+  public static setWorkers(directory: string): typeof Path {
+    this.dirs.workers = directory
 
     return this
   }
