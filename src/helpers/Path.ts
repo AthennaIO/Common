@@ -519,7 +519,7 @@ export class Path {
    * Return the guards path of your project.
    */
   public static guards(subPath: string = sep): string {
-    return this.pwd(this.dirs.http + sep + normalize(subPath))
+    return this.pwd(this.dirs.guards + sep + normalize(subPath))
   }
 
   /**
