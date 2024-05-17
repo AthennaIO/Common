@@ -20,6 +20,7 @@ export interface PathDirs {
   console?: string
   commands?: string
   http?: string
+  guards?: string
   controllers?: string
   middlewares?: string
   interceptors?: string
