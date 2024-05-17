@@ -28,6 +28,7 @@ export class Path {
     console: 'app/console',
     commands: 'app/console/commands',
     http: 'app/http',
+    guards: 'app/http/guards',
     controllers: 'app/http/controllers',
     middlewares: 'app/http/middlewares',
     interceptors: 'app/http/interceptors',
@@ -510,6 +511,22 @@ export class Path {
    */
   public static setHttp(directory: string): typeof Path {
     this.dirs.http = directory
+
+    return this
+  }
+
+  /**
+   * Return the guards path of your project.
+   */
+  public static guards(subPath: string = sep): string {
+    return this.pwd(this.dirs.http + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of guards folder.
+   */
+  public static setGuards(directory: string): typeof Path {
+    this.dirs.guards = directory
 
     return this
   }
