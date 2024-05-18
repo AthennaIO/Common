@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { Number } from '#src/helpers/Number'
 import { Collection } from '#src/helpers/Collection'
 
 export {}
@@ -14,6 +15,11 @@ export {}
 declare global {
   interface Array<T> {
     athenna: {
+      /**
+       * Get a random value from the array.
+       */
+      random(): T
+
       /**
        * Call the toJSON method of each item
        * inside the array.
@@ -39,6 +45,11 @@ if (!Array.prototype.athenna) {
   Object.defineProperty(Array.prototype, 'athenna', {
     get: function () {
       return {
+        random: () => {
+          const index = Number.randomIntFromInterval(0, this.length - 1)
+
+          return this[index]
+        },
         toJSON: (criterias: any = {}) => {
           return this.map(model => {
             if (model && model.toJSON) {
