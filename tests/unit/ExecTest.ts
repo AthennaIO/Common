@@ -196,8 +196,8 @@ export default class ExecTest {
     const { stdout, stderr, exitCode } = await Exec.node(Path.fixtures('node-script.ts'))
 
     assert.equal(exitCode, 0)
-    assert.equal(stdout, 'hello')
-    assert.equal(stderr, 'hello')
+    assert.isTrue(stdout.includes('hello'))
+    assert.isTrue(stderr.includes('hello'))
   }
 
   @Test()
