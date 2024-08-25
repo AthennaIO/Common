@@ -26,6 +26,7 @@ export interface PathDirs {
   interceptors?: string
   terminators?: string
   validators?: string
+  schedulers?: string
   bootstrap?: string
   config?: string
   database?: string

@@ -34,6 +34,7 @@ export class Path {
     interceptors: 'app/http/interceptors',
     terminators: 'app/http/terminators',
     validators: 'app/validators',
+    schedulers: 'app/cron/schedulers',
     bootstrap: 'bootstrap',
     config: 'config',
     database: 'database',
@@ -735,6 +736,22 @@ export class Path {
    */
   public static setValidators(directory: string): typeof Path {
     this.dirs.validators = directory
+
+    return this
+  }
+
+  /**
+   * Return the schedulers' path of your project.
+   */
+  public static schedulers(subPath: string = sep): string {
+    return this.pwd(this.dirs.schedulers + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of schedulers folder.
+   */
+  public static setSchedulers(directory: string): typeof Path {
+    this.dirs.schedulers = directory
 
     return this
   }
