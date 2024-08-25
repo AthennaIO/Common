@@ -74,6 +74,7 @@ export default class PathTest {
     const mainPath = process.cwd().concat(sep, 'app')
 
     assert.equal(Path.http(), mainPath.concat(sep, 'http'))
+    assert.equal(Path.cron(), mainPath.concat(sep, 'cron'))
     assert.equal(Path.console(), mainPath.concat(sep, 'console'))
     assert.equal(Path.models(), mainPath.concat(sep, 'models'))
     assert.equal(Path.services(), mainPath.concat(sep, 'services'))
@@ -99,6 +100,13 @@ export default class PathTest {
     const mainPath = process.cwd().concat(sep, 'app', sep, 'console')
 
     assert.equal(Path.commands(), mainPath.concat(sep, 'commands'))
+  }
+
+  @Test()
+  public async shouldGetTheSubPathsOfCronMainPath({ assert }: Context) {
+    const mainPath = process.cwd().concat(sep, 'app', sep, 'cron')
+
+    assert.equal(Path.schedulers(), mainPath.concat(sep, 'schedulers'))
   }
 
   @Test()
@@ -173,6 +181,7 @@ export default class PathTest {
       .setMiddlewares('build/app/http/middlewares')
       .setInterceptors('build/app/http/interceptors')
       .setTerminators('build/app/http/terminators')
+      .setCron('build/app/cron')
       .setSchedulers('/build/app/cron/schedulers')
       .setBootstrap('build/bootstrap')
       .setConfig('build/config')
@@ -215,6 +224,7 @@ export default class PathTest {
     assert.isTrue(Path.middlewares().endsWith(`build${sep}app${sep}http${sep}middlewares`))
     assert.isTrue(Path.interceptors().endsWith(`build${sep}app${sep}http${sep}interceptors`))
     assert.isTrue(Path.terminators().endsWith(`build${sep}app${sep}http${sep}terminators`))
+    assert.isTrue(Path.cron().endsWith(`build${sep}app${sep}cron`))
     assert.isTrue(Path.schedulers().endsWith(`build${sep}app${sep}cron${sep}schedulers`))
     assert.isTrue(Path.bootstrap().endsWith(`build${sep}bootstrap`))
     assert.isTrue(Path.config().endsWith(`build${sep}config`))

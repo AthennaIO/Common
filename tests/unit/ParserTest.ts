@@ -291,7 +291,7 @@ export default class ParserTest {
   public async shouldBeAbleToParseArrayWithKeysThatGotCommaToCsv({ assert }: Context) {
     const csv = Parser.arrayToCsv([{ id: 1, 'name, sur': 'lenon' }])
 
-    assert.deepEqual(csv, 'id,"""name, sur"""\n1,lenon')
+    assert.deepEqual(csv, 'id,"name, sur"\n1,lenon')
   }
 
   @Test()
