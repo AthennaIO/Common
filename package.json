@@ -82,7 +82,7 @@
     "youch-terminal": "^2.2.3"
   },
   "devDependencies": {
-    "@athenna/test": "^4.30.0",
+    "@athenna/test": "^5.0.0",
     "@athenna/tsconfig": "^5.0.0",
     "@types/bytes": "^3.1.4",
     "@types/callsite": "^1.0.34",
