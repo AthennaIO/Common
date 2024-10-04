@@ -8,10 +8,14 @@
  */
 
 import { debug } from '#src/debug'
+import { Path } from '#src/helpers/Path'
+import { File } from '#src/helpers/File'
 import { createRequire } from 'node:module'
+import { Folder } from '#src/helpers/Folder'
+import { Options } from '#src/helpers/Options'
+import type { ModuleResolveOptions } from '#src/types'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, extname, isAbsolute } from 'node:path'
-import { Path, File, Folder, type ModuleResolveOptions, Options } from '#src'
 
 export class Module {
   /**
