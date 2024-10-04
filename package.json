@@ -1,6 +1,6 @@
 {
   "name": "@athenna/common",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "The Athenna common helpers to use in any Node.js ESM project.",
   "license": "MIT",
   "author": "João Lenon <lenon@athenna.io>",
@@ -41,7 +41,27 @@
     ".": "./src/index.js",
     "./types": "./src/types/index.js",
     "./package": "./package.json",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./helpers/clean": "./src/helpers/Clean.js",
+    "./helpers/collection": "./src/helpers/Collection.js",
+    "./helpers/color": "./src/helpers/Color.js",
+    "./helpers/enum": "./src/helpers/enum.js",
+    "./helpers/exception": "./src/helpers/exception.js",
+    "./helpers/exec": "./src/helpers/Exec.js",
+    "./helpers/fake_api": "./src/helpers/FakeApi.js",
+    "./helpers/file": "./src/helpers/File.js",
+    "./helpers/folder": "./src/helpers/Folder.js",
+    "./helpers/http_client": "./src/helpers/HttpClient.js",
+    "./helpers/is": "./src/helpers/Is.js",
+    "./helpers/json": "./src/helpers/Json.js",
+    "./helpers/module": "./src/helpers/Module.js",
+    "./helpers/number": "./src/helpers/Number.js",
+    "./helpers/options": "./src/helpers/Options.js",
+    "./helpers/parser": "./src/helpers/Parser.js",
+    "./helpers/path": "./src/helpers/Path.js",
+    "./helpers/route": "./src/helpers/Route.js",
+    "./helpers/string": "./src/helpers/String.js",
+    "./helpers/uuid": "./src/helpers/Uuid.js"
   },
   "imports": {
     "#bin/*": "./bin/*.js",
@@ -82,7 +102,7 @@
     "youch-terminal": "^2.2.3"
   },
   "devDependencies": {
-    "@athenna/test": "^4.30.0",
+    "@athenna/test": "^5.0.0",
     "@athenna/tsconfig": "^5.0.0",
     "@types/bytes": "^3.1.4",
     "@types/callsite": "^1.0.34",

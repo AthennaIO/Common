@@ -10,7 +10,9 @@
 import kindOf from 'kind-of'
 
 import { isIP } from 'node:net'
-import { File, Uuid, Exception } from '#src'
+import { File } from '#src/helpers/File'
+import { Uuid } from '#src/helpers/Uuid'
+import { Exception } from '#src/helpers/Exception'
 import { isCep, isCnpj, isCpf } from 'validator-brazil'
 
 export class Is {
