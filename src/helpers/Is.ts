@@ -12,6 +12,7 @@ import kindOf from 'kind-of'
 import { isIP } from 'node:net'
 import { File } from '#src/helpers/File'
 import { Uuid } from '#src/helpers/Uuid'
+import { Ulid } from '#src/helpers/Ulid'
 import { Exception } from '#src/helpers/Exception'
 import { isCep, isCnpj, isCpf } from 'validator-brazil'
 
@@ -81,6 +82,16 @@ export class Is {
     options?: { prefix?: string; ignorePrefix?: boolean }
   ): boolean {
     return Uuid.verify(value, options)
+  }
+
+  /**
+   * Verify if is valid Ulid.
+   */
+  public static Ulid(
+    value: string,
+    options?: { prefix?: string; ignorePrefix?: boolean }
+  ): boolean {
+    return Ulid.verify(value, options)
   }
 
   /**
