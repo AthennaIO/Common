@@ -58,8 +58,8 @@ export default class PathTest {
     assert.equal(Path.tests(), mainPath.concat(sep, 'tests'))
     assert.isDefined(Path.vmTmp())
     assert.isDefined(Path.vmHome())
-    assert.isTrue(Path.this().endsWith('unit'))
-    assert.isFalse(Path.this('../../').endsWith('tests'))
+    assert.isTrue(Path.this().endsWith('helpers'))
+    assert.isFalse(Path.this('../../').endsWith('unit'))
     assert.isTrue(Path.this('../../package.json').endsWith('package.json'))
   }
 

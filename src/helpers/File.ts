@@ -867,7 +867,7 @@ export class File {
       }
 
       return _module
-    } catch (err) {
+    } catch (_err) {
       return null
     }
   }

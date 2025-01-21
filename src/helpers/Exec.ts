@@ -30,6 +30,9 @@ export class Exec {
   /**
    * Sleep the code in the line that this function
    * is being called.
+   *
+   * @deprecated Use `Sleep` class instead. Will be removed on next
+   * major version.
    */
   public static async sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
@@ -37,8 +40,10 @@ export class Exec {
 
   /**
    * Execute some callback concurrently in all values of the array.
+   *
+   * @deprecated Use the global array method `myArray.athenna.concurrently()`.
+   * Will be removed on next major version.
    */
-
   public static async concurrently<T = any, R = any>(
     array: T[],
     callback: (value: T, index: number, array: T[]) => Promise<R>
@@ -203,7 +208,7 @@ export class Exec {
     try {
       const result = await child
       process.exitCode = result.exitCode
-    } catch (error) {
+    } catch (_error) {
       process.exitCode = 1
     }
   }

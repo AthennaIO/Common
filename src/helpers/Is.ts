@@ -114,7 +114,7 @@ export class Is {
       JSON.parse(value)
 
       return true
-    } catch (error) {
+    } catch (_error) {
       return false
     }
   }
@@ -289,7 +289,7 @@ export class Is {
   /**
    * Verify if is a valid Function.
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   public static Function(value: any): value is Function {
     return Is.kindOf(value) === 'function'
   }

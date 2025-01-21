@@ -236,7 +236,7 @@ export class FakeApiBuilder {
       method,
       handler: (_, response) => {
         if (this._redirectTo) {
-          return response.redirect(statusCode, this._redirectTo)
+          return response.redirect(this._redirectTo, statusCode)
         }
 
         return response.status(statusCode).headers(headers).send(body)

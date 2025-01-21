@@ -24,13 +24,50 @@ export class Collection<T = any> extends CollectJS<T> {
 
   /**
    * Remove all duplicated values from the array.
+   *
+   * @example
+   * ```ts
+   * new Collection([1, 2, 2, 3]).removeDuplicated().all() // [1, 2, 3]
+   * ```
    */
   public removeDuplicated(): T[] {
-    return [...new Set(this.all())]
+    return this.all().athenna.removeDuplicated()
   }
 
   /**
-   * Execute the toJSON method inside objects if exists.
+   * Run closure concurrently in all values of the array. This
+   * method is used when you want to execute all the promises
+   * created in the callback in parallel, increasing performance.
+   *
+   * @example
+   * ```ts
+   * const results = await new Collection([1, 2, 3]).athenna.concurrently(async (n) => {
+   *  return n + 1
+   * })
+   * ```
+   */
+  public async concurrently<R = any>(
+    callback: (value?: T, index?: number, array?: T[]) => Promise<R>
+  ): Promise<R[]> {
+    return this.all().athenna.concurrently(callback)
+  }
+
+  /**
+   * Call the toJSON method of each item
+   * inside the array.
+   *
+   * @example
+   * ```ts
+   * class User {
+   *  toJSON() {
+   *    return { id: 1 }
+   *  }
+   * }
+   *
+   * const users = new Collection([new User()]).toJSON()
+   *
+   * users[0].id // 1
+   * ```
    */
   public toJSON(): Record<string, any>[] {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -39,7 +76,21 @@ export class Collection<T = any> extends CollectJS<T> {
   }
 
   /**
-   * Execute the toResource method inside objects if exists.
+   * Call the toResource method of each item
+   * inside the array.
+   *
+   * @example
+   * ```ts
+   * class User {
+   *  toResource() {
+   *    return { id: 1 }
+   *  }
+   * }
+   *
+   * const users = new Collection([new User()]).toResource()
+   *
+   * users[0].id // 1
+   * ```
    */
   public toResource(criterias = {}): T[] {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

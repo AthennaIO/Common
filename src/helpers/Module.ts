@@ -182,7 +182,7 @@ export class Module {
   public static async safeImport<T = any>(path: string): Promise<T | null> {
     try {
       return await Module.import(path)
-    } catch (err) {
+    } catch (_err) {
       return null
     }
   }

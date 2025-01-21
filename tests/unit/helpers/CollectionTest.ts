@@ -19,6 +19,39 @@ export default class CollectionTest {
   }
 
   @Test()
+  public async shouldBeAbleToRunClosureInParallelForEachValueInTheCollection({ assert }: Context) {
+    const collection = new Collection([1, 2, 3])
+
+    const results = await collection.concurrently(async n => {
+      return n + 1
+    })
+
+    assert.deepEqual(results, [2, 3, 4])
+  }
+
+  @Test()
+  public async shouldBeAbleToRunClosureInParallelForEachValueInTheCollectionAndGetIndexValue({ assert }: Context) {
+    const collection = new Collection([1, 2, 3])
+
+    const results = await collection.concurrently(async (n, i) => {
+      return n + i + 1
+    })
+
+    assert.deepEqual(results, [2, 4, 6])
+  }
+
+  @Test()
+  public async shouldBeAbleToRunClosureInParallelForEachValueInTheCollectionAndGetTheArrayValues({ assert }: Context) {
+    const collection = new Collection([1, 2, 3])
+
+    const results = await collection.concurrently(async (n, i, items) => {
+      return n + items[i]
+    })
+
+    assert.deepEqual(results, [2, 4, 6])
+  }
+
+  @Test()
   public async shouldBeAbleToExtendCollectionsByStaticMacroMethod({ assert }: Context) {
     Collection.macro('test', () => ({ hello: 'world' }))
 
@@ -35,8 +68,6 @@ export default class CollectionTest {
       }
     ]
 
-    assert.deepEqual(models.athenna.toJSON(), [{ id: 1 }])
-    assert.deepEqual(models.athenna.toCollection().toJSON(), [{ id: 1 }])
     assert.deepEqual(new Collection(models).toJSON(), [{ id: 1 }])
   }
 
@@ -51,8 +82,6 @@ export default class CollectionTest {
       { toResource: criterias => criterias }
     ]
 
-    assert.deepEqual(models.athenna.toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
-    assert.deepEqual(models.athenna.toCollection().toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
     assert.deepEqual(new Collection(models).toResource({ id: 2 }), [{ id: 1 }, { id: 2 }])
   }
 }

@@ -338,7 +338,7 @@ export class Json {
   ): any {
     try {
       return JSON.parse(text, reviver)
-    } catch (error) {
+    } catch (_error) {
       return null
     }
   }

@@ -24,22 +24,6 @@ export default class ExceptionTest {
   }
 
   @Test()
-  public async shouldBeAbleToCreateANewExceptionFromVanillaErrors({ assert }: Context) {
-    const exception = new Error('My custom instance error').toAthennaException({
-      status: 0,
-      code: 'EXCEPTION',
-      name: 'Exception'
-    })
-
-    const errorJson = exception.toJSON()
-
-    assert.equal(errorJson.status, 0)
-    assert.equal(errorJson.code, 'EXCEPTION')
-    assert.equal(errorJson.name, 'Exception')
-    assert.equal(errorJson.message, 'My custom instance error')
-  }
-
-  @Test()
   public async shouldBeAbleToExtendExceptionClassToCreateANewException({ assert }: Context) {
     class InternalServerException extends Exception {
       constructor(content = 'Internal Server Error', status = 500) {

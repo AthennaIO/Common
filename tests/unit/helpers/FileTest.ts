@@ -43,11 +43,11 @@ export default class FileTest {
 
   @Test()
   public async shouldBeAbleToVerifyIfPathIsFromFileOrDirectory({ assert }: Context) {
-    assert.isFalse(await File.isFile('../../tests'))
-    assert.isTrue(await File.isFile('../../package.json'))
+    assert.isFalse(await File.isFile('../../../tests'))
+    assert.isTrue(await File.isFile('../../../package.json'))
 
-    assert.isFalse(File.isFileSync('../../tests'))
-    assert.isTrue(File.isFileSync('../../package.json'))
+    assert.isFalse(File.isFileSync('../../../tests'))
+    assert.isTrue(File.isFileSync('../../../package.json'))
   }
 
   @Test()
@@ -77,7 +77,7 @@ export default class FileTest {
 
   @Test()
   public async shouldBeAbleToGenerateInstanceOfFilesUsingRelativePaths({ assert }: Context) {
-    const relativePathFile = new File('../../package.json')
+    const relativePathFile = new File('../../../package.json')
 
     assert.isTrue(relativePathFile.fileExists)
     assert.equal(relativePathFile.base, 'package.json')
