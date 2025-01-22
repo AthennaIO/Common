@@ -22,11 +22,12 @@ import { Transform } from 'node:stream'
 import { File } from '#src/helpers/File'
 import { Path } from '#src/helpers/Path'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 import { request as requestHttp } from 'node:http'
 import { request as requestHttps } from 'node:https'
 import { execa, execaNode, execaCommand, type ExecaChildProcess } from 'execa'
 
-export class Exec {
+export class Exec extends Macroable {
   /**
    * Sleep the code in the line that this function
    * is being called.

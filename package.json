@@ -108,6 +108,7 @@
   "devDependencies": {
     "@athenna/test": "^5.2.0",
     "@athenna/tsconfig": "^5.0.0",
+    "@japa/expect-type": "^2.0.3",
     "@types/bytes": "^3.1.5",
     "@types/callsite": "^1.0.34",
     "@types/deasync": "^0.1.5",

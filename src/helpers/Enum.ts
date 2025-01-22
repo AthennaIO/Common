@@ -7,7 +7,9 @@
  * file that was distributed with this source code.
  */
 
-export class Enum {
+import { Macroable } from '#src/helpers/Macroable'
+
+export class Enum extends Macroable {
   /**
    * Get all keys from enum.
    *

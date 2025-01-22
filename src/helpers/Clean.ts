@@ -9,8 +9,9 @@
 
 import { Is } from '#src/helpers/Is'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 
-export class Clean {
+export class Clean extends Macroable {
   /**
    * Remove all falsy values from an array.
    */

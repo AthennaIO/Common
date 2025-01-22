@@ -10,10 +10,14 @@
 import ms from 'ms'
 import deasync from 'deasync'
 
-export class SleepBuilder {
+import { Macroable } from '#src/helpers/Macroable'
+
+export class SleepBuilder extends Macroable {
   private delays: number[] = []
 
-  public constructor(private value: number) {}
+  public constructor(private value: number) {
+    super()
+  }
 
   /**
    * Define that will be blocking the process for X milliseconds.

@@ -11,10 +11,11 @@ import callSite from 'callsite'
 
 import { homedir, tmpdir } from 'node:os'
 import type { PathDirs } from '#src/types'
+import { Macroable } from '#src/helpers/Macroable'
 import { sep, normalize, dirname, parse } from 'node:path'
 import { pathToFileURL, fileURLToPath, type URL } from 'node:url'
 
-export class Path {
+export class Path extends Macroable {
   public static dirs: PathDirs = {
     bin: 'bin',
     src: 'src',

@@ -15,9 +15,10 @@ import { Uuid } from '#src/helpers/Uuid'
 import { Ulid } from '#src/helpers/Ulid'
 import { String } from '#src/helpers/String'
 import { Exception } from '#src/helpers/Exception'
+import { Macroable } from '#src/helpers/Macroable'
 import { isCep, isCnpj, isCpf } from 'validator-brazil'
 
-export class Is {
+export class Is extends Macroable {
   private static styleFileRegex =
     /\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\?)/
 

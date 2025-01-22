@@ -8,8 +8,9 @@
  */
 
 import { Parser } from '#src/helpers/Parser'
+import { Macroable } from '#src/helpers/Macroable'
 
-export class Number {
+export class Number extends Macroable {
   /**
    * Get the higher number from an array of numbers.
    */

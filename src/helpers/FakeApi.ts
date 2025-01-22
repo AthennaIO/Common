@@ -15,9 +15,10 @@ import { File } from '#src/helpers/File'
 import { Path } from '#src/helpers/Path'
 import { Json } from '#src/helpers/Json'
 import { Folder } from '#src/helpers/Folder'
+import { Macroable } from '#src/helpers/Macroable'
 import type { FastifyInstance, HTTPMethods, RouteOptions } from 'fastify'
 
-export class FakeApi {
+export class FakeApi extends Macroable {
   /**
    * Set if the FakeApi server is running.
    */

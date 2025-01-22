@@ -13,13 +13,14 @@ import * as changeCase from 'change-case'
 import { crc32 } from 'crc'
 import { Module } from '#src/helpers/Module'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 import { createHmac, randomBytes } from 'node:crypto'
 import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
 import { NotFoundAthennaConfig } from '#src/exceptions/NotFoundAthennaConfig'
 
 const config = await Module.safeImport('@athenna/config')
 
-export class String {
+export class String extends Macroable {
   /**
    * Generate hash for a given value.
    *

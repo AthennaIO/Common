@@ -9,6 +9,7 @@
 
 import { ulid } from 'ulid'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 import { InvalidUlidException } from '#src/exceptions/InvalidUlidException'
 
 const pattern = /^[0-9A-HJKMNP-TV-Z]{26}$/
@@ -17,7 +18,7 @@ export function validate(value: unknown): boolean {
   return typeof value === 'string' && pattern.test(value)
 }
 
-export class Ulid {
+export class Ulid extends Macroable {
   /**
    * Verify if string is a valid ulid.
    */

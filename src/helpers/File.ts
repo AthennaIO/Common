@@ -10,6 +10,7 @@
 import prependFile from 'prepend-file'
 
 import type { StreamOptions } from 'node:stream'
+import { Macroable } from '#src/helpers/Macroable'
 import type { FileJson, ObjectBuilderOptions } from '#src/types'
 
 import {
@@ -40,7 +41,7 @@ import { isAbsolute, parse, sep } from 'node:path'
 import { Json, ObjectBuilder } from '#src/helpers/Json'
 import { NotFoundFileException } from '#src/exceptions/NotFoundFileException'
 
-export class File {
+export class File extends Macroable {
   /**
    * The original or faked file directory.
    */
@@ -147,6 +148,8 @@ export class File {
     mockedValues = false,
     isCopy = false
   ) {
+    super()
+
     const { ext, dir, name, base, mime, path } = File.parsePath(filePath)
 
     this.originalDir = dir

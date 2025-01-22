@@ -8,9 +8,11 @@
  */
 
 import { Runner } from '@athenna/test'
+import { expectTypeOf } from '@japa/expect-type'
 
 await Runner.setTsEnv()
   .addAssertPlugin()
+  .addPlugin(expectTypeOf())
   .addPath('tests/unit/**/*.ts')
   .setCliArgs(process.argv.slice(2))
   .setGlobalTimeout(5000)

@@ -9,7 +9,9 @@
 
 import otpGenerator from 'otp-generator'
 
-export class Otp {
+import { Macroable } from '#src/helpers/Macroable'
+
+export class Otp extends Macroable {
   /**
    * Generate an OTP token.
    */
