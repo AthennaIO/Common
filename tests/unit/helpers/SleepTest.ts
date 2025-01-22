@@ -19,7 +19,7 @@ export default class SleepTest {
 
     const endDate = Date.now()
 
-    const possibleValues = [10, 11, 12, 13, 14, 15]
+    const possibleValues = Array.from({ length: 51 }, (_, i) => 10 + i)
 
     assert.isTrue(possibleValues.includes(endDate - startDate))
   }
@@ -32,7 +32,7 @@ export default class SleepTest {
 
     const endDate = Date.now()
 
-    const possibleValues = [1000, 1001, 1002, 1003, 1004, 1005]
+    const possibleValues = Array.from({ length: 51 }, (_, i) => 1000 + i)
 
     assert.isTrue(possibleValues.includes(endDate - startDate))
   }
@@ -45,7 +45,7 @@ export default class SleepTest {
 
     const endDate = Date.now()
 
-    const possibleValues = [600, 601, 602, 603, 604, 605]
+    const possibleValues = Array.from({ length: 51 }, (_, i) => 600 + i)
 
     assert.isTrue(possibleValues.includes(endDate - startDate))
   }
@@ -58,7 +58,7 @@ export default class SleepTest {
 
     const endDate = Date.now()
 
-    const possibleValues = [1100, 1101, 1102, 1103, 1104, 1105]
+    const possibleValues = Array.from({ length: 51 }, (_, i) => 1100 + i)
 
     assert.isTrue(possibleValues.includes(endDate - startDate))
   }
