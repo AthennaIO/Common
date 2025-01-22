@@ -8,20 +8,102 @@
  */
 
 import pluralize from 'pluralize'
+import otpGenerator from 'otp-generator'
 import * as changeCase from 'change-case'
 
-import { randomBytes } from 'crypto'
+import { crc32 } from 'crc'
+import { Module } from '#src/helpers/Module'
+import { Options } from '#src/helpers/Options'
+import { createHmac, randomBytes } from 'node:crypto'
 import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
+import { NotFoundAthennaConfig } from '#src/exceptions/NotFoundAthennaConfig'
+
+const config = await Module.safeImport('@athenna/config')
 
 export class String {
   /**
+   * Generate hash for a given value.
+   *
+   * @example
+   * ```ts
+   * const hash = String.hash('12345')
+   * const hash = String.hash('12345', { key: 'my-secret', prefix: 'token_' })
+   * ```
+   */
+  public static hash(
+    value: string,
+    options: { key?: string; prefix?: string } = {}
+  ) {
+    if (!options.key && !config) {
+      throw new NotFoundAthennaConfig()
+    }
+
+    options.key = options.key || config.Config.get('app.key')
+
+    const hash = createHmac('sha256', options.key).update(value).digest('hex')
+
+    if (options.prefix) {
+      return `${options.prefix}${hash}`
+    }
+
+    return hash
+  }
+
+  /**
    * Generate random string by size.
+   *
+   * @example
+   * ```ts
+   * const random = String.random(10) // '1bibr3zxdA'
+   * const random = String.random(10, { otp: true }) // '41NPH'
+   * const random = String.random(10, { suffixCRC: true }) // '9-EdWM9OV53876186015'
+   * ```
+   */
+  public static random(
+    size: number,
+    options?: { otp?: boolean; suffixCRC?: boolean }
+  ): string {
+    options = Options.create(options, {
+      otp: false,
+      suffixCRC: false
+    })
+
+    let random = ''
+
+    if (options.otp) {
+      random = otpGenerator.generate(size, {
+        digits: true,
+        specialChars: false,
+        upperCaseAlphabets: true,
+        lowerCaseAlphabets: false
+      })
+    } else {
+      const bits = (size + 1) * 6
+      const buffer = randomBytes(Math.ceil(bits / 8))
+
+      random = String.normalizeBase64(buffer.toString('base64'))
+        .replace(/-/g, '')
+        .replace(/_/g, '')
+        .slice(0, size)
+    }
+
+    if (options.suffixCRC) {
+      const crc = crc32(random).toString(30)
+
+      return `${random.slice(0, size - crc.length)}${crc}`
+    }
+
+    return random
+  }
+
+  /**
+   * Generate random string by size.
+   *
+   * @deprecated Use `String.random()` function instead. This method
+   * will be removed in the next major version.
    */
   public static generateRandom(size: number): string {
-    const bits = (size + 1) * 6
-    const buffer = randomBytes(Math.ceil(bits / 8))
-
-    return String.normalizeBase64(buffer.toString('base64')).slice(0, size)
+    return this.random(size, { otp: false, suffixCRC: false })
   }
 
   /**

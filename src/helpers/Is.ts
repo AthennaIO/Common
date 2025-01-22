@@ -13,10 +13,14 @@ import { isIP } from 'node:net'
 import { File } from '#src/helpers/File'
 import { Uuid } from '#src/helpers/Uuid'
 import { Ulid } from '#src/helpers/Ulid'
+import { String } from '#src/helpers/String'
 import { Exception } from '#src/helpers/Exception'
 import { isCep, isCnpj, isCpf } from 'validator-brazil'
 
 export class Is {
+  private static styleFileRegex =
+    /\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\?)/
+
   /**
    * Return the kindOf.
    */
@@ -186,6 +190,19 @@ export class Is {
   }
 
   /**
+   * Verify if string is a valid CSS path.
+   *
+   * @example
+   * ```ts
+   * if (Is.CssPath(Path.pwd('app.css'))) {
+   * }
+   * ```
+   */
+  public static CssPath(path: string) {
+    return path.match(Is.styleFileRegex) !== null
+  }
+
+  /**
    * Verify if is a valid Async function.
    */
   public static Async(value: any): boolean {
@@ -324,5 +341,26 @@ export class Is {
     const results = value.map(v => Is.Object(v))
 
     return !results.includes(false)
+  }
+
+  /**
+   * Validate if a given hash matches a given value.
+   *
+   * @example
+   * ```ts
+   * const value = 'value'
+   * const hash = 'hash-of-value'
+   *
+   * if (Is.ValidHash(hash, value)) {}
+   *
+   * if (Is.ValidHash(hash, value, { key: 'my-secret', prefix: 'token_' })) {}
+   * ```
+   */
+  public static ValidHash(
+    hash: string,
+    value: string,
+    options: { key?: string; prefix?: string } = {}
+  ): boolean {
+    return hash === String.hash(value, options)
   }
 }

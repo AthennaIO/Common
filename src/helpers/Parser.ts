@@ -26,6 +26,7 @@ import {
   csv2json,
   type Csv2JsonOptions
 } from 'json-2-csv'
+import type { HTMLJson } from '#src/types/json/HTMLJson'
 
 export class Parser {
   /**
@@ -128,6 +129,49 @@ export class Parser {
     })
 
     return object
+  }
+
+  /**
+   * Parse an object to HTML element.
+   *
+   * @example
+   * ```ts
+   * const htmlElement = Parser.jsonToHTML({
+   *   tag: 'script',
+   *   attributes: {
+   *     type: 'module',
+   *     src: 'app.css',
+   *   },
+   *   children: []
+   * })
+   * // `<script type="module" src="app.css"></script>`
+   * ```
+   */
+  public static jsonToHTML(element: HTMLJson): string {
+    const attributes = `${Object.keys(element.attributes)
+      .map(key => {
+        const value = attributes[key]
+
+        if (value === true) {
+          return key
+        }
+
+        if (!value) {
+          return null
+        }
+
+        return `${key}="${value}"`
+      })
+      .filter(attr => attr !== null)
+      .join(' ')}`
+
+    if (element.tag === 'link') {
+      return `<${element.tag} ${attributes}/>`
+    }
+
+    return `<${element.tag} ${attributes}>${element.children.join('\n')}</${
+      element.tag
+    }>`
   }
 
   /**

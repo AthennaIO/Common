@@ -69,7 +69,14 @@ export default class GlobalArrayTest {
   public async shouldBeAbleToRemoveDuplicatedValuesFromArray({ assert }: Context) {
     const values = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
 
-    assert.deepEqual(values.athenna.removeDuplicated(), [1, 2, 3, 4, 5])
+    assert.deepEqual(values.athenna.unique(), [1, 2, 3, 4, 5])
+  }
+
+  @Test()
+  public async shouldBeAbleToRemoveDuplicatedValuesFromArrayByObjectKey({ assert }: Context) {
+    const values = [{ name: 'lenon' }, { name: 'gabi' }, { name: 'lenon' }]
+
+    assert.deepEqual(values.athenna.unique('name'), [{ name: 'lenon' }, { name: 'gabi' }])
   }
 
   @Test()

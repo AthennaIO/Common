@@ -25,13 +25,15 @@ export class Collection<T = any> extends CollectJS<T> {
   /**
    * Remove all duplicated values from the array.
    *
+   * @deprecated Use unique() method instead. This method will
+   * me removed on the next major release.
    * @example
    * ```ts
    * new Collection([1, 2, 2, 3]).removeDuplicated().all() // [1, 2, 3]
    * ```
    */
   public removeDuplicated(): T[] {
-    return this.all().athenna.removeDuplicated()
+    return this.all().athenna.unique()
   }
 
   /**

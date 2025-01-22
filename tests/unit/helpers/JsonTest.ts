@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Exec, Json, Sleep } from '#src'
+import { Json, Sleep } from '#src'
 import { Test, type Context } from '@athenna/test'
 
 export default class JsonTest {

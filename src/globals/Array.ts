@@ -51,14 +51,23 @@ export class AthennaArray<T> {
   }
 
   /**
-   * Remove all duplicated values from the array.
+   * Create a new array only with the unique values.
    *
    * @example
    * ```ts
-   * [1, 2, 2, 3].removeDuplicated() // [1, 2, 3]
+   * [1, 2, 2, 3].unique() // [1, 2, 3]
    * ```
    */
-  public removeDuplicated() {
+  public unique(key?: keyof T) {
+    if (key) {
+      const seen = new Set()
+
+      return this.items.filter(item => {
+        const k = item[key]
+        return seen.has(k) ? false : seen.add(k)
+      })
+    }
+
     return [...new Set(this.items)]
   }
 
