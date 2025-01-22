@@ -27,7 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Link project to be able to use @athenna/test
+      - name: Create link from package
+        run: npm link
+
+      - name: Link package on itself to be able to use @athenna/test
         run: npm link @athenna/common
 
       - name: Run tests
