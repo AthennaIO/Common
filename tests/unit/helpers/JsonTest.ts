@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Exec, Json } from '#src'
+import { Json, Sleep } from '#src'
 import { Test, type Context } from '@athenna/test'
 
 export default class JsonTest {
@@ -83,7 +83,7 @@ export default class JsonTest {
 
     objectProxy.joao = 'oi'
 
-    await Exec.sleep(2000)
+    await Sleep.for(2).seconds().wait()
   }
 
   @Test()

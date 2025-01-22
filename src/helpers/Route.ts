@@ -8,9 +8,10 @@
  */
 
 import { Parser } from '#src/helpers/Parser'
+import { Macroable } from '#src/helpers/Macroable'
 import { RouteMatchException } from '#src/exceptions/RouteMatchException'
 
-export class Route {
+export class Route extends Macroable {
   /**
    * Get the query string in form data format.
    */

@@ -13,11 +13,12 @@ import { File } from '#src/helpers/File'
 import { createRequire } from 'node:module'
 import { Folder } from '#src/helpers/Folder'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 import type { ModuleResolveOptions } from '#src/types'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, extname, isAbsolute } from 'node:path'
 
-export class Module {
+export class Module extends Macroable {
   /**
    * Get the module first export match or default.
    */
@@ -182,7 +183,7 @@ export class Module {
   public static async safeImport<T = any>(path: string): Promise<T | null> {
     try {
       return await Module.import(path)
-    } catch (err) {
+    } catch (_err) {
       return null
     }
   }

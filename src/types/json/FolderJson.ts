@@ -7,17 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import type { File } from '#src/helpers/File'
-import type { Folder } from '#src/helpers/Folder'
+import type { FileJson } from '#src/types'
 
 export interface FolderJson {
   dir: string
   name: string
   base: string
   path: string
-  files: File[]
+  files: FileJson[]
   // eslint-disable-next-line no-use-before-define
-  folders: Folder[]
+  folders: FolderJson[]
   createdAt: Date
   accessedAt: Date
   modifiedAt: Date

@@ -9,9 +9,10 @@
 
 import { v4, validate } from 'uuid'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 import { InvalidUuidException } from '#src/exceptions/InvalidUuidException'
 
-export class Uuid {
+export class Uuid extends Macroable {
   /**
    * Verify if string is a valid uuid.
    */

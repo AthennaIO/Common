@@ -11,9 +11,10 @@ import lodash from 'lodash'
 
 import { Is } from '#src/helpers/Is'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 import type { ObjectBuilderOptions } from '#src/types'
 
-export class ObjectBuilder {
+export class ObjectBuilder extends Macroable {
   /**
    * The real object that is being built.
    */
@@ -26,6 +27,8 @@ export class ObjectBuilder {
   public options: ObjectBuilderOptions
 
   public constructor(options?: ObjectBuilderOptions) {
+    super()
+
     this.options = Options.create(options, {
       ignoreNull: false,
       ignoreUndefined: true,
@@ -338,7 +341,7 @@ export class Json {
   ): any {
     try {
       return JSON.parse(text, reviver)
-    } catch (error) {
+    } catch (_error) {
       return null
     }
   }

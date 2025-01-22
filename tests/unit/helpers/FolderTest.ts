@@ -44,11 +44,11 @@ export default class FolderTest {
 
   @Test()
   public async shouldBeAbleToVerifyIfPathIsFromFolderOrFile({ assert }: Context) {
-    assert.isTrue(await Folder.isFolder('../../tests'))
-    assert.isFalse(await Folder.isFolder('../../package.json'))
+    assert.isTrue(await Folder.isFolder('../../../tests'))
+    assert.isFalse(await Folder.isFolder('../../../package.json'))
 
-    assert.isTrue(Folder.isFolderSync('../../tests'))
-    assert.isFalse(Folder.isFolderSync('../../package.json'))
+    assert.isTrue(Folder.isFolderSync('../../../tests'))
+    assert.isFalse(Folder.isFolderSync('../../../package.json'))
   }
 
   @Test()
@@ -61,7 +61,7 @@ export default class FolderTest {
 
   @Test()
   public async shouldBeAbleToGenerateInstanceOfFoldersUsingRelativePaths({ assert }: Context) {
-    const relativePathFolder = new Folder('../../tests')
+    const relativePathFolder = new Folder('../../../tests')
 
     assert.isTrue(relativePathFolder.folderExists)
     assert.equal(relativePathFolder.name, 'tests')

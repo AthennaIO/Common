@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { Is, Path, File, Exception } from '#src'
 import { Test, type Context } from '@athenna/test'
+import { Is, Path, File, Exception, String } from '#src'
 
 export default class IsTest {
   @Test()
@@ -88,7 +88,7 @@ export default class IsTest {
   }
 
   @Test()
-  public async shouldVerifyIsIsAValidCPF({ assert }: Context) {
+  public async shouldVerifyIfIsAValidCPF({ assert }: Context) {
     assert.isFalse(Is.Cpf(0))
     assert.isFalse(Is.Cpf(''))
     assert.isTrue(Is.Cpf(52946109062))
@@ -96,11 +96,32 @@ export default class IsTest {
   }
 
   @Test()
-  public async shouldVerifyIsIsAValidCNPJ({ assert }: Context) {
+  public async shouldVerifyIfIsAValidCNPJ({ assert }: Context) {
     assert.isFalse(Is.Cnpj(0))
     assert.isFalse(Is.Cnpj(''))
     assert.isTrue(Is.Cnpj(23984398000143))
     assert.isTrue(Is.Cnpj('31.017.771/0001-15'))
+  }
+
+  @Test()
+  public async shouldVerifyIfIsAValidHash({ assert }: Context) {
+    const hash = String.hash('lenon', { key: 'secret1' })
+    const hashPrefixed = String.hash('lenon', { key: 'secret1', prefix: 'token_' })
+
+    assert.isTrue(Is.ValidHash(hash, 'lenon', { key: 'secret1' }))
+    assert.isTrue(Is.ValidHash(hashPrefixed, 'lenon', { key: 'secret1', prefix: 'token_' }))
+  }
+
+  @Test()
+  public async shouldVerifyIfIsAValidCssPath({ assert }: Context) {
+    assert.isTrue(Is.CssPath(Path.pwd('app.css')))
+    assert.isTrue(Is.CssPath(Path.pwd('app.less')))
+    assert.isTrue(Is.CssPath(Path.pwd('app.sass')))
+    assert.isTrue(Is.CssPath(Path.pwd('app.scss')))
+    assert.isTrue(Is.CssPath(Path.pwd('app.styl')))
+    assert.isTrue(Is.CssPath(Path.pwd('app.stylus')))
+    assert.isTrue(Is.CssPath(Path.pwd('app.pcss')))
+    assert.isTrue(Is.CssPath(Path.pwd('app.postcss')))
   }
 
   @Test()

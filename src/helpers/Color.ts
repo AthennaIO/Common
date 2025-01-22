@@ -10,8 +10,9 @@
 import { format } from 'node:util'
 import { Is } from '#src/helpers/Is'
 import { Chalk, type ChalkInstance } from 'chalk'
+import { Macroable } from '#src/helpers/Macroable'
 
-export class Color {
+export class Color extends Macroable {
   /**
    * Chalk instance.
    */

@@ -8,8 +8,9 @@
  */
 
 import { Is } from '#src/helpers/Is'
+import { Macroable } from '#src/helpers/Macroable'
 
-export class Options {
+export class Options extends Macroable {
   /**
    * Creates an option object with default values.
    */

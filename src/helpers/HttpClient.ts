@@ -13,6 +13,7 @@ import CacheableLookup from 'cacheable-lookup'
 import type { URL } from 'node:url'
 import { Is } from '#src/helpers/Is'
 import { Json } from '#src/helpers/Json'
+import { Macroable } from '#src/helpers/Macroable'
 
 import type { Store } from 'keyv'
 import type { ClientHttp2Session } from 'http2'
@@ -43,13 +44,14 @@ import type {
   CreateConnectionFunction
 } from 'got'
 
-export class HttpClientBuilder {
+export class HttpClientBuilder extends Macroable {
   /**
    * Got options used to make the request.
    */
   private options: Request
 
   public constructor(options: Request = {}) {
+    super()
     this.options = options
   }
 
@@ -1187,7 +1189,7 @@ export class HttpClientBuilder {
   }
 }
 
-export class HttpClient {
+export class HttpClient extends Macroable {
   /**
    * The global builder used in all HttpClient static requests.
    */

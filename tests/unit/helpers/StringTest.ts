@@ -10,10 +10,45 @@
 import { String } from '#src'
 import { Test, type Context } from '@athenna/test'
 import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
+import { NotFoundAthennaConfig } from '#src/exceptions/NotFoundAthennaConfig'
 
 export default class StringTest {
   @Test()
-  public async shouldGenerateRandomStringsBySize({ assert }: Context) {
+  public async shouldBeAbleToHashStringValues({ assert }: Context) {
+    const value = 'lenon'
+
+    assert.deepEqual(
+      String.hash(value, { key: 'secret1' }),
+      'f48760e603c17c6abf2eff3dad2495b291ccbac943836518d0db3f41c3853f8b'
+    )
+    assert.deepEqual(
+      String.hash(value, { key: 'secret2' }),
+      'b2f908b59c94fafe5a1f72e3cbef5bd3c547f9a1c15a3b70953e62e46b676a9a'
+    )
+    assert.deepEqual(
+      String.hash(value, { key: 'secret1', prefix: 'token_' }),
+      'token_f48760e603c17c6abf2eff3dad2495b291ccbac943836518d0db3f41c3853f8b'
+    )
+    assert.deepEqual(
+      String.hash(value, { key: 'secret2', prefix: 'token_' }),
+      'token_b2f908b59c94fafe5a1f72e3cbef5bd3c547f9a1c15a3b70953e62e46b676a9a'
+    )
+  }
+
+  @Test()
+  public async shouldThrownNotFoundAthennaConfigExceptionIfNotProvidingASecretKeyForHash({ assert }: Context) {
+    const value = 'lenon'
+
+    assert.throws(() => String.hash(value), NotFoundAthennaConfig)
+  }
+
+  @Test()
+  public async shouldGenerateRandomStrings({ assert }: Context) {
+    assert.lengthOf(String.random(10), 10)
+    assert.lengthOf(String.random(20), 20)
+
+    assert.lengthOf(String.random(40, { suffixCRC: true }), 40)
+
     assert.lengthOf(String.generateRandom(10), 10)
     assert.lengthOf(String.generateRandom(20), 20)
   }

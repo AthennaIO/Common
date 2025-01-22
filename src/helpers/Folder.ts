@@ -27,10 +27,11 @@ import { Path } from '#src/helpers/Path'
 import { randomBytes } from 'node:crypto'
 import { Parser } from '#src/helpers/Parser'
 import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
 import { isAbsolute, join, parse, resolve, sep } from 'node:path'
 import { NotFoundFolderException } from '#src/exceptions/NotFoundFolderException'
 
-export class Folder {
+export class Folder extends Macroable {
   /**
    * The original or faked folder directory.
    */
@@ -118,6 +119,8 @@ export class Folder {
   public originalFolderExists: boolean
 
   public constructor(folderPath: string, mockedValues = false, isCopy = false) {
+    super()
+
     const { dir, name, path } = Folder.parsePath(folderPath)
 
     this.files = []
@@ -295,6 +298,7 @@ export class Folder {
     return Json.copy({
       dir: this.dir,
       name: this.name,
+      base: this.base,
       path: this.path,
       files: this.files.map(file => file.toJSON()),
       folders: this.folders.map(folder => folder.toJSON()),

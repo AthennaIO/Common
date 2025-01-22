@@ -20,7 +20,7 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToGetTheModuleFirstExportMatchOrDefault({ assert }: Context) {
-    const moduleDefault = await Module.get(import('../fixtures/config/app.js'))
+    const moduleDefault = await Module.get(import('../../fixtures/config/app.js'))
 
     assert.equal(moduleDefault.name, 'Athenna')
 
@@ -31,7 +31,7 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToGetAllModulesFirstExportMatchOrDefault({ assert }: Context) {
-    const modules = [import('../fixtures/config/app.js'), import('#src/helpers/Options')]
+    const modules = [import('../../fixtures/config/app.js'), import('#src/helpers/Options')]
 
     const modulesResolved = await Module.getAll(modules)
 
@@ -67,7 +67,7 @@ export default class ModuleTest {
   public async shouldBeAbleToGetAllModulesFirstExportMatchOrDefaultFromAnyPath({ assert }: Context) {
     const modules = await Module.getAllFrom(Path.src('helpers'))
 
-    assert.lengthOf(modules, 21)
+    assert.lengthOf(modules, 24)
     assert.equal(modules[0].name, 'Clean')
   }
 
@@ -75,7 +75,7 @@ export default class ModuleTest {
   public async shouldBeAbleToGetAllModulesFirstExportMatchOrDefaultFromAnyPathWithAlias({ assert }: Context) {
     const modules = await Module.getAllFromWithAlias(Path.src('helpers'), 'App/Helpers')
 
-    assert.lengthOf(modules, 21)
+    assert.lengthOf(modules, 24)
     assert.equal(modules[0].module.name, 'Clean')
     assert.equal(modules[0].alias, 'App/Helpers/Clean')
   }
@@ -139,14 +139,14 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToResolveRelativePathsByParentURLUsingURLAndImportIt({ assert }: Context) {
-    const Exception = await Module.resolve('../../src/helpers/Exception.js', import.meta.url)
+    const Exception = await Module.resolve('../../../src/helpers/Exception.js', import.meta.url)
 
     assert.equal(Exception.name, 'Exception')
   }
 
   @Test()
   public async shouldBeAbleToResolveRelativePathsWithDotsByParentURLUsingURLAndImportIt({ assert }: Context) {
-    const AppController = await Module.resolve('../fixtures/controllers/app.controller.js', import.meta.url)
+    const AppController = await Module.resolve('../../fixtures/controllers/app.controller.js', import.meta.url)
 
     assert.equal(AppController.name, 'AppController')
   }
@@ -174,7 +174,10 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToResolveVersionedRelativePathsByParentURLAndImportIt({ assert }: Context) {
-    const Exception = await Module.resolve(`../../src/helpers/Exception.js?version=${Math.random()}`, import.meta.url)
+    const Exception = await Module.resolve(
+      `../../../src/helpers/Exception.js?version=${Math.random()}`,
+      import.meta.url
+    )
 
     assert.equal(Exception.name, 'Exception')
   }
@@ -243,7 +246,7 @@ export default class ModuleTest {
 
   @Test()
   public async shouldBeAbleToResolveRelativePathAndGetAllTheModuleAsResult({ assert }: Context) {
-    const module = await Module.resolve('../../src/helpers/Exception.js', import.meta.url, {
+    const module = await Module.resolve('../../../src/helpers/Exception.js', import.meta.url, {
       import: true,
       getModule: false
     })
