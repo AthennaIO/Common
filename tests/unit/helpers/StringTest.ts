@@ -47,7 +47,6 @@ export default class StringTest {
     assert.lengthOf(String.random(10), 10)
     assert.lengthOf(String.random(20), 20)
 
-    assert.lengthOf(String.random(5, { otp: true }), 5)
     assert.lengthOf(String.random(40, { suffixCRC: true }), 40)
 
     assert.lengthOf(String.generateRandom(10), 10)

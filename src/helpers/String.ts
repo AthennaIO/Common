@@ -8,7 +8,6 @@
  */
 
 import pluralize from 'pluralize'
-import otpGenerator from 'otp-generator'
 import * as changeCase from 'change-case'
 
 import { crc32 } from 'crc'
@@ -55,37 +54,23 @@ export class String {
    * @example
    * ```ts
    * const random = String.random(10) // '1bibr3zxdA'
-   * const random = String.random(10, { otp: true }) // '41NPH'
    * const random = String.random(10, { suffixCRC: true }) // '9-EdWM9OV53876186015'
    * ```
    */
   public static random(
     size: number,
-    options?: { otp?: boolean; suffixCRC?: boolean }
+    options?: { suffixCRC?: boolean }
   ): string {
     options = Options.create(options, {
-      otp: false,
       suffixCRC: false
     })
 
-    let random = ''
-
-    if (options.otp) {
-      random = otpGenerator.generate(size, {
-        digits: true,
-        specialChars: false,
-        upperCaseAlphabets: true,
-        lowerCaseAlphabets: false
-      })
-    } else {
-      const bits = (size + 1) * 6
-      const buffer = randomBytes(Math.ceil(bits / 8))
-
-      random = String.normalizeBase64(buffer.toString('base64'))
-        .replace(/-/g, '')
-        .replace(/_/g, '')
-        .slice(0, size)
-    }
+    const bits = (size + 1) * 6
+    const buffer = randomBytes(Math.ceil(bits / 8))
+    const random = String.normalizeBase64(buffer.toString('base64'))
+      .replace(/-/g, '')
+      .replace(/_/g, '')
+      .slice(0, size)
 
     if (options.suffixCRC) {
       const crc = crc32(random).toString(30)
@@ -103,7 +88,7 @@ export class String {
    * will be removed in the next major version.
    */
   public static generateRandom(size: number): string {
-    return this.random(size, { otp: false, suffixCRC: false })
+    return this.random(size, { suffixCRC: false })
   }
 
   /**
