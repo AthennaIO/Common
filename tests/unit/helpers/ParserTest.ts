@@ -357,4 +357,18 @@ export default class ParserTest {
       { id: '2', name: 'victor' }
     ])
   }
+
+  @Test()
+  public async shouldBeAbleToParseJsonToHTML({ assert }: Context) {
+    const htmlElement = Parser.jsonToHTML({
+      tag: 'script',
+      attributes: {
+        type: 'module',
+        src: 'app.css'
+      },
+      children: []
+    })
+
+    assert.deepEqual(htmlElement, `<script type="module" src="app.css"></script>`)
+  }
 }
