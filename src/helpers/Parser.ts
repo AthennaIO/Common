@@ -151,7 +151,7 @@ export class Parser extends Macroable {
   public static jsonToHTML(element: HTMLJson): string {
     const attributes = `${Object.keys(element.attributes)
       .map(key => {
-        const value = attributes[key]
+        const value = element.attributes[key]
 
         if (value === true) {
           return key
