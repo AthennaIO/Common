@@ -12,8 +12,6 @@ import * as changeCase from 'change-case'
 
 import { crc32 } from 'crc'
 import { debug } from '#src/debug'
-import { Path } from '#src/helpers/Path'
-import { Module } from '#src/helpers/Module'
 import { Options } from '#src/helpers/Options'
 import { Macroable } from '#src/helpers/Macroable'
 import { createHmac, randomBytes } from 'node:crypto'
@@ -21,8 +19,6 @@ import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
 import { NotFoundAthennaConfig } from '#src/exceptions/NotFoundAthennaConfig'
 
 export class String extends Macroable {
-  public static config: any
-
   /**
    * Generate hash for a given value.
    *
@@ -36,21 +32,15 @@ export class String extends Macroable {
     value: string,
     options: { key?: string; prefix?: string } = {}
   ) {
-    if (!this.config) {
-      const require = Module.createRequire(Path.pwd())
-
-      try {
-        this.config = require('@athenna/config')
-      } catch (_err) {
-        debug('@athenna/config not found to run String.hash()')
-      }
+    if (!global.Config) {
+      debug('@athenna/config not found running String.hash()')
     }
 
-    if (!options.key && !this.config) {
+    if (!options.key && !global.Config) {
       throw new NotFoundAthennaConfig()
     }
 
-    options.key = options.key || this.config.Config.get('app.key')
+    options.key = options.key || global.Config.get('app.key')
 
     const hash = createHmac('sha256', options.key).update(value).digest('hex')
 

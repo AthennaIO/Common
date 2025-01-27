@@ -8,11 +8,16 @@
  */
 
 import { String } from '#src'
-import { Test, type Context } from '@athenna/test'
+import { AfterEach, Mock, Test, type Context } from '@athenna/test'
 import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
 import { NotFoundAthennaConfig } from '#src/exceptions/NotFoundAthennaConfig'
 
 export default class StringTest {
+  @AfterEach()
+  public async afterEach() {
+    Mock.restoreAll()
+  }
+
   @Test()
   public async shouldBeAbleToHashStringValues({ assert }: Context) {
     const value = 'lenon'
@@ -33,6 +38,21 @@ export default class StringTest {
       String.hash(value, { key: 'secret2', prefix: 'token_' }),
       'token_b2f908b59c94fafe5a1f72e3cbef5bd3c547f9a1c15a3b70953e62e46b676a9a'
     )
+  }
+
+  @Test()
+  public async shouldBeAbleToHashStringValuesUsingConfigAppKey({ assert }: Context) {
+    const value = 'lenon'
+
+    global.Config = null
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    Mock.when(global, 'Config').value({
+      get: () => 'secret1'
+    })
+
+    assert.deepEqual(String.hash(value), 'f48760e603c17c6abf2eff3dad2495b291ccbac943836518d0db3f41c3853f8b')
   }
 
   @Test()
