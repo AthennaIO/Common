@@ -89,7 +89,7 @@
     "http-status-codes": "^2.3.0",
     "is-wsl": "^2.2.0",
     "js-yaml": "^4.1.0",
-    "json-2-csv": "^5.5.7",
+    "json-2-csv": "^5.5.8",
     "kind-of": "^6.0.3",
     "lodash": "^4.17.21",
     "mime-types": "^2.1.35",
