@@ -249,5 +249,22 @@ export class String extends Macroable {
     return terms.some(term => value.includes(term))
   }
 
+  /**
+   * Check if every provided search string is included
+   * in the given value.
+   *
+   * @example
+   * ```ts
+   * String.includesEvery('Hello model.id', 'models.id', 'models.provider') // false
+   * String.includesEvery('Hello model.id', ['model.id', 'Hello']) // true (both are found)
+   * ```
+   */
+  public static includesEvery(
+    value: string,
+    ...searches: (string | string[])[]
+  ): boolean {
+    const terms = Array.isArray(searches[0]) ? (searches[0] as string[]) : (searches as string[])
+    return terms.every(term => value.includes(term))
+  }
 
 }
