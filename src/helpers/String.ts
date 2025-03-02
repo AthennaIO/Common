@@ -230,4 +230,24 @@ export class String extends Macroable {
         return `${value}th`
     }
   }
+
+  /**
+   * Check if at least one of the provided search strings
+   * is included in the given value.
+   *
+   * @example
+   * ```ts
+   * String.includesSome('Hello model.id', 'models.id', 'models.provider') // false
+   * String.includesSome('Hello models.id', ['models.id', 'provider']) // true (models.id is found)
+   * ```
+   */
+  public static includesSome(
+    value: string,
+    ...searches: (string | string[])[]
+  ): boolean {
+    const terms = Array.isArray(searches[0]) ? (searches[0] as string[]) : (searches as string[])
+    return terms.some(term => value.includes(term))
+  }
+
+
 }
