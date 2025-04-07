@@ -99,7 +99,7 @@
     "parent-module": "^3.1.0",
     "pluralize": "^8.0.0",
     "prepend-file": "^2.0.1",
-    "ulid": "^2.3.0",
+    "ulid": "^2.4.0",
     "uuid": "^8.3.2",
     "validator-brazil": "^1.2.2",
     "youch": "^3.3.4",
