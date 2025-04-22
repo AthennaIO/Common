@@ -122,4 +122,50 @@ export default class StringTest {
 
     assert.throws(useCase, OrdinalNanException)
   }
+
+  @Test()
+  public async shouldReturnTrueIfAtLeastOneTermMatchesUsingMultipleParams({ assert }: Context) {
+    const base = 'Hello model.id and some other text'
+
+    assert.isTrue(String.includesSome(base, 'model.id', 'nope'))
+    assert.isTrue(String.includesSome(base, 'some', 'anything'))
+    assert.isFalse(String.includesSome(base, 'not-found', 'nope'))
+  }
+
+  @Test()
+  public async shouldReturnTrueIfAtLeastOneTermMatchesUsingAnArray({ assert }: Context) {
+    const base = 'Hello model.id and some other text'
+
+    assert.isTrue(String.includesSome(base, ['model.id', 'random']))
+    assert.isFalse(String.includesSome(base, ['aaa', 'bbb']))
+  }
+
+  @Test()
+  public async shouldReturnFalseForIncludesSomeWithEmptyTerms({ assert }: Context) {
+    assert.isFalse(String.includesSome('anything'))
+    assert.isFalse(String.includesSome('anything', []))
+  }
+
+  @Test()
+  public async shouldReturnTrueOnlyIfAllTermsMatchUsingMultipleParams({ assert }: Context) {
+    const base = 'Hello model.id and some text'
+
+    assert.isFalse(String.includesEvery(base, 'Hello', 'somethingElse'))
+    assert.isTrue(String.includesEvery(base, 'Hello', 'model.id'))
+    assert.isFalse(String.includesEvery(base, 'model.id', 'not-found'))
+  }
+
+  @Test()
+  public async shouldReturnTrueOnlyIfAllTermsMatchUsingAnArray({ assert }: Context) {
+    const base = 'Hello model.id and some text'
+
+    assert.isTrue(String.includesEvery(base, ['Hello', 'model.id']))
+    assert.isFalse(String.includesEvery(base, ['Hello', 'random']))
+  }
+
+  @Test()
+  public async shouldReturnTrueForIncludesEveryWithEmptyTerms({ assert }: Context) {
+    assert.isTrue(String.includesEvery('anything'))
+    assert.isTrue(String.includesEvery('anything', []))
+  }
 }
