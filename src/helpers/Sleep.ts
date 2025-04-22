@@ -8,7 +8,6 @@
  */
 
 import ms from 'ms'
-import deasync from 'deasync'
 
 import { Macroable } from '#src/helpers/Macroable'
 
@@ -251,6 +250,10 @@ export class Sleep {
    * ```
    */
   public static sleepSync(ms: number) {
-    return deasync.sleep(ms)
+    const start = Date.now()
+
+    while (Date.now() - start < ms) {
+      //
+    }
   }
 }
