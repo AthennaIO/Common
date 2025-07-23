@@ -59,6 +59,7 @@
     "./helpers/options": "./src/helpers/Options.js",
     "./helpers/parser": "./src/helpers/Parser.js",
     "./helpers/path": "./src/helpers/Path.js",
+    "./helpers/retry": "./src/helpers/Retry.js",
     "./helpers/route": "./src/helpers/Route.js",
     "./helpers/string": "./src/helpers/String.js",
     "./helpers/uuid": "./src/helpers/Uuid.js"
