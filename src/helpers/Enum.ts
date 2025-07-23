@@ -16,9 +16,9 @@ export class Enum extends Macroable {
    * @example
    * ```ts
    * export class StatusEnum extends Enum {
-   *   static PENDING = 'pending'
-   *   static APPROVED = 'approved'
-   *   static BLOCKED = 'blocked'
+   *   public static PENDING = 'pending' as const
+   *   public static APPROVED = 'approved' as const
+   *   public static BLOCKED = 'blocked' as const
    * }
    *
    * const keys = StatusEnum.keys() // [ 'PENDING', 'APPROVED', 'BLOCKED' ]
@@ -34,9 +34,9 @@ export class Enum extends Macroable {
    * @example
    * ```ts
    * export class StatusEnum extends Enum {
-   *   static PENDING = 'pending'
-   *   static APPROVED = 'approved'
-   *   static BLOCKED = 'blocked'
+   *   public static PENDING = 'pending' as const
+   *   public static static APPROVED = 'approved' as const
+   *   public static BLOCKED = 'blocked' as const
    * }
    *
    * const values = StatusEnum.values() // ['pending', 'approved', 'blocked']
@@ -52,7 +52,7 @@ export class Enum extends Macroable {
    * @example
    * ```ts
    * export class StatusEnum extends Enum {
-   *   static PENDING = 'pending'
+   *   public static PENDING = 'pending' as const
    * }
    *
    * const entries = StatusEnum.entries() // [['PENDING', 'pending']]
