@@ -101,6 +101,15 @@ export default class StringTest {
   }
 
   @Test()
+  public async shouldBeAbleToConvertStringToRedactedToken({ assert }: Context) {
+    const token = '1234567890'
+
+    assert.equal(String.toRedactedToken(token), '12345...+5')
+    assert.equal(String.toRedactedToken(token, 3), '123...+7')
+    assert.equal(String.toRedactedToken(token, 10), '1234567890...+0')
+  }
+
+  @Test()
   public async shouldTransformTheStringToSingularPluralAndOrdinal({ assert }: Context) {
     const string = 'Hello world'
 

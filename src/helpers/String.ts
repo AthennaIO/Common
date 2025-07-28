@@ -186,6 +186,27 @@ export class String extends Macroable {
   }
 
   /**
+   * Convert the string to a redacted token.
+   *
+   * @example
+   * ```ts
+   * const token = '1234567890'
+   *
+   * String.toRedactedToken(token) // '12345...+5'
+   * String.toRedactedToken(token, 3) // '123...+7'
+   * ```
+   */
+  public static toRedactedToken(value: string, size?: number) {
+    if (!size) {
+      size = value.length
+
+      return `${value.slice(0, size / 2)}...+${value.length - size / 2}`
+    }
+
+    return `${value.slice(0, size)}...+${value.length - size}`
+  }
+
+  /**
    * Transforms a word to plural
    */
   public static pluralize(word: string): string {

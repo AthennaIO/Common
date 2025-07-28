@@ -277,6 +277,26 @@ export class Json {
   }
 
   /**
+   * Convert the keys of an object to camel case.
+   */
+  public static toCamelCase(object: any) {
+    return lodash.transform(object, (result, value, key) => {
+      result[lodash.camelCase(key as string)] =
+        Is.Object(value) || Is.Array(value) ? this.toCamelCase(value) : value
+    })
+  }
+
+  /**
+   * Convert the keys of an object to snake case.
+   */
+  public static toSnakeCase(object: any) {
+    return lodash.transform(object, (result, value, key) => {
+      result[lodash.snakeCase(key as string)] =
+        Is.Object(value) || Is.Array(value) ? this.toSnakeCase(value) : value
+    })
+  }
+
+  /**
    * Omit data from an object.
    *
    * @example
