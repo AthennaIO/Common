@@ -37,6 +37,78 @@ export default class JsonTest {
   }
 
   @Test()
+  public async shouldBeAbleToConvertObjectKeysToCamelCase({ assert }: Context) {
+    const object = {
+      hello_world: 'hello world'
+    }
+
+    assert.deepEqual(Json.toCamelCase(object), { helloWorld: 'hello world' })
+  }
+
+  @Test()
+  public async shouldBeAbleToConvertNestedObjectAndArrayKeysToCamelCase({ assert }: Context) {
+    const object = {
+      hello_world: 'hello world',
+      nested: {
+        hello_world: 'hello world'
+      },
+      array: [
+        {
+          hello_world: 'hello world'
+        },
+        {
+          hello_world: 'hello world'
+        },
+        'hello world'
+      ]
+    }
+
+    assert.deepEqual(Json.toCamelCase(object), {
+      helloWorld: 'hello world',
+      nested: {
+        helloWorld: 'hello world'
+      },
+      array: [{ helloWorld: 'hello world' }, { helloWorld: 'hello world' }, 'hello world']
+    })
+  }
+
+  @Test()
+  public async shouldBeAbleToConvertObjectKeysToSnakeCase({ assert }: Context) {
+    const object = {
+      helloWorld: 'hello world'
+    }
+
+    assert.deepEqual(Json.toSnakeCase(object), { hello_world: 'hello world' })
+  }
+
+  @Test()
+  public async shouldBeAbleToConvertNestedObjectAndArrayKeysToSnakeCase({ assert }: Context) {
+    const object = {
+      helloWorld: 'hello world',
+      nested: {
+        helloWorld: 'hello world'
+      },
+      array: [
+        {
+          helloWorld: 'hello world'
+        },
+        {
+          helloWorld: 'hello world'
+        },
+        'hello world'
+      ]
+    }
+
+    assert.deepEqual(Json.toSnakeCase(object), {
+      hello_world: 'hello world',
+      nested: {
+        hello_world: 'hello world'
+      },
+      array: [{ hello_world: 'hello world' }, { hello_world: 'hello world' }, 'hello world']
+    })
+  }
+
+  @Test()
   public async shouldReturnNullIfJSONParseGoesWrong({ assert }: Context) {
     const text = 'a string that is not a valid JSON'
 
