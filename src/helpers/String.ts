@@ -13,10 +13,10 @@ import * as changeCase from 'change-case'
 import { crc32 } from 'crc'
 import { debug } from '#src/debug'
 import { createHmac } from 'node:crypto'
-import { Number } from '#src/helpers/Number'
 import { Options } from '#src/helpers/Options'
 import { ALPHABET } from '#src/constants/alphabet'
 import { Macroable } from '#src/helpers/Macroable'
+import { Number as NumberHelper } from '#src/helpers/Number'
 import { OrdinalNanException } from '#src/exceptions/OrdinalNanException'
 import { NotFoundAthennaConfig } from '#src/exceptions/NotFoundAthennaConfig'
 
@@ -71,7 +71,7 @@ export class String extends Macroable {
     })
 
     const str = Array.from({ length: size }, () => {
-      return ALPHABET(Number.randomIntFromInterval(0, ALPHABET.length))
+      return ALPHABET[NumberHelper.randomIntFromInterval(0, ALPHABET.length)]
     }).join('')
 
     if (options.suffixCRC) {
