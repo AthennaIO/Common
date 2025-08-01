@@ -8,6 +8,7 @@
  */
 
 import lodash from 'lodash'
+import fastDeepEqual from 'fast-deep-equal'
 
 import { Is } from '#src/helpers/Is'
 import { Options } from '#src/helpers/Options'
@@ -410,5 +411,69 @@ export class Json {
     }
 
     return lodash.get(object, key, defaultValue)
+  }
+
+  /**
+   * Validate if an object or array is equal to another.
+   *
+   * @example
+   * ```ts
+   * Json.isEqual({ hello: 'world' }, { hello: 'world' }) // true
+   * Json.isEqual([{ hello: 'world' }], [{ hello: 'world' }]) // true
+   * Json.isEqual({ hello: { hello: 'world' } }, { hello: { hello: 'world' } }) // true
+   * ```
+   */
+  public static isEqual(firstObject: any, secondObject: any) {
+    return fastDeepEqual(firstObject, secondObject)
+  }
+
+  /**
+   * Create a new object based on the changes between two objects.
+   *
+   * @example
+   * ```ts
+   * Json.diff({ a: 'a' }, { a: 'a' }) // { }
+   * Json.diff({ a: 'a' }, { a: 'b' }) // { a: 'b' }
+   * Json.diff({ a: 'a' }, { a: 'b', b: 'b' }) // { a: 'b', b: 'b' }
+   * ```
+   */
+  public static diff(orig: any, curr: any): any {
+    if (Json.isEqual(orig, curr)) {
+      return {}
+    }
+
+    if (!Is.Object(orig) || !Is.Object(curr)) {
+      return Json.copy(curr)
+    }
+
+    const result: any = Array.isArray(curr) ? [] : {}
+    const keys = new Set([...Object.keys(orig), ...Object.keys(curr)])
+
+    for (const key of keys) {
+      const oVal = orig[key]
+      const cVal = curr[key]
+
+      if (Json.isEqual(oVal, cVal)) {
+        continue
+      }
+
+      if (Is.Object(oVal) && Is.Object(cVal)) {
+        const nested = Json.diff(oVal, cVal)
+
+        if (Is.Array(nested) && nested.length) {
+          result[key] = nested
+        }
+
+        if (Is.Object(nested) && Object.keys(nested).length) {
+          result[key] = nested
+        }
+
+        continue
+      }
+
+      result[key] = Json.copy(cVal)
+    }
+
+    return result
   }
 }

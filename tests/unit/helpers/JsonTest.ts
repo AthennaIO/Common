@@ -476,4 +476,22 @@ export default class JsonTest {
 
     assert.deepEqual(omitted, { users: [{ age: 22 }] })
   }
+
+  @Test()
+  public shouldBeAbleToVerifyThatAnObjectIsEqualToAnother({ assert }: Context) {
+    const object = { hello: 'world' }
+    const deepObject = { hello: { hello: 'world' } }
+
+    assert.isTrue(Json.isEqual(object, object))
+    assert.isTrue(Json.isEqual(deepObject, deepObject))
+
+    assert.isTrue(Json.isEqual([object], [object]))
+    assert.isTrue(Json.isEqual([deepObject], [deepObject]))
+  }
+
+  @Test()
+  public shouldBeAbleToCreateADiffObjectFromTheDifferencesBetweenTwoObjects({ assert }: Context) {
+    assert.deepEqual(Json.diff({ a: 'a' }, { a: 'a' }), {})
+    assert.deepEqual(Json.diff({ a: 'a' }, { a: 'b' }), { a: 'b' })
+  }
 }
