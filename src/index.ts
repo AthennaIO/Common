@@ -9,6 +9,8 @@
 
 export * from '#src/types'
 
+export * from '#src/constants/alphabet'
+
 export * from '#src/globals/Error'
 export * from '#src/globals/Array'
 

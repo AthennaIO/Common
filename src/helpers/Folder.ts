@@ -7,8 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import minimatch from 'minimatch'
-
+import { minimatch } from 'minimatch'
 import type { FolderJson } from '#src/types'
 
 import {
