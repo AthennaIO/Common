@@ -71,7 +71,9 @@ export class String extends Macroable {
     })
 
     const str = Array.from({ length: size }, () => {
-      return ALPHABET[NumberHelper.randomIntFromInterval(0, ALPHABET.length)]
+      return ALPHABET[
+        NumberHelper.randomIntFromInterval(0, ALPHABET.length - 1)
+      ]
     }).join('')
 
     if (options.suffixCRC) {
