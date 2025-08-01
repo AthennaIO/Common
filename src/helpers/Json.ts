@@ -255,6 +255,14 @@ export class ObjectBuilder extends Macroable {
       return Is.Defined(value) ? value : defaultValue
     }
 
+    /**
+     * Don't deep copy function and classes because it's
+     * being parsed to object.
+     */
+    if (Is.Function(value) || Is.Class(value)) {
+      return Is.Defined(value) ? value : defaultValue
+    }
+
     return Json.copy(Is.Defined(value) ? value : defaultValue)
   }
 }
