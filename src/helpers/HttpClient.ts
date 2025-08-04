@@ -41,7 +41,8 @@ import type {
   DnsLookupIpVersion,
   BeforeRedirectHook,
   StringifyJsonFunction,
-  CreateConnectionFunction
+  CreateConnectionFunction,
+  RequestError
 } from 'got'
 
 export class HttpClientBuilder extends Macroable {
@@ -49,6 +50,11 @@ export class HttpClientBuilder extends Macroable {
    * Got options used to make the request.
    */
   private options: Request
+
+  /**
+   * Define a custom error handler for the client.
+   */
+  private errorHandler: (error: RequestError) => any
 
   public constructor(options: Request = {}) {
     super()
@@ -316,6 +322,16 @@ export class HttpClientBuilder extends Macroable {
     }
 
     this.options.hooks.afterResponse.push(hook)
+
+    return this
+  }
+
+  /**
+   * Define a custom error handler for errors that
+   * happens inside the request.
+   */
+  public setErrorHandler(handler: (error: RequestError) => any) {
+    this.errorHandler = handler
 
     return this
   }
@@ -1129,6 +1145,14 @@ export class HttpClientBuilder extends Macroable {
     if (options.body && Is.Object(options.body)) {
       options.json = Json.copy(options.body)
       options.body = undefined
+    }
+
+    if (this.errorHandler) {
+      try {
+        return got<T>(options as any)
+      } catch (error: any) {
+        return this.errorHandler(error)
+      }
     }
 
     return got<T>(options as any)
