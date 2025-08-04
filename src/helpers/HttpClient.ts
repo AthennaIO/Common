@@ -1149,8 +1149,12 @@ export class HttpClientBuilder extends Macroable {
 
     if (this.errorHandler) {
       try {
-        return got<T>(options as any)
-      } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return got(options).catch(error => {
+          return this.errorHandler(error)
+        })
+      } catch (error) {
         return this.errorHandler(error)
       }
     }
