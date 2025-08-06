@@ -35,6 +35,7 @@ export interface PathDirs {
   migrations?: string
   lang?: string
   resources?: string
+  apiResources?: string
   views?: string
   locales?: string
   nodeModules?: string

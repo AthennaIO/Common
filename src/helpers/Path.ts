@@ -44,6 +44,7 @@ export class Path extends Macroable {
     migrations: 'src/database/migrations',
     lang: 'src/lang',
     resources: 'src/resources',
+    apiResources: 'src/resources/resources',
     views: 'src/resources/views',
     locales: 'src/resources/locales',
     nodeModules: 'node_modules',
@@ -338,6 +339,22 @@ export class Path extends Macroable {
    */
   public static setResources(directory: string): typeof Path {
     this.dirs.resources = directory
+
+    return this
+  }
+
+  /**
+   * Return the apiResources' path of your project.
+   */
+  public static apiResources(subPath: string = sep): string {
+    return this.pwd(this.dirs.apiResources + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of apiResources folder.
+   */
+  public static setApiResources(subPath: string = sep): typeof Path {
+    this.dirs.apiResources = subPath
 
     return this
   }
