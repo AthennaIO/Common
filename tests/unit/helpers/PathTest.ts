@@ -142,7 +142,7 @@ export default class PathTest {
 
   @Test()
   public async shouldGetTheSubPathsOfResourcesMainPath({ assert }: Context) {
-    const mainPath = process.cwd().concat(sep, 'src', sep, 'resources')
+    const mainPath = process.cwd().concat(sep, 'resources')
 
     assert.equal(Path.views(), mainPath.concat(sep, 'views'))
     assert.equal(Path.locales(), mainPath.concat(sep, 'locales'))
@@ -176,10 +176,10 @@ export default class PathTest {
       .setSeeders('build/src/database/seeders')
       .setMigrations('build/src/database/migrations')
       .setLang('build/src/lang')
-      .setResources('build/src/resources')
-      .setApiResources('build/src/resources/resources')
-      .setViews('build/src/resources/views')
-      .setLocales('build/src/resources/locales')
+      .setResources('build/resources')
+      .setApiResources('build/src/resources')
+      .setViews('build/resources/views')
+      .setLocales('build/resources/locales')
       .setNodeModules('build/node_modules')
       .setNodeModulesBin('build/node_modules/.bin')
       .setProviders('build/src/providers')
