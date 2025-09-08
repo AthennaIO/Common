@@ -422,6 +422,27 @@ export class Json {
   }
 
   /**
+   * Sort an object or an array of objects by it keys names.
+   */
+  public static sort<T = any>(object: T) {
+    if (Is.Array(object)) {
+      return object.map(Json.sort)
+    }
+
+    if (!object || !Is.Object(object)) {
+      return object
+    }
+
+    return Object.keys(object)
+      .sort()
+      .reduce((sortedObject, key) => {
+        sortedObject[key] = Json.sort(object[key])
+
+        return sortedObject
+      }, {})
+  }
+
+  /**
    * Validate if an object or array is equal to another.
    *
    * @example
