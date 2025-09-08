@@ -186,6 +186,26 @@ export default class JsonTest {
   }
 
   @Test()
+  public async shouldBeAbleToSortObjects({ assert }: Context) {
+    const object = {
+      c: 'c',
+      b: 'b',
+      a: 'a'
+    }
+
+    const sortedObject = Json.sort(object)
+    const sortedArrayOfObjects = Json.sort([object, object])
+    const sortedObjectRecursive = Json.sort({ d: object, ...object })
+
+    assert.deepEqual(Object.keys(object), ['c', 'b', 'a'])
+    assert.deepEqual(Object.keys(sortedObject), ['a', 'b', 'c'])
+    assert.deepEqual(Object.keys(sortedArrayOfObjects[0]), ['a', 'b', 'c'])
+    assert.deepEqual(Object.keys(sortedArrayOfObjects[1]), ['a', 'b', 'c'])
+    assert.deepEqual(Object.keys(sortedObjectRecursive), ['a', 'b', 'c', 'd'])
+    assert.deepEqual(Object.keys(sortedObjectRecursive.d), ['a', 'b', 'c'])
+  }
+
+  @Test()
   public async shouldBeAbleToBuildObjectsUsingTheObjectBuilder({ assert }: Context) {
     const me = Json.builder()
       .set('name', 'João Lenon')
