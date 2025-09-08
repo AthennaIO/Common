@@ -222,7 +222,7 @@ export default class PathTest {
     assert.isTrue(Path.resources().endsWith(`build${sep}resources`))
     assert.isTrue(Path.views().endsWith(`build${sep}resources${sep}views`))
     assert.isTrue(Path.locales().endsWith(`build${sep}resources${sep}locales`))
-    assert.isTrue(Path.apiResources().endsWith(`build${sep}src${sep}resources${sep}resources`))
+    assert.isTrue(Path.apiResources().endsWith(`build${sep}src${sep}resources`))
     assert.isTrue(Path.nodeModules().endsWith(`build${sep}node_modules`))
     assert.isTrue(Path.nodeModulesBin().endsWith(`build${sep}node_modules${sep}.bin`))
     assert.isTrue(Path.providers().endsWith(`build${sep}src${sep}providers`))
