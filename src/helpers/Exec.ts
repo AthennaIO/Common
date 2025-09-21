@@ -214,18 +214,31 @@ export class Exec extends Macroable {
     }
   }
 
+  public static download(url: string): Promise<any>
+  public static download(url: string, options?: {}): Promise<any>
+  public static download(
+    url: string,
+    options?: { path?: string }
+  ): Promise<File>
+
   /**
-   * Download an archive to a determined path.
+   * Download the data of an URL.
    */
-  public static async download(path: string, url: string): Promise<File> {
+  public static async download(url: string, options?: { path?: string }) {
     return new Promise((resolve, reject) => {
       const callback = response => {
         const data = new Transform()
 
         response.on('data', chunk => data.push(chunk))
 
-        response.on('end', function () {
-          resolve(new File(path, data.read()).loadSync())
+        response.on('end', () => {
+          if (options.path) {
+            resolve(new File(options.path, data.read()).loadSync())
+
+            return
+          }
+
+          resolve(data.read())
         })
 
         response.on('error', error => reject(error))

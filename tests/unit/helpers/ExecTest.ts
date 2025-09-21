@@ -220,10 +220,9 @@ export default class ExecTest {
 
   @Test()
   public async shouldBeAbleToDownloadFiles({ assert }: Context) {
-    const file = await Exec.download(
-      Path.storage('downloads/node.pkg'),
-      'https://nodejs.org/dist/v23.5.0/node-23.5.0.pkg'
-    )
+    const file = await Exec.download('https://nodejs.org/dist/v23.5.0/node-23.5.0.pkg', {
+      path: Path.storage('downloads/node.pkg')
+    })
 
     assert.equal(file.base, 'node.pkg')
     assert.isTrue(await File.exists(file.path))
