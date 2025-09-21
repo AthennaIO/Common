@@ -215,7 +215,6 @@ export class Exec extends Macroable {
   }
 
   public static download(url: string): Promise<any>
-  public static download(url: string, options?: {}): Promise<any>
   public static download(
     url: string,
     options?: { path?: string }
