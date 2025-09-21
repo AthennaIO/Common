@@ -231,7 +231,7 @@ export class Exec extends Macroable {
         response.on('data', chunk => data.push(chunk))
 
         response.on('end', () => {
-          if (options.path) {
+          if (options?.path) {
             resolve(new File(options.path, data.read()).loadSync())
 
             return
