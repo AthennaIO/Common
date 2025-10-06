@@ -186,6 +186,32 @@ export default class JsonTest {
   }
 
   @Test()
+  public async shouldBeAbleToSetNestedPropertiesInsideAnObject({ assert }: Context) {
+    const object = {}
+
+    const newObject = Json.set(object, 'hello.world.value.hello', 'Hello World!')
+
+    assert.deepEqual(object, {
+      hello: {
+        world: {
+          value: {
+            hello: 'Hello World!'
+          }
+        }
+      }
+    })
+    assert.deepEqual(newObject, {
+      hello: {
+        world: {
+          value: {
+            hello: 'Hello World!'
+          }
+        }
+      }
+    })
+  }
+
+  @Test()
   public async shouldBeAbleToSortObjects({ assert }: Context) {
     const object = {
       c: 'c',

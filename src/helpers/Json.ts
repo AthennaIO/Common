@@ -422,6 +422,17 @@ export class Json {
   }
 
   /**
+   * Set the object values based on a key.
+   */
+  public static set<T = any>(object: T, key: string, value: any): T {
+    if (key === '' && object) {
+      return object
+    }
+
+    return lodash.set<T>(object as unknown as any, key, value)
+  }
+
+  /**
    * Sort an object or an array of objects by it keys names.
    */
   public static sort<T = any>(object: T) {
