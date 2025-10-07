@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import type { InferEnum } from '#src/types'
 import { Macroable } from '#src/helpers/Macroable'
 
 export class Enum extends Macroable {
@@ -35,7 +36,7 @@ export class Enum extends Macroable {
    * ```ts
    * export class StatusEnum extends Enum {
    *   public static PENDING = 'pending' as const
-   *   public static static APPROVED = 'approved' as const
+   *   public static APPROVED = 'approved' as const
    *   public static BLOCKED = 'blocked' as const
    * }
    *
@@ -61,4 +62,14 @@ export class Enum extends Macroable {
   public static entries() {
     return this.keys().map(key => [key, this[key]])
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Enum {
+  /**
+   * Infer the type of your enum values. Useful to be used
+   * in models and other types to define that that property
+   * should only expect the values defined by your enum.
+   */
+  export type infer<T> = InferEnum<Omit<T, 'infer'>>
 }
