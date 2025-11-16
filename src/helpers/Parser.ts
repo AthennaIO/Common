@@ -23,8 +23,8 @@ import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
 import {
   json2csv,
-  type Json2CsvOptions,
   csv2json,
+  type Json2CsvOptions,
   type Csv2JsonOptions
 } from 'json-2-csv'
 import type { HTMLJson } from '#src/types/json/HTMLJson'
