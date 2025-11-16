@@ -39,6 +39,22 @@ export class Is extends Macroable {
   }
 
   /**
+   * Verify if the current runtime is Node.
+   */
+  public static Node(): boolean {
+    return typeof process !== 'undefined' && process.versions?.node !== null
+  }
+
+  /**
+   * Verify if the current runtime is Deno.
+   */
+  public static Deno(): boolean {
+    // eslint-disable-next-line
+    // @ts-ignore
+    return typeof Deno !== 'undefined' && Deno.version !== null
+  }
+
+  /**
    * Verify if the current platform is Linux.
    */
   public static Linux(): boolean {
