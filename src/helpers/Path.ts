@@ -28,6 +28,8 @@ export class Path extends Macroable {
     repositories: 'src/repositories',
     console: 'src/console',
     commands: 'src/console/commands',
+    mcp: 'src/mcp',
+    tools: 'src/mcp/tools',
     http: 'src/http',
     guards: 'src/http/guards',
     controllers: 'src/http/controllers',
@@ -520,6 +522,22 @@ export class Path extends Macroable {
   }
 
   /**
+   * Return the mcp path of your project.
+   */
+  public static mcp(subPath: string = sep): string {
+    return this.pwd(this.dirs.mcp + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of mcp folder.
+   */
+  public static setMcp(directory: string): typeof Path {
+    this.dirs.mcp = directory
+
+    return this
+  }
+
+  /**
    * Return the http path of your project.
    */
   public static http(subPath: string = sep): string {
@@ -675,6 +693,22 @@ export class Path extends Macroable {
    */
   public static setControllers(directory: string): typeof Path {
     this.dirs.controllers = directory
+
+    return this
+  }
+
+  /**
+   * Return the tools' path of your project.
+   */
+  public static tools(subPath: string = sep): string {
+    return this.pwd(this.dirs.tools + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of tools folder.
+   */
+  public static setTools(directory: string): typeof Path {
+    this.dirs.tools = directory
 
     return this
   }

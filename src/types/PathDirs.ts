@@ -19,6 +19,8 @@ export interface PathDirs {
   repositories?: string
   console?: string
   commands?: string
+  mcp?: string
+  tools?: string
   http?: string
   guards?: string
   controllers?: string
