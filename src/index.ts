@@ -14,6 +14,7 @@ export * from '#src/constants/alphabet'
 export * from '#src/globals/Enum'
 export * from '#src/globals/Error'
 export * from '#src/globals/Array'
+export * from '#src/globals/String'
 
 export * from '#src/helpers/Exception'
 export * from '#src/helpers/Clean'
