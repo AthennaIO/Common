@@ -7,9 +7,18 @@
  * file that was distributed with this source code.
  */
 
+import { String } from '#src'
 import { Test, type Context } from '@athenna/test'
 
 export default class GlobalStringTest {
+  @Test()
+  public async shouldBeAbleToUseStaticMethodsFromStringHelper({ assert }: Context) {
+    const value = 'Hello model.id and some text'
+
+    assert.isTrue(String.includesSome(value, 'model.id', 'nope'))
+    assert.isTrue(String.includesEvery(value, 'Hello', 'model.id'))
+  }
+
   @Test()
   public async shouldReturnTrueIfAtLeastOneTermMatchesUsingMultipleParams({ assert }: Context) {
     const value = 'Hello model.id and some other text'

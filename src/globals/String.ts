@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { String } from '#src/helpers/String'
+import { String as StringHelper } from '#src/helpers/String'
 
 export class AthennaString {
   public constructor(private value: string) {}
@@ -23,7 +23,7 @@ export class AthennaString {
    * ```
    */
   public includesSome(...searches: (string | string[])[]): boolean {
-    return String.includesSome(this.value, ...searches)
+    return StringHelper.includesSome(this.value, ...searches)
   }
 
   /**
@@ -37,12 +37,11 @@ export class AthennaString {
    * ```
    */
   public includesEvery(...searches: (string | string[])[]): boolean {
-    return String.includesEvery(this.value, ...searches)
+    return StringHelper.includesEvery(this.value, ...searches)
   }
 }
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface String {
     athenna: AthennaString
   }
