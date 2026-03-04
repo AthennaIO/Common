@@ -62,6 +62,42 @@ export class Enum extends Macroable {
   public static entries() {
     return this.keys().map(key => [key, this[key]])
   }
+
+  /**
+   * Get a random key from the enum.
+   *
+   * @example
+   * ```ts
+   * export class StatusEnum extends Enum {
+   *   public static PENDING = 'pending' as const
+   *   public static APPROVED = 'approved' as const
+   *   public static BLOCKED = 'blocked' as const
+   * } 
+   * 
+   * const randomKey = StatusEnum.randomKey() // 'PENDING'
+   * ```
+   */
+  public static randomKey() {
+    return this.keys().athenna.random()
+  }
+
+  /**
+   * Get a random value from the enum.
+   *
+   * @example
+   * ```ts
+   * export class StatusEnum extends Enum {
+   *   public static PENDING = 'pending' as const
+   *   public static APPROVED = 'approved' as const
+   *   public static BLOCKED = 'blocked' as const
+   * } 
+   * 
+   * const randomValue = StatusEnum.randomValue() // 'pending'
+   * ```
+   */
+  public static randomValue() {
+    return this.values().athenna.random()
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
