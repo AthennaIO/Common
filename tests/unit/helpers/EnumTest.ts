@@ -125,4 +125,26 @@ export default class EnumTest {
       ['DELETED', 2]
     ])
   }
+
+  @Test()
+  public async shouldBeAbleToGetARandomKeyFromEnum({ assert }: Context) {
+    class Status extends Enum {
+      static PENDING = 0
+      static BLOCKED = 1
+      static DELETED = 2
+    }
+
+    assert.isTrue(Status.keys().includes(Status.randomKey()))
+  }
+
+  @Test()
+  public async shouldBeAbleToGetARandomValueFromEnum({ assert }: Context) {
+    class Status extends Enum {
+      static PENDING = 0
+      static BLOCKED = 1
+      static DELETED = 2
+    }
+
+    assert.isTrue(Status.values().includes(Status.randomValue()))
+  }
 }
