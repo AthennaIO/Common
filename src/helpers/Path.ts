@@ -46,6 +46,8 @@ export class Path extends Macroable {
     seeders: 'src/database/seeders',
     migrations: 'src/database/migrations',
     lang: 'src/lang',
+    events: 'src/events',
+    listeners: 'src/events/listeners',
     resources: 'resources',
     views: 'resources/views',
     locales: 'resources/locales',
@@ -261,6 +263,38 @@ export class Path extends Macroable {
    */
   public static setLang(directory: string): typeof Path {
     this.dirs.lang = directory
+
+    return this
+  }
+
+  /**
+   * Return the events path of your project.
+   */
+  public static events(subPath: string = sep): string {
+    return this.pwd(this.dirs.events + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of events folder.
+   */
+  public static setEvents(directory: string): typeof Path {
+    this.dirs.events = directory
+
+    return this
+  }
+
+  /**
+   * Return the listeners path of your project.
+   */
+  public static listeners(subPath: string = sep): string {
+    return this.pwd(this.dirs.listeners + sep + normalize(subPath))
+  }
+
+  /**
+   * Set the directory of listeners folder.
+   */
+  public static setListeners(directory: string): typeof Path {
+    this.dirs.listeners = directory
 
     return this
   }
