@@ -36,6 +36,8 @@ export interface PathDirs {
   seeders?: string
   migrations?: string
   lang?: string
+  events?: string
+  listeners?: string
   resources?: string
   apiResources?: string
   views?: string
