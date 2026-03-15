@@ -40,3 +40,5 @@ export * from '#src/helpers/Sleep'
 export * from '#src/helpers/String'
 export * from '#src/helpers/Uuid'
 export * from '#src/helpers/Ulid'
+
+export * from '#src/handlers/ExceptionHandler'
