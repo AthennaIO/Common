@@ -5,7 +5,7 @@ export type ExceptionHandlerContext = {
 }
 
 export class ExceptionHandler extends Macroable {
-  public async handle(context: ExceptionHandlerContext): Promise<void> {
+  public async handle(_: ExceptionHandlerContext): Promise<void> {
     throw new Error('Not implemented')
   }
 }
