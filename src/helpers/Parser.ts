@@ -12,15 +12,6 @@ import bytes from 'bytes'
 import yaml from 'js-yaml'
 import csvParser from 'csv-parser'
 
-import { Is } from '#src/helpers/Is'
-import { String } from '#src/helpers/String'
-import { Options } from '#src/helpers/Options'
-import { Macroable } from '#src/helpers/Macroable'
-import { ObjectBuilder } from '#src/helpers/Json'
-import type { ObjectBuilderOptions } from '#src/types'
-import { getReasonPhrase, getStatusCode } from 'http-status-codes'
-import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
-
 import {
   json2csv,
   csv2json,
@@ -28,6 +19,16 @@ import {
   type Csv2JsonOptions
 } from 'json-2-csv'
 import type { HTMLJson } from '#src/types/json/HTMLJson'
+
+import { Is } from '#src/helpers/Is'
+import { Clean } from '#src/helpers/Clean'
+import { String } from '#src/helpers/String'
+import { Options } from '#src/helpers/Options'
+import { Macroable } from '#src/helpers/Macroable'
+import { ObjectBuilder } from '#src/helpers/Json'
+import type { ObjectBuilderOptions } from '#src/types'
+import { getReasonPhrase, getStatusCode } from 'http-status-codes'
+import { InvalidNumberException } from '#src/exceptions/InvalidNumberException'
 
 export class Parser extends Macroable {
   /**
@@ -217,6 +218,68 @@ export class Parser extends Macroable {
   }
 
   /**
+   * Parses an object to a base64 string.
+   */
+  public static objectToBase64(
+    object: Record<string, any>,
+    options?: { nullOnEmpty?: boolean; removeEmpty?: boolean }
+  ) {
+    options = Options.create(options, {
+      nullOnEmpty: false,
+      removeEmpty: false
+    })
+
+    if (options.removeEmpty) {
+      object = Clean.cleanObject(object, { removeEmpty: true, recursive: true })
+    }
+
+    if (options.nullOnEmpty && Is.Empty(object)) {
+      return null
+    }
+
+    return Buffer.from(JSON.stringify(object)).toString('base64')
+  }
+
+  /**
+   * Parses a base64 string to an object.
+   */
+  public static base64ToObject<T = Record<string, any>>(base64: string): T {
+    return JSON.parse(Buffer.from(base64, 'base64').toString('utf-8'))
+  }
+
+  /**
+   * Parses an object to a base64url string.
+   */
+  public static objectToBase64Url(
+    object: Record<string, any>,
+    options?: { nullOnEmpty?: boolean; removeEmpty?: boolean }
+  ) {
+    options = Options.create(options, {
+      nullOnEmpty: false,
+      removeEmpty: false
+    })
+
+    if (options.removeEmpty) {
+      object = Clean.cleanObject(object, { removeEmpty: true, recursive: true })
+    }
+
+    if (options.nullOnEmpty && Is.Empty(object)) {
+      return null
+    }
+
+    return Buffer.from(JSON.stringify(object)).toString('base64url')
+  }
+
+  /**
+   * Parses a base64url string to an object.
+   */
+  public static base64UrlToObject<T = Record<string, any>>(
+    base64Url: string
+  ): T {
+    return JSON.parse(Buffer.from(base64Url, 'base64url').toString('utf-8'))
+  }
+
+  /**
    * Parses a string to MS format.
    */
   public static timeToMs(value: string): number {
@@ -228,6 +291,20 @@ export class Parser extends Macroable {
    */
   public static msToTime(value: number, long = false): string {
     return ms(value, { long })
+  }
+
+  /**
+   * Parses a time string to seconds format.
+   */
+  public static timeToSeconds(value: string): number {
+    return ms(value) / 1000
+  }
+
+  /**
+   * Parses a seconds number to time format.
+   */
+  public static secondsToTime(value: number, long = false): string {
+    return ms(value * 1000, { long })
   }
 
   /**

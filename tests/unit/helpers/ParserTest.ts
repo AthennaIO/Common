@@ -120,6 +120,25 @@ export default class ParserTest {
   }
 
   @Test()
+  public async shouldParseTheStringToMsFormatAndSecondsFormatToString({ assert }: Context) {
+    // time to seconds
+    assert.equal(Parser.timeToSeconds('2 days'), 172800)
+    assert.equal(Parser.timeToSeconds('1d'), 86400)
+    assert.equal(Parser.timeToSeconds('10h'), 36000)
+    assert.equal(Parser.timeToSeconds('-10h'), -36000)
+    assert.equal(Parser.timeToSeconds('1 year'), 31557600)
+    assert.equal(Parser.timeToSeconds('-1 year'), -31557600)
+
+    // ms to time
+    assert.equal(Parser.secondsToTime(172800), '2 days')
+    assert.equal(Parser.secondsToTime(86400), '1d')
+    assert.equal(Parser.secondsToTime(36000), '10h')
+    assert.equal(Parser.secondsToTime(-36000), '-10h')
+    assert.equal(Parser.secondsToTime(31557600), '365 days')
+    assert.equal(Parser.secondsToTime(-31557600), '-365 days')
+  }
+
+  @Test()
   public async shouldParseTheStatusCodeToReasonAndReasonToStatusCode({ assert }: Context) {
     // status code to reason
     assert.equal(Parser.statusCodeToReason(200), 'OK')
@@ -278,6 +297,82 @@ export default class ParserTest {
     const object = Parser.yamlStringToObject(string)
 
     assert.deepEqual(object, { version: 3 })
+  }
+
+  @Test()
+  public async shouldBeAbleToParseAnObjectToBase64String({ assert }: Context) {
+    const string1 = Parser.objectToBase64({ hello: 'world' })
+    const string2 = Parser.objectToBase64(
+      {
+        hello: 'world',
+        foo: null,
+        bar: undefined,
+        baz: {},
+        qux: [],
+        quux: ''
+      },
+      { removeEmpty: true }
+    )
+    const string3 = Parser.objectToBase64(
+      {
+        foo: null,
+        bar: undefined,
+        baz: {},
+        qux: []
+      },
+      { nullOnEmpty: true, removeEmpty: true }
+    )
+
+    assert.deepEqual(string1, 'eyJoZWxsbyI6IndvcmxkIn0=')
+    assert.deepEqual(string2, 'eyJoZWxsbyI6IndvcmxkIn0=')
+    assert.deepEqual(string3, null)
+  }
+
+  @Test()
+  public async shouldBeAbleToParseBase64StringToObject({ assert }: Context) {
+    const string = 'eyJoZWxsbyI6IndvcmxkIn0='
+
+    const object = Parser.base64ToObject(string)
+
+    assert.deepEqual(object, { hello: 'world' })
+  }
+
+  @Test()
+  public async shouldBeAbleToParseAnObjectToBase64UrlString({ assert }: Context) {
+    const string1 = Parser.objectToBase64Url({ hello: 'world' })
+    const string2 = Parser.objectToBase64Url(
+      {
+        hello: 'world',
+        foo: null,
+        bar: undefined,
+        baz: {},
+        qux: [],
+        quux: ''
+      },
+      { removeEmpty: true }
+    )
+    const string3 = Parser.objectToBase64Url(
+      {
+        foo: null,
+        bar: undefined,
+        baz: {},
+        qux: []
+      },
+      { nullOnEmpty: true, removeEmpty: true }
+    )
+
+    assert.deepEqual(string1, 'eyJoZWxsbyI6IndvcmxkIn0')
+    assert.deepEqual(string2, 'eyJoZWxsbyI6IndvcmxkIn0')
+    assert.deepEqual(string3, null)
+  }
+
+  @Test()
+  public async shouldBeAbleToParseBase64UrlStringToObject({ assert }: Context) {
+    const string = 'eyJoZWxsbyI6IndvcmxkIn0'
+
+    const object = Parser.base64UrlToObject(string)
+
+    assert.deepEqual(object, { hello: 'world' })
   }
 
   @Test()
