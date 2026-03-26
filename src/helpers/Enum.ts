@@ -72,8 +72,8 @@ export class Enum extends Macroable {
    *   public static PENDING = 'pending' as const
    *   public static APPROVED = 'approved' as const
    *   public static BLOCKED = 'blocked' as const
-   * } 
-   * 
+   * }
+   *
    * const randomKey = StatusEnum.randomKey() // 'PENDING'
    * ```
    */
@@ -90,8 +90,8 @@ export class Enum extends Macroable {
    *   public static PENDING = 'pending' as const
    *   public static APPROVED = 'approved' as const
    *   public static BLOCKED = 'blocked' as const
-   * } 
-   * 
+   * }
+   *
    * const randomValue = StatusEnum.randomValue() // 'pending'
    * ```
    */

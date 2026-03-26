@@ -16,7 +16,7 @@ export type ExceptionHandlerContext = {
 export class ExceptionHandler extends Macroable {
   public async handle(_: ExceptionHandlerContext): Promise<void> {
     /**
-     * This method is meant to be overridden by the user 
+     * This method is meant to be overridden by the user
      * using the `macro()` method
      */
   }
