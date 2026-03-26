@@ -130,12 +130,12 @@ export default class ParserTest {
     assert.equal(Parser.timeToSeconds('-1 year'), -31557600)
 
     // ms to time
-    assert.equal(Parser.secondsToTime(172800), '2 days')
+    assert.equal(Parser.secondsToTime(172800, true), '2 days')
     assert.equal(Parser.secondsToTime(86400), '1d')
     assert.equal(Parser.secondsToTime(36000), '10h')
     assert.equal(Parser.secondsToTime(-36000), '-10h')
-    assert.equal(Parser.secondsToTime(31557600), '365 days')
-    assert.equal(Parser.secondsToTime(-31557600), '-365 days')
+    assert.equal(Parser.secondsToTime(31557600, true), '365 days')
+    assert.equal(Parser.secondsToTime(-31557600, true), '-365 days')
   }
 
   @Test()
