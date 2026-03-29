@@ -11,9 +11,15 @@ export * from '#src/types'
 
 export * from '#src/constants/alphabet'
 
+import '#src/globals/Enum'
+import '#src/globals/Error'
+import '#src/globals/Array'
+import '#src/globals/String'
+
 export * from '#src/globals/Enum'
 export * from '#src/globals/Error'
 export * from '#src/globals/Array'
+export * from '#src/globals/String'
 
 export * from '#src/helpers/Exception'
 export * from '#src/helpers/Clean'
